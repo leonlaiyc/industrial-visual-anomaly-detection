@@ -1,0 +1,5 @@
+$ python -m compileall -q src site tests
+exit=0
+$ import every ivad module except __main__
+imported 20 modules OK: acceptance align calibration cli compare config consistency cost data features gaussian illum inspect_data metrics photometric pipeline report robustness roi summary
+exit=0

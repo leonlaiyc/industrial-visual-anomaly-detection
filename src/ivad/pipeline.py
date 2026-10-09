@@ -12,6 +12,8 @@ Protocol guards implemented here (see docs/evaluation_methodology.md):
 
 Image-score aggregation is `scoring.aggregation`: `full_max` (v1, the
 default when the section is absent) or `roi_max` (v2, see roi.py).
+An optional `preprocess.photometric` step (photometric.py, PCB3 illumination
+experiment) runs first on every image, before registration.
 """
 from __future__ import annotations
 
@@ -31,7 +33,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from . import calibration, metrics
+from . import calibration, metrics, photometric
 from . import roi as roi_mod
 from .align import Registrar
 from .config import config_hash, project_root, resolve_path, sha256_file, sha256_text, write_json
@@ -80,9 +82,13 @@ class Preprocessor:
         self.registrar = registrar if pp.get("register", False) else None
         self.crop_wh = pp.get("crop_wh")
         self.hw = size_hw(cfg)
+        self.photometric = photometric.from_config(cfg)  # None unless configured
+        self.mask_kw = mask_kwargs(cfg)
 
     def view(self, img: Image.Image) -> Image.Image:
-        """The registered, cropped PIL image the model sees (before resize)."""
+        """The (corrected,) registered, cropped PIL image the model sees (before resize)."""
+        if self.photometric is not None:
+            img = self.photometric(img)
         if self.registrar is not None:
             img = self.registrar(img)
         return center_crop(img, self.crop_wh)
@@ -93,7 +99,16 @@ class Preprocessor:
     def with_mask(self, img: Image.Image) -> tuple[torch.Tensor, np.ndarray]:
         """Model input plus the image's own board mask in the model frame (for the ROI)."""
         v = self.view(img)
-        return to_tensor(v, self.hw), roi_mod.board_mask(v, self.hw)
+        return to_tensor(v, self.hw), roi_mod.board_mask(v, self.hw, self.mask_kw)
+
+
+def mask_kwargs(cfg: dict[str, Any]) -> dict[str, Any]:
+    """Board-mask options from `preprocess.board_mask` ({} = the original PCB1/PCB2 rule)."""
+    bm = cfg["preprocess"].get("board_mask") or {}
+    unknown = set(bm) - {"exclude_hue"}
+    if unknown:
+        raise ValueError(f"unknown preprocess.board_mask keys: {sorted(unknown)}")
+    return {"exclude_hue": list(bm["exclude_hue"])} if bm.get("exclude_hue") is not None else {}
 
 
 def pmap(cfg: dict[str, Any]) -> Callable:
@@ -182,7 +197,9 @@ def fit(cfg: dict[str, Any]) -> Path:
     t0 = time.perf_counter()
     registrar = None
     if cfg["preprocess"].get("register", False):
-        registrar = Registrar.build_template(paths, load_rgb, pmap(cfg))  # FIT images only
+        corr = photometric.from_config(cfg)  # the template must see what the model will see
+        load = load_rgb if corr is None else (lambda q: corr(load_rgb(q)))
+        registrar = Registrar.build_template(paths, load, pmap(cfg), mask_kwargs(cfg))  # FIT images only
     pre = Preprocessor(cfg, registrar)
     ext = build_extractor(cfg, device)
     acc = CovarianceAccumulator()
@@ -280,7 +297,7 @@ def load_detector(cfg: dict[str, Any], device: torch.device | None = None) -> De
     if not torch.equal(ext.channel_idx.cpu(), state["channel_idx"]):
         raise RuntimeError("channel selection differs from the fitted model")
     tpl = state.get("template")
-    registrar = Registrar(tpl.numpy()) if tpl is not None else None
+    registrar = Registrar(tpl.numpy(), mask_kwargs(cfg)) if tpl is not None else None
     roi = state.get("roi")
     if roi_mod.aggregation(cfg) == "roi_max":
         if roi is None:

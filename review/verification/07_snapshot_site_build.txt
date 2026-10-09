@@ -1,0 +1,7 @@
+$ (snapshot root) python site/build.py
+site built -> <path>
+exit=0
+$ diff -r <snapshot>/site/dist <dev>/site/dist
+identical: snapshot build == dev build
+$ cmp facts.json
+identical facts.json

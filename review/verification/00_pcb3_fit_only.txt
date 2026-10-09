@@ -1,0 +1,22 @@
+$ find reports artifacts -path "*pcb3*" -name "scores_*" -o -name frozen_operating_point.json -o -name metrics.json -o -name "robustness*" -o -name "comparison*"   (PCB3 only)
+(no output = no calibration, holdout, test, freeze, robustness or comparison file for PCB3)
+$ PCB3 output files (mtime, bytes)
+2026-10-09 14:11         628  reports/pcb3_inspection/photometric_fit_stats.json
+2026-10-09 14:12         290  reports/pcb3_inspection/background_hue_fit.json
+2026-10-09 14:13      189450  reports/pcb3_inspection/registered_mean_std_fit_normals.png
+2026-10-09 14:13      248086  reports/pcb3_inspection/resize_loss_crops.png
+2026-10-09 14:13      269593  reports/pcb3_inspection/mean_std_fit_normals.png
+2026-10-09 14:13     1896841  reports/pcb3_inspection/contact_sheet_fit_normals.png
+2026-10-09 14:14        1966  reports/pcb3_inspection/inspection_stats.json
+2026-10-09 14:14     1143375  reports/pcb3_inspection/registered_crops.png
+2026-10-09 14:19         477  reports/pcb3_baseline/roi_qc.json
+2026-10-09 14:19      634367  reports/pcb3_baseline/roi_qc.png
+2026-10-09 14:19   406595395  artifacts/pcb3_baseline/model.pt
+2026-10-09 14:22   406595395  artifacts/pcb3_illum/model.pt
+2026-10-09 14:23         476  reports/pcb3_illum/roi_qc.json
+2026-10-09 14:23      645366  reports/pcb3_illum/roi_qc.png
+$ model.pt provenance (python, see AUDIT_SUMMARY.md)
+pcb3_baseline: model config_hash == current config hash: True; n_fit=600; all fit_images role=fit: True; distinct=600; ROI QC=PASS
+pcb3_illum: model config_hash == current config hash: True; n_fit=600; all fit_images role=fit: True; distinct=600; ROI QC=PASS
+$ git status --porcelain (dev)
+(empty = clean)

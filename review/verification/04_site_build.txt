@@ -1,0 +1,15 @@
+$ python site/build.py
+site built -> <repo path>
+exit=0
+$ negative test: literal "80%" injected into en.yaml hero.recall_change; build must fail
+content lint failed:
+  en.hero.recall_change: literal '80'
+exit=1
+en.yaml restored (git diff clean)
+$ negative test: key missing in zh-TW.yaml; build must fail
+content lint failed:
+  content keys differ: only en ['.hero.recall_change'], only zh []
+exit=1
+zh-TW.yaml restored (git diff clean)
+site built -> <repo path>
+final build exit=0

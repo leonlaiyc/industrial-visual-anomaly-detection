@@ -13,10 +13,13 @@
     ivad summary      README results block + one-page executive PDF from all runs
     ivad check        consistency checks across all runs, the PDF and the README
     ivad predict IMG  score one image and write a heat-map overlay
+    ivad photostats   (PCB3 illumination experiment) FIT-only luminance reference values
+    ivad illum-compare  paired baseline-vs-candidate illumination analysis (--base, --new)
     ivad all          prepare -> split -> fit -> calibrate -> evaluate -> robustness -> report
 
 Every command accepts --config PATH (default: config/default.yaml = PCB1 v1).
-The PCB2 study uses config/pcb2_v1.yaml and config/pcb2_v2.yaml.
+The PCB2 study uses config/pcb2_v1.yaml and config/pcb2_v2.yaml; the PCB3 illumination
+experiment uses config/pcb3_baseline.yaml and config/pcb3_illum.yaml.
 """
 from __future__ import annotations
 
@@ -59,12 +62,12 @@ def cmd_split(cfg) -> None:
 def cmd_inspect(cfg) -> None:
     from .data import read_split
     from .inspect_data import run_inspection
-    from .pipeline import pmap
+    from .pipeline import mask_kwargs, pmap
 
     out = resolve_path(cfg, "inspection") if "inspection" in cfg["paths"] else resolve_path(cfg, "reports") / "inspection"
     rep = run_inspection(read_split(resolve_path(cfg, "split_manifest")), resolve_path(cfg, "data_dir"),
                          out, cfg["seed"],
-                         crop_wh=cfg["preprocess"].get("crop_wh"), pmap=pmap(cfg))
+                         crop_wh=cfg["preprocess"].get("crop_wh"), pmap=pmap(cfg), mask_kw=mask_kwargs(cfg))
     print(json.dumps(rep["registration_all_fit"], indent=2))
 
 
@@ -74,11 +77,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--config", default=None)
     sub = p.add_subparsers(dest="cmd", required=True)
     for name in ("prepare", "split", "inspect", "fit", "calibrate", "evaluate",
-                 "robustness", "report", "roi", "summary", "check", "all"):
+                 "robustness", "report", "roi", "summary", "check", "all", "photostats"):
         sub.add_parser(name)
     cp = sub.add_parser("compare")
     cp.add_argument("--base", default="config/pcb2_v1.yaml")
     cp.add_argument("--new", default="config/pcb2_v2.yaml")
+    ip = sub.add_parser("illum-compare")
+    ip.add_argument("--base", default="config/pcb3_baseline.yaml")
+    ip.add_argument("--new", default="config/pcb3_illum.yaml")
     pr = sub.add_parser("predict")
     pr.add_argument("image")
     pr.add_argument("--out", default=None, help="heat-map PNG path")
@@ -107,6 +113,12 @@ def main(argv: list[str] | None = None) -> int:
     elif args.cmd == "compare":
         from .compare import compare_runs
         compare_runs(load_config(args.base), load_config(args.new))
+    elif args.cmd == "photostats":
+        from .illum import photostats
+        photostats(cfg)
+    elif args.cmd == "illum-compare":
+        from .illum import illum_compare
+        illum_compare(load_config(args.base), load_config(args.new))
     elif args.cmd == "summary":
         from .summary import build_summary
         build_summary()

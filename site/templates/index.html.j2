@@ -1,0 +1,180 @@
+{% set stages = [
+  {"n": 1, "anchor": "stage-1", "phase": "A", "status": "done"},
+  {"n": 2, "anchor": "stage-2", "phase": "B", "status": "partial"},
+  {"n": 3, "anchor": "stage-3", "phase": "B", "status": "proposed"},
+  {"n": 4, "anchor": "stage-4", "phase": "A", "status": "done"},
+  {"n": 5, "anchor": "experiments", "phase": "A", "status": "in_progress" if f.pcb3.status != "complete" else "done"},
+  {"n": 6, "anchor": "decision", "phase": "B", "status": "partial"},
+  {"n": 7, "anchor": "handoff", "phase": "B", "status": "partial"},
+] %}
+{% set v1 = f.pcb2.v1 %}{% set v2 = f.pcb2.v2 %}
+<!doctype html>
+<html lang="{{ meta.html_lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ t.meta.title }}</title>
+<meta name="description" content="{{ t.meta.description | striptags }}">
+<meta name="theme-color" content="#ffffff">
+{% for l, m in langs.items() %}
+<link rel="alternate" hreflang="{{ m.html_lang }}" href="{{ alt[l] or './' }}">
+{% endfor %}
+<link rel="icon" href="{{ root }}assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{{ root }}assets/site.css">
+</head>
+<body class="lang-{{ lang }}">
+<a class="skip" href="#main">{{ t.nav.skip }}</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#summary">{{ t.meta.site_name }}</a>
+    <nav class="site-nav" aria-label="{{ t.nav.case }}">
+      <a href="#summary">{{ t.nav.summary }}</a>
+      <a href="#case">{{ t.nav.case }}</a>
+      <a href="#experiments">{{ t.nav.experiment }}</a>
+      <a href="#decision">{{ t.nav.decision }}</a>
+      <a href="#handoff">{{ t.nav.handoff }}</a>
+    </nav>
+    <nav class="lang-switch" aria-label="{{ t.nav.lang_switch_label }}">
+      {% for l, m in langs.items() %}
+      <a href="{{ alt[l] or './' }}" hreflang="{{ m.html_lang }}" lang="{{ m.html_lang }}"{% if l == lang %} aria-current="page"{% endif %}>{{ m.label }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section id="summary" class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">{{ t.hero.eyebrow }}</p>
+      <h1 id="hero-title">{{ t.hero.title }}</h1>
+      <p class="lede">{{ t.hero.lede }}</p>
+    </div>
+    <div class="hero-brief">
+      <dl class="brief">
+        <div>
+          <dt>{{ t.hero.built_title }}</dt>
+          <dd>{{ t.hero.built_body }}</dd>
+        </div>
+        <div>
+          <dt>{{ t.hero.risks_title }}</dt>
+          <dd><ul>{% for r in t.hero.risks %}<li>{{ r }}</li>{% endfor %}</ul></dd>
+        </div>
+        <div class="brief-decision">
+          <dt>{{ t.hero.decision_title }}</dt>
+          <dd>{{ t.hero.decision_body }}</dd>
+        </div>
+      </dl>
+      <p class="cta">
+        <a class="btn btn-primary" href="#case">{{ t.hero.cta_case }}</a>
+        <a class="btn" href="{{ root }}executive-summary.pdf">{{ t.hero.cta_pdf }}</a>
+      </p>
+    </div>
+
+    <aside class="card metric-card" aria-labelledby="card-title">
+      <h2 id="card-title" class="card-title">{{ t.hero.card_title }}</h2>
+      <p class="card-sub">{{ t.hero.card_sub }} <span class="badge badge-measured">{{ t.status.measured }}</span></p>
+      <table class="metrics">
+        <thead>
+          <tr><th scope="col">{{ t.hero.col_metric }}</th><th scope="col" class="num">v1</th><th scope="col" class="num">v2</th><th scope="col">{{ t.hero.col_change }}</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">{{ t.hero.recall_label }}<span class="hint">{{ t.hero.recall_hint }}</span></th>
+            <td class="num">{{ v1.recall.pct }}</td><td class="num strong">{{ v2.recall.pct }}</td>
+            <td class="change change-flat">{{ t.hero.recall_change }}<span class="hint">{{ t.hero.recall_change_ci }}</span></td>
+          </tr>
+          <tr>
+            <th scope="row">{{ t.hero.fpr_label }}<span class="hint">{{ t.hero.fpr_hint }}</span></th>
+            <td class="num">{{ v1.fpr.pct }}</td><td class="num strong">{{ v2.fpr.pct }}</td>
+            <td class="change change-good">{{ t.hero.fpr_change }}<span class="hint">{{ t.hero.fpr_change_ci }}</span></td>
+          </tr>
+          <tr>
+            <th scope="row">{{ t.hero.auroc_label }}<span class="hint">{{ t.hero.auroc_hint }}</span></th>
+            <td class="num">{{ v1.auroc.fmt }}</td><td class="num strong">{{ v2.auroc.fmt }}</td>
+            <td class="change change-good">{{ t.hero.auroc_change }}<span class="hint">{{ t.hero.auroc_change_ci }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <figure class="unit-figure">
+        {{ unit_chart }}
+        <figcaption>
+          <ul class="legend">
+            <li><span class="key key-ok" aria-hidden="true"></span>{{ t.chart.legend_ok }}</li>
+            <li><span class="key key-fa" aria-hidden="true"></span>{{ t.chart.legend_fa }}</li>
+            <li><span class="key key-hit" aria-hidden="true"></span>{{ t.chart.legend_hit }}</li>
+            <li><span class="key key-miss" aria-hidden="true"></span>{{ t.chart.legend_miss }}</li>
+          </ul>
+          <span class="caption">{{ t.chart.caption }}</span>
+        </figcaption>
+      </figure>
+      <p class="card-note">{{ t.hero.card_note }}</p>
+    </aside>
+  </div>
+</section>
+
+<section id="case" class="band" aria-labelledby="path-title">
+  <div class="wrap">
+    <h2 id="path-title">{{ t.path.title }}</h2>
+    <p class="section-intro">{{ t.path.intro }}</p>
+    <ol class="path">
+      {% for s in stages %}
+      {% set c = t.path.stages[loop.index0] %}
+      <li class="path-step phase-{{ s.phase | lower }}">
+        <a href="#{{ s.anchor }}">
+          <span class="step-n" aria-hidden="true">{{ s.n }}</span>
+          <span class="step-body">
+            <span class="step-name">{{ c.name }}</span>
+            <span class="step-meta"><span class="badge badge-{{ s.status }}">{{ t.status[s.status] }}</span></span>
+            <span class="step-evidence">{{ c.evidence }}</span>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="phase-key"><span class="phase-dot phase-a" aria-hidden="true"></span>{{ t.path.phase_a }}<span class="phase-dot phase-b" aria-hidden="true"></span>{{ t.path.phase_b }}</p>
+
+    <details class="terms">
+      <summary>{{ t.terms.title }}</summary>
+      <dl>
+        {% for it in t.terms["items"] %}<dt>{{ it.term }}</dt><dd>{{ it.def }}</dd>{% endfor %}
+      </dl>
+    </details>
+  </div>
+</section>
+
+<div class="wrap prose-wrap">
+  <header class="part-head">
+    <h2>{{ t.sections.a_title }}</h2>
+    <p>{{ t.sections.a_intro }}</p>
+  </header>
+  {% for n, anchor in [(1, "stage-1"), (4, "stage-4"), (5, "experiments")] %}
+  <section id="{{ anchor }}" class="stage" aria-labelledby="{{ anchor }}-h">
+    <h3 id="{{ anchor }}-h"><span class="stage-n">{{ n }}</span>{{ t.sections["stage%d_title" % n] }}</h3>
+    <p class="draft">{{ t.sections.draft_note }}</p>
+  </section>
+  {% endfor %}
+
+  <header class="part-head">
+    <h2>{{ t.sections.b_title }}</h2>
+    <p>{{ t.sections.b_intro }}</p>
+  </header>
+  {% for n, anchor in [(2, "stage-2"), (3, "stage-3"), (6, "decision"), (7, "handoff")] %}
+  <section id="{{ anchor }}" class="stage" aria-labelledby="{{ anchor }}-h">
+    <h3 id="{{ anchor }}-h"><span class="stage-n">{{ n }}</span>{{ t.sections["stage%d_title" % n] }}</h3>
+    <p class="draft">{{ t.sections.draft_note }}</p>
+  </section>
+  {% endfor %}
+</div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>{{ t.footer.provenance }}</p>
+    <p>{{ t.footer.ai }}</p>
+    <p>{{ t.footer.owner }}</p>
+  </div>
+</footer>
+</body>
+</html>

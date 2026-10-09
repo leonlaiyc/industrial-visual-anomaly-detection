@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PCB image review support — an evidence-led anomaly-detection case study</title>
+<meta name="description" content="A proof of concept on public benchmark data: a one-class anomaly detector that prioritises printed-circuit-board images for human review, tested under a pre-registered protocol.">
+<meta name="theme-color" content="#ffffff">
+<link rel="alternate" hreflang="en" href="./">
+<link rel="alternate" hreflang="zh-Hant-TW" href="zh-tw/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body class="lang-en">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#summary">PCB Image Review · Case Study</a>
+    <nav class="site-nav" aria-label="Case study">
+      <a href="#summary">Summary</a>
+      <a href="#case">Case study</a>
+      <a href="#experiments">Experiments</a>
+      <a href="#decision">Decision</a>
+      <a href="#handoff">Handoff</a>
+    </nav>
+    <nav class="lang-switch" aria-label="Language">
+      <a href="./" hreflang="en" lang="en" aria-current="page">EN</a>
+      <a href="zh-tw/" hreflang="zh-Hant-TW" lang="zh-Hant-TW">繁體中文</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section id="summary" class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">Case study · Industrial visual inspection · Public benchmark data</p>
+      <h1 id="hero-title">Flagging circuit-board images for human review: fewer false alarms, same defect recall</h1>
+      <p class="lede">A prototype that learns only from defect-free board images and ranks new images for a quality engineer’s attention. It was tested once, under a protocol written before the data was opened, on a board type held back from development.</p>
+    </div>
+    <div class="hero-brief">
+      <dl class="brief">
+        <div>
+          <dt>What was built</dt>
+          <dd>A one-class detector: frozen pretrained CNN features, a per-position Gaussian model of normal appearance, board registration, and — in v2 — a score taken over the board region only. Thresholds are set on separate normal images and frozen before testing.</dd>
+        </div>
+        <div>
+          <dt>Unresolved risks</dt>
+          <dd><ul><li>Recall 80% against a proposed 90% target.</li><li>A 10% darker image raises false alarms by +25.1 pts.</li><li>Small defects: 56% recall in the smallest third.</li></ul></dd>
+        </div>
+        <div class="brief-decision">
+          <dt>Recommended next decision</dt>
+          <dd><strong>No-Go for a manufacturing pilot.</strong> Fund only a bounded validation step: confirm requirements with a real quality engineer and test the open risks before any further model work.</dd>
+        </div>
+      </dl>
+      <p class="cta">
+        <a class="btn btn-primary" href="#case">Read the case study</a>
+        <a class="btn" href="executive-summary.pdf">Executive summary (PDF, A4)</a>
+      </p>
+    </div>
+
+    <aside class="card metric-card" aria-labelledby="card-title">
+      <h2 id="card-title" class="card-title">Held-back test: board type PCB2</h2>
+      <p class="card-sub">100 defective + 100 normal images · each version at a threshold frozen before testing <span class="badge badge-measured">Measured</span></p>
+      <table class="metrics">
+        <thead>
+          <tr><th scope="col">Metric</th><th scope="col" class="num">v1</th><th scope="col" class="num">v2</th><th scope="col">Change</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Defect recall<span class="hint">defective boards sent to review</span></th>
+            <td class="num">80%</td><td class="num strong">80%</td>
+            <td class="change change-flat">unchanged<span class="hint">95% CI −3 to +3 pts</span></td>
+          </tr>
+          <tr>
+            <th scope="row">False-alarm rate<span class="hint">normal boards sent to review</span></th>
+            <td class="num">13%</td><td class="num strong">3%</td>
+            <td class="change change-good">−10 pts<span class="hint">95% CI −17 to −3</span></td>
+          </tr>
+          <tr>
+            <th scope="row">AUROC<span class="hint">how well scores rank defects above normals</span></th>
+            <td class="num">0.927</td><td class="num strong">0.979</td>
+            <td class="change change-good">+0.052<span class="hint">95% CI +0.028 to +0.082</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <figure class="unit-figure">
+        <svg class="unit-chart" viewBox="0 0 498 158" width="498" height="158" role="img" aria-labelledby="uc-title uc-desc" preserveAspectRatio="xMinYMin meet"><title id="uc-title">PCB2 test images flagged for review, v1 and v2</title><desc id="uc-desc">Unit chart. Normal boards: v1 flags 13 of 100, v2 flags 3. Defective boards: v1 and v2 each catch 80 of 100.</desc><text class="u-head" x="34" y="12">Normal boards</text><text class="u-head" x="280" y="12">Defective boards</text><text class="u-row" x="0" y="50.5">v1</text><rect class="u-fa" x="34" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="45" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="56" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="67" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="78" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="89" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="100" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="111" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="122" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="133" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="144" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="155" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="166" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="64" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="53" width="9" height="9" rx="1.5"/><rect class="u-miss" x="280.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="291.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="302.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="313.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="324.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="335.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="346.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="357.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="368.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="379.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="390.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="401.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="412.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="423.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="434.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="445.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="456.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="467.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="478.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="489.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><text class="u-row" x="0" y="125.5">v2</text><rect class="u-fa" x="34" y="95" width="9" height="9" rx="1.5"/><rect class="u-fa" x="45" y="95" width="9" height="9" rx="1.5"/><rect class="u-fa" x="56" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="139" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="128" width="9" height="9" rx="1.5"/><rect class="u-miss" x="280.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="291.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="302.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="313.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="324.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="335.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="346.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="357.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="368.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="379.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="390.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="401.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="412.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="423.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="434.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="445.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="456.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="467.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="478.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="489.75" y="139.75" width="7.5" height="7.5" rx="1.5"/></svg>
+        <figcaption>
+          <ul class="legend">
+            <li><span class="key key-ok" aria-hidden="true"></span>normal, not flagged</li>
+            <li><span class="key key-fa" aria-hidden="true"></span>false alarm</li>
+            <li><span class="key key-hit" aria-hidden="true"></span>defect caught</li>
+            <li><span class="key key-miss" aria-hidden="true"></span>defect missed</li>
+          </ul>
+          <span class="caption">Each square is one test image, at the threshold fixed before testing.</span>
+        </figcaption>
+      </figure>
+      <p class="card-note">The gain is in false alarms and ranking. Recall did not improve and stays below the proposed 90% target.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="case" class="band" aria-labelledby="path-title">
+  <div class="wrap">
+    <h2 id="path-title">Delivery path</h2>
+    <p class="section-intro">Seven stages, with what this project actually did at each. Stages two and three were drafted only as proposals before testing; in a real engagement they would come first, with the users.</p>
+    <ol class="path">
+      <li class="path-step phase-a">
+        <a href="#stage-1">
+          <span class="step-n" aria-hidden="true">1</span>
+          <span class="step-body">
+            <span class="step-name">Understand the problem</span>
+            <span class="step-meta"><span class="badge badge-done">Done</span></span>
+            <span class="step-evidence">Board pose, lighting and background inspected on training images only; one-class learning chosen because defects are rare and varied.</span>
+          </span>
+        </a>
+      </li>
+      <li class="path-step phase-b">
+        <a href="#stage-2">
+          <span class="step-n" aria-hidden="true">2</span>
+          <span class="step-body">
+            <span class="step-name">Requirements and decision value</span>
+            <span class="step-meta"><span class="badge badge-partial">Partly done</span></span>
+            <span class="step-evidence">Proposed targets and Go/No-Go rules fixed before any test. Cost-sensitivity analysis added afterwards; no user has confirmed either.</span>
+          </span>
+        </a>
+      </li>
+      <li class="path-step phase-b">
+        <a href="#stage-3">
+          <span class="step-n" aria-hidden="true">3</span>
+          <span class="step-body">
+            <span class="step-name">First-Time-Right alignment</span>
+            <span class="step-meta"><span class="badge badge-proposed">Proposed</span></span>
+            <span class="step-evidence">Proposed review workflow and interface mock-up built from real model output, with an acceptance checklist for a real user to confirm.</span>
+          </span>
+        </a>
+      </li>
+      <li class="path-step phase-a">
+        <a href="#stage-4">
+          <span class="step-n" aria-hidden="true">4</span>
+          <span class="step-body">
+            <span class="step-name">Model selection and implementation</span>
+            <span class="step-meta"><span class="badge badge-done">Done</span></span>
+            <span class="step-evidence">Frozen-feature Mahalanobis detector, implemented and unit-tested; alternatives compared on labels, objective and cost.</span>
+          </span>
+        </a>
+      </li>
+      <li class="path-step phase-a">
+        <a href="#experiments">
+          <span class="step-n" aria-hidden="true">5</span>
+          <span class="step-body">
+            <span class="step-name">Controlled experiments</span>
+            <span class="step-meta"><span class="badge badge-in_progress">In progress</span></span>
+            <span class="step-evidence">PCB1 discovery, one pre-registered change, a single confirmatory run on PCB2; one controlled illumination experiment on PCB3.</span>
+          </span>
+        </a>
+      </li>
+      <li class="path-step phase-b">
+        <a href="#decision">
+          <span class="step-n" aria-hidden="true">6</span>
+          <span class="step-body">
+            <span class="step-name">Go / No-Go</span>
+            <span class="step-meta"><span class="badge badge-partial">Partly done</span></span>
+            <span class="step-evidence">Rule-based verdict against the unchanged criteria; recommendation: no pilot yet.</span>
+          </span>
+        </a>
+      </li>
+      <li class="path-step phase-b">
+        <a href="#handoff">
+          <span class="step-n" aria-hidden="true">7</span>
+          <span class="step-body">
+            <span class="step-name">Site readiness and handoff</span>
+            <span class="step-meta"><span class="badge badge-partial">Partly done</span></span>
+            <span class="step-evidence">Each observed failure mapped to what a new site must validate; versioned handoff with gates, rollback and escalation.</span>
+          </span>
+        </a>
+      </li>
+    </ol>
+    <p class="phase-key"><span class="phase-dot phase-a" aria-hidden="true"></span>Phase A · completed technical feasibility<span class="phase-dot phase-b" aria-hidden="true"></span>Phase B · proposed operational validation</p>
+
+    <details class="terms">
+      <summary>Terms used on this page</summary>
+      <dl>
+<dt>Recall</dt><dd>Share of defective boards that the tool sends to human review. A missed defect is a defective board it does not flag.</dd><dt>False-alarm rate</dt><dd>Share of normal boards that the tool sends to review. Because the tool only recommends a review — it never rejects or scraps a board — a false alarm costs reviewer time, not product.</dd><dt>AUROC</dt><dd>Threshold-free ranking quality: the probability that a random defective board scores higher than a random normal one.</dd><dt>Frozen threshold (P95)</dt><dd>The score above which an image is flagged, set from separate normal images to target about 5% false alarms, and fixed before any test image is scored.</dd><dt>Pre-registration</dt><dd>Writing the hypothesis, data split, endpoint and decision rule into the repository before the test data is opened, so results cannot steer the analysis.</dd><dt>Shadow mode</dt><dd>Running the tool alongside the existing inspection without affecting any decision, to measure it on real production images.</dd>      </dl>
+    </details>
+  </div>
+</section>
+
+<div class="wrap prose-wrap">
+  <header class="part-head">
+    <h2>Phase A — what was done</h2>
+    <p>Completed technical feasibility on public benchmark data. Everything in this part is measured, except where marked retrospective.</p>
+  </header>
+  <section id="stage-1" class="stage" aria-labelledby="stage-1-h">
+    <h3 id="stage-1-h"><span class="stage-n">1</span>Understanding an unfamiliar inspection problem</h3>
+    <p class="draft">Section in preparation for the project owner’s alignment review.</p>
+  </section>
+  <section id="stage-4" class="stage" aria-labelledby="stage-4-h">
+    <h3 id="stage-4-h"><span class="stage-n">4</span>Model selection and implementation</h3>
+    <p class="draft">Section in preparation for the project owner’s alignment review.</p>
+  </section>
+  <section id="experiments" class="stage" aria-labelledby="experiments-h">
+    <h3 id="experiments-h"><span class="stage-n">5</span>Controlled experiments and statistical validation</h3>
+    <p class="draft">Section in preparation for the project owner’s alignment review.</p>
+  </section>
+
+  <header class="part-head">
+    <h2>Phase B — what should happen next</h2>
+    <p>Proposed operational validation. Nothing in this part has been done with a manufacturing user; it is the plan a project owner would take to one.</p>
+  </header>
+  <section id="stage-2" class="stage" aria-labelledby="stage-2-h">
+    <h3 id="stage-2-h"><span class="stage-n">2</span>Requirements and preliminary decision value</h3>
+    <p class="draft">Section in preparation for the project owner’s alignment review.</p>
+  </section>
+  <section id="stage-3" class="stage" aria-labelledby="stage-3-h">
+    <h3 id="stage-3-h"><span class="stage-n">3</span>Requirement alignment: a mock-up a user can react to</h3>
+    <p class="draft">Section in preparation for the project owner’s alignment review.</p>
+  </section>
+  <section id="decision" class="stage" aria-labelledby="decision-h">
+    <h3 id="decision-h"><span class="stage-n">6</span>Go / No-Go</h3>
+    <p class="draft">Section in preparation for the project owner’s alignment review.</p>
+  </section>
+  <section id="handoff" class="stage" aria-labelledby="handoff-h">
+    <h3 id="handoff-h"><span class="stage-n">7</span>Site readiness, maintenance and handoff</h3>
+    <p class="draft">Section in preparation for the project owner’s alignment review.</p>
+  </section>
+</div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Independent proof of concept on the public VisA dataset (Amazon Science, CC BY 4.0). Not affiliated with or endorsed by the dataset authors or any company. No production deployment, factory data, end-user sign-off or financial return is claimed.</p>
+    <p>Implementation and documentation were written with AI coding assistance (Claude Code) under the project owner’s direction. The owner’s review of these deliverables is pending.</p>
+    <p>Project owner: Leon Lai</p>
+  </div>
+</footer>
+</body>
+</html>

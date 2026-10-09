@@ -1,0 +1,565 @@
+{
+ "pcb1": {
+  "v1": {
+   "recall": {
+    "value": 0.72,
+    "x": 72,
+    "n": 100,
+    "pct": "72%",
+    "frac": "72/100",
+    "ci": "62%–81%",
+    "ci_low_pct": "62%",
+    "ci_high_pct": "81%"
+   },
+   "fpr": {
+    "value": 0.07,
+    "x": 7,
+    "n": 100,
+    "pct": "7%",
+    "frac": "7/100",
+    "ci": "3%–14%",
+    "ci_low_pct": "3%",
+    "ci_high_pct": "14%"
+   },
+   "fpr_holdout": {
+    "value": 0.03896103896103896,
+    "x": 6,
+    "n": 154,
+    "pct": "3.9%",
+    "frac": "6/154",
+    "ci": "1.4%–8.3%",
+    "ci_low_pct": "1.4%",
+    "ci_high_pct": "8.3%"
+   },
+   "auroc": {
+    "value": 0.9378,
+    "fmt": "0.938",
+    "ci": "0.901–0.966"
+   },
+   "latency_ms": {
+    "value": 139.34724999126047,
+    "fmt": "139"
+   },
+   "threshold": {
+    "P90": {
+     "value": 51.10491180419922,
+     "fmt": "51.10"
+    },
+    "P95": {
+     "value": 63.7074089050293,
+     "fmt": "63.71"
+    },
+    "P99": {
+     "value": 111.4322738647461,
+     "fmt": "111.43"
+    }
+   },
+   "primary": "P95",
+   "n_calib": 150,
+   "rank_k": 144,
+   "frozen_at_utc": "2026-10-08T16:06:00+00:00",
+   "evaluated_at_utc": "2026-10-08T16:07:09+00:00",
+   "confusion": {
+    "TP": 72,
+    "FN": 28,
+    "FP": 7,
+    "TN": 93
+   },
+   "robustness": {
+    "n_normal": 254,
+    "n_anomaly": 100,
+    "base_fpr": {
+     "value": 0.051181102362204724,
+     "x": 13,
+     "n": 254,
+     "pct": "5.1%",
+     "frac": "13/254",
+     "ci": "2.8%–8.6%",
+     "ci_low_pct": "2.8%",
+     "ci_high_pct": "8.6%"
+    },
+    "darker_lower_contrast": {
+     "fpr": {
+      "value": 0.047244094488188976,
+      "x": 12,
+      "n": 254,
+      "pct": "4.7%",
+      "frac": "12/254",
+      "ci": "2.5%–8.1%",
+      "ci_low_pct": "2.5%",
+      "ci_high_pct": "8.1%"
+     },
+     "d_fpr": "−0.4",
+     "d_fpr_value": -0.003937007874015748,
+     "d_recall": "−3",
+     "d_recall_value": -0.03
+    },
+    "brighter_higher_contrast": {
+     "fpr": {
+      "value": 0.06299212598425197,
+      "x": 16,
+      "n": 254,
+      "pct": "6.3%",
+      "frac": "16/254",
+      "ci": "3.6%–10.0%",
+      "ci_low_pct": "3.6%",
+      "ci_high_pct": "10.0%"
+     },
+     "d_fpr": "+1.2",
+     "d_fpr_value": 0.011811023622047244,
+     "d_recall": "+0",
+     "d_recall_value": 0.0
+    },
+    "gaussian_blur_s1.5": {
+     "fpr": {
+      "value": 0.09448818897637795,
+      "x": 24,
+      "n": 254,
+      "pct": "9.4%",
+      "frac": "24/254",
+      "ci": "6.1%–13.7%",
+      "ci_low_pct": "6.1%",
+      "ci_high_pct": "13.7%"
+     },
+     "d_fpr": "+4.3",
+     "d_fpr_value": 0.04330708661417323,
+     "d_recall": "+3",
+     "d_recall_value": 0.03
+    },
+    "shift_40_25px": {
+     "fpr": {
+      "value": 0.047244094488188976,
+      "x": 12,
+      "n": 254,
+      "pct": "4.7%",
+      "frac": "12/254",
+      "ci": "2.5%–8.1%",
+      "ci_low_pct": "2.5%",
+      "ci_high_pct": "8.1%"
+     },
+     "d_fpr": "−0.4",
+     "d_fpr_value": -0.003937007874015748,
+     "d_recall": "+0",
+     "d_recall_value": 0.0
+    }
+   }
+  },
+  "v2_retro": {
+   "recall": "88%",
+   "fpr": "6%",
+   "auroc": "0.974"
+  },
+  "mechanism": {
+   "top10_off_roi": 10,
+   "threshold_base": "63.7",
+   "threshold_new": "44.2",
+   "anomalies_between": 19
+  },
+  "fa_offboard": "13/13",
+  "rotated_180": 116,
+  "n_fit": 600,
+  "rotated_180_pct": "19%",
+  "melt_recall": "56%"
+ },
+ "pcb2": {
+  "v1": {
+   "recall": {
+    "value": 0.8,
+    "x": 80,
+    "n": 100,
+    "pct": "80%",
+    "frac": "80/100",
+    "ci": "71%–87%",
+    "ci_low_pct": "71%",
+    "ci_high_pct": "87%"
+   },
+   "fpr": {
+    "value": 0.13,
+    "x": 13,
+    "n": 100,
+    "pct": "13%",
+    "frac": "13/100",
+    "ci": "7%–21%",
+    "ci_low_pct": "7%",
+    "ci_high_pct": "21%"
+   },
+   "fpr_holdout": {
+    "value": 0.052980132450331126,
+    "x": 8,
+    "n": 151,
+    "pct": "5.3%",
+    "frac": "8/151",
+    "ci": "2.3%–10.2%",
+    "ci_low_pct": "2.3%",
+    "ci_high_pct": "10.2%"
+   },
+   "auroc": {
+    "value": 0.9269,
+    "fmt": "0.927",
+    "ci": "0.889–0.956"
+   },
+   "latency_ms": {
+    "value": 193.93569993553683,
+    "fmt": "194"
+   },
+   "threshold": {
+    "P90": {
+     "value": 50.63865661621094,
+     "fmt": "50.64"
+    },
+    "P95": {
+     "value": 55.027523040771484,
+     "fmt": "55.03"
+    },
+    "P99": {
+     "value": 101.8337631225586,
+     "fmt": "101.83"
+    }
+   },
+   "primary": "P95",
+   "n_calib": 150,
+   "rank_k": 144,
+   "frozen_at_utc": "2026-10-09T03:33:58+00:00",
+   "evaluated_at_utc": "2026-10-09T03:35:49+00:00",
+   "confusion": {
+    "TP": 80,
+    "FN": 20,
+    "FP": 13,
+    "TN": 87
+   },
+   "robustness": {
+    "n_normal": 251,
+    "n_anomaly": 100,
+    "base_fpr": {
+     "value": 0.08366533864541832,
+     "x": 21,
+     "n": 251,
+     "pct": "8.4%",
+     "frac": "21/251",
+     "ci": "5.3%–12.5%",
+     "ci_low_pct": "5.3%",
+     "ci_high_pct": "12.5%"
+    },
+    "darker_lower_contrast": {
+     "fpr": {
+      "value": 0.30677290836653387,
+      "x": 77,
+      "n": 251,
+      "pct": "30.7%",
+      "frac": "77/251",
+      "ci": "25.0%–36.8%",
+      "ci_low_pct": "25.0%",
+      "ci_high_pct": "36.8%"
+     },
+     "d_fpr": "+22.3",
+     "d_fpr_value": 0.22310756972111553,
+     "d_recall": "+5",
+     "d_recall_value": 0.05
+    },
+    "brighter_higher_contrast": {
+     "fpr": {
+      "value": 0.08366533864541832,
+      "x": 21,
+      "n": 251,
+      "pct": "8.4%",
+      "frac": "21/251",
+      "ci": "5.3%–12.5%",
+      "ci_low_pct": "5.3%",
+      "ci_high_pct": "12.5%"
+     },
+     "d_fpr": "+0.0",
+     "d_fpr_value": 0.0,
+     "d_recall": "+4",
+     "d_recall_value": 0.04
+    },
+    "gaussian_blur_s1.5": {
+     "fpr": {
+      "value": 0.08764940239043825,
+      "x": 22,
+      "n": 251,
+      "pct": "8.8%",
+      "frac": "22/251",
+      "ci": "5.6%–13.0%",
+      "ci_low_pct": "5.6%",
+      "ci_high_pct": "13.0%"
+     },
+     "d_fpr": "+0.4",
+     "d_fpr_value": 0.00398406374501992,
+     "d_recall": "−5",
+     "d_recall_value": -0.05
+    },
+    "shift_40_25px": {
+     "fpr": {
+      "value": 0.055776892430278883,
+      "x": 14,
+      "n": 251,
+      "pct": "5.6%",
+      "frac": "14/251",
+      "ci": "3.1%–9.2%",
+      "ci_low_pct": "3.1%",
+      "ci_high_pct": "9.2%"
+     },
+     "d_fpr": "−2.8",
+     "d_fpr_value": -0.027888446215139442,
+     "d_recall": "−1",
+     "d_recall_value": -0.01
+    }
+   }
+  },
+  "v2": {
+   "recall": {
+    "value": 0.8,
+    "x": 80,
+    "n": 100,
+    "pct": "80%",
+    "frac": "80/100",
+    "ci": "71%–87%",
+    "ci_low_pct": "71%",
+    "ci_high_pct": "87%"
+   },
+   "fpr": {
+    "value": 0.03,
+    "x": 3,
+    "n": 100,
+    "pct": "3%",
+    "frac": "3/100",
+    "ci": "1%–9%",
+    "ci_low_pct": "1%",
+    "ci_high_pct": "9%"
+   },
+   "fpr_holdout": {
+    "value": 0.039735099337748346,
+    "x": 6,
+    "n": 151,
+    "pct": "4.0%",
+    "frac": "6/151",
+    "ci": "1.5%–8.4%",
+    "ci_low_pct": "1.5%",
+    "ci_high_pct": "8.4%"
+   },
+   "auroc": {
+    "value": 0.9789,
+    "fmt": "0.979",
+    "ci": "0.962–0.991"
+   },
+   "latency_ms": {
+    "value": 224.09430000698194,
+    "fmt": "224"
+   },
+   "threshold": {
+    "P90": {
+     "value": 39.8873291015625,
+     "fmt": "39.89"
+    },
+    "P95": {
+     "value": 51.19944763183594,
+     "fmt": "51.20"
+    },
+    "P99": {
+     "value": 68.29939270019531,
+     "fmt": "68.30"
+    }
+   },
+   "primary": "P95",
+   "n_calib": 150,
+   "rank_k": 144,
+   "frozen_at_utc": "2026-10-09T03:34:21+00:00",
+   "evaluated_at_utc": "2026-10-09T03:37:10+00:00",
+   "confusion": {
+    "TP": 80,
+    "FN": 20,
+    "FP": 3,
+    "TN": 97
+   },
+   "robustness": {
+    "n_normal": 251,
+    "n_anomaly": 100,
+    "base_fpr": {
+     "value": 0.035856573705179286,
+     "x": 9,
+     "n": 251,
+     "pct": "3.6%",
+     "frac": "9/251",
+     "ci": "1.7%–6.7%",
+     "ci_low_pct": "1.7%",
+     "ci_high_pct": "6.7%"
+    },
+    "darker_lower_contrast": {
+     "fpr": {
+      "value": 0.2868525896414343,
+      "x": 72,
+      "n": 251,
+      "pct": "28.7%",
+      "frac": "72/251",
+      "ci": "23.2%–34.7%",
+      "ci_low_pct": "23.2%",
+      "ci_high_pct": "34.7%"
+     },
+     "d_fpr": "+25.1",
+     "d_fpr_value": 0.250996015936255,
+     "d_recall": "+9",
+     "d_recall_value": 0.09
+    },
+    "brighter_higher_contrast": {
+     "fpr": {
+      "value": 0.05179282868525897,
+      "x": 13,
+      "n": 251,
+      "pct": "5.2%",
+      "frac": "13/251",
+      "ci": "2.8%–8.7%",
+      "ci_low_pct": "2.8%",
+      "ci_high_pct": "8.7%"
+     },
+     "d_fpr": "+1.6",
+     "d_fpr_value": 0.01593625498007968,
+     "d_recall": "+5",
+     "d_recall_value": 0.05
+    },
+    "gaussian_blur_s1.5": {
+     "fpr": {
+      "value": 0.027888446215139442,
+      "x": 7,
+      "n": 251,
+      "pct": "2.8%",
+      "frac": "7/251",
+      "ci": "1.1%–5.7%",
+      "ci_low_pct": "1.1%",
+      "ci_high_pct": "5.7%"
+     },
+     "d_fpr": "−0.8",
+     "d_fpr_value": -0.00796812749003984,
+     "d_recall": "−3",
+     "d_recall_value": -0.03
+    },
+    "shift_40_25px": {
+     "fpr": {
+      "value": 0.01593625498007968,
+      "x": 4,
+      "n": 251,
+      "pct": "1.6%",
+      "frac": "4/251",
+      "ci": "0.4%–4.0%",
+      "ci_low_pct": "0.4%",
+      "ci_high_pct": "4.0%"
+     },
+     "d_fpr": "−2.0",
+     "d_fpr_value": -0.0199203187250996,
+     "d_recall": "+2",
+     "d_recall_value": 0.02
+    }
+   }
+  },
+  "paired": {
+   "recall": {
+    "delta": "+0",
+    "ci_low": "−3",
+    "ci_high": "+3",
+    "p": "1.00",
+    "p_value": 1.0,
+    "disc_new": 1,
+    "disc_base": 1
+   },
+   "fpr_test": {
+    "delta": "−10",
+    "ci_low": "−17",
+    "ci_high": "−3",
+    "p": "0.013",
+    "p_value": 0.012939453125,
+    "disc_new": 2,
+    "disc_base": 12
+   },
+   "fpr_holdout": {
+    "delta": "−1.3",
+    "ci_low": "−4.6",
+    "ci_high": "+2.0",
+    "p": "0.69",
+    "p_value": 0.6875,
+    "disc_new": 2,
+    "disc_base": 4
+   },
+   "auroc": {
+    "delta": "+0.052",
+    "ci_low": "+0.028",
+    "ci_high": "+0.082"
+   },
+   "outcome": "NO MEANINGFUL EFFECT DEMONSTRATED"
+  },
+  "mechanism": {
+   "top10_off_roi": 4,
+   "threshold_base": "55.0",
+   "threshold_new": "51.2",
+   "anomalies_between": 1
+  },
+  "premise": {
+   "outside": 17,
+   "total": 21
+  },
+  "small": {
+   "recall": "56%",
+   "frac": "19/34"
+  },
+  "verdict": {
+   "v1": "INCONCLUSIVE",
+   "v2": "INCONCLUSIVE"
+  },
+  "dark_pct": "10%",
+  "dark": {
+   "v1": {
+    "clean": "8.4%",
+    "dark": "30.7%",
+    "rise": "+22.3"
+   },
+   "v2": {
+    "clean": "3.6%",
+    "dark": "28.7%",
+    "rise": "+25.1"
+   }
+  }
+ },
+ "cost": {
+  "v2": {
+   "miss": "0.20",
+   "fpr": "0.03",
+   "k_low": 0.0375,
+   "k_high": 4.8500000000000005,
+   "k_low_fmt": "0.0375",
+   "k_high_fmt": "4.85"
+  },
+  "v1": {
+   "miss": "0.20",
+   "fpr": "0.13",
+   "k_low": 0.1625,
+   "k_high": 4.3500000000000005,
+   "k_low_fmt": "0.1625",
+   "k_high_fmt": "4.35"
+  }
+ },
+ "criteria": {
+  "recall_min": "90%",
+  "fpr_max": "10%",
+  "auroc_min": "0.90",
+  "latency_max": "1 s",
+  "rob_pts": "10",
+  "recall_floor": "80%",
+  "fpr_ceiling": "20%"
+ },
+ "ci_level": "95%",
+ "target_fpr": "5%",
+ "pcb3": {
+  "split": {
+   "fit": 600,
+   "calib": 150,
+   "holdout": 155,
+   "test_normal": 101,
+   "test_anomaly": 100
+  },
+  "ref_mean": "92.0",
+  "ref_std": "33.1",
+  "fit_mean_p05": "89.3",
+  "fit_mean_p95": "95.0",
+  "hue_band": "84–106",
+  "board_area_after": "13%–17%",
+  "status": "pending"
+ }
+}
