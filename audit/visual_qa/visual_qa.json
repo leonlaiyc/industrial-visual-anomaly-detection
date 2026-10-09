@@ -1,0 +1,694 @@
+{
+ "base": "http://127.0.0.1:8765",
+ "chrome": "chrome.exe",
+ "generated": "2026-10-09T13:22:06.462Z",
+ "pages": [
+  {
+   "page": "en",
+   "path": "/",
+   "viewport": "desktop",
+   "size": [
+    1440,
+    900,
+    1
+   ],
+   "ok": true,
+   "title": "Industrial Visual Inspection: From Prototype to Operational Decision",
+   "lang": "en",
+   "expected": 5,
+   "loaded": 5,
+   "visible": 5,
+   "images": [
+    {
+     "src": "assets/img/pcb3_mask_rules.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_mask_rules.jpg",
+     "natural": [
+      1200,
+      242
+     ],
+     "box": [
+      1116,
+      227
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/pcb3_roi.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_roi.jpg",
+     "natural": [
+      1200,
+      840
+     ],
+     "box": [
+      1116,
+      782
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_caught.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_caught.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      359,
+      240
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_false_alarm.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_false_alarm.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      359,
+      240
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_missed.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_missed.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      359,
+      240
+     ],
+     "alt": true
+    }
+   ],
+   "svg": 1,
+   "overflowX": false,
+   "scrollWidth": 1440,
+   "clientWidth": 1440,
+   "height": 15036,
+   "brokenLinks": [],
+   "placeholders": [],
+   "failedRequests": [],
+   "consoleErrors": [],
+   "badLinks": [],
+   "linksChecked": 3,
+   "fullPageSegments": [
+    "audit/visual_qa/en_desktop_full_00.jpg",
+    "audit/visual_qa/en_desktop_full_01.jpg",
+    "audit/visual_qa/en_desktop_full_02.jpg",
+    "audit/visual_qa/en_desktop_full_03.jpg"
+   ],
+   "firstScreen": "audit/visual_qa/en_desktop_first.png"
+  },
+  {
+   "page": "en",
+   "path": "/",
+   "viewport": "tablet",
+   "size": [
+    820,
+    1180,
+    1
+   ],
+   "ok": true,
+   "title": "Industrial Visual Inspection: From Prototype to Operational Decision",
+   "lang": "en",
+   "expected": 5,
+   "loaded": 5,
+   "visible": 5,
+   "images": [
+    {
+     "src": "assets/img/pcb3_mask_rules.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_mask_rules.jpg",
+     "natural": [
+      1200,
+      242
+     ],
+     "box": [
+      756,
+      154
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/pcb3_roi.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_roi.jpg",
+     "natural": [
+      1200,
+      840
+     ],
+     "box": [
+      756,
+      530
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_caught.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_caught.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      754,
+      503
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_false_alarm.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_false_alarm.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      754,
+      503
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_missed.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_missed.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      754,
+      503
+     ],
+     "alt": true
+    }
+   ],
+   "svg": 1,
+   "overflowX": false,
+   "scrollWidth": 820,
+   "clientWidth": 820,
+   "height": 19895,
+   "brokenLinks": [],
+   "placeholders": [],
+   "failedRequests": [],
+   "consoleErrors": [],
+   "badLinks": [],
+   "linksChecked": 3,
+   "fullPageSegments": [
+    "audit/visual_qa/en_tablet_full_00.jpg",
+    "audit/visual_qa/en_tablet_full_01.jpg",
+    "audit/visual_qa/en_tablet_full_02.jpg",
+    "audit/visual_qa/en_tablet_full_03.jpg",
+    "audit/visual_qa/en_tablet_full_04.jpg"
+   ],
+   "firstScreen": "audit/visual_qa/en_tablet_first.png"
+  },
+  {
+   "page": "en",
+   "path": "/",
+   "viewport": "mobile",
+   "size": [
+    375,
+    812,
+    2
+   ],
+   "ok": true,
+   "title": "Industrial Visual Inspection: From Prototype to Operational Decision",
+   "lang": "en",
+   "expected": 5,
+   "loaded": 5,
+   "visible": 5,
+   "images": [
+    {
+     "src": "assets/img/pcb3_mask_rules.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_mask_rules.jpg",
+     "natural": [
+      1200,
+      242
+     ],
+     "box": [
+      343,
+      71
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/pcb3_roi.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_roi.jpg",
+     "natural": [
+      1200,
+      840
+     ],
+     "box": [
+      343,
+      241
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_caught.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_caught.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      341,
+      227
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_false_alarm.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_false_alarm.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      341,
+      227
+     ],
+     "alt": true
+    },
+    {
+     "src": "assets/img/workflow_missed.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_missed.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      341,
+      227
+     ],
+     "alt": true
+    }
+   ],
+   "svg": 1,
+   "overflowX": false,
+   "scrollWidth": 375,
+   "clientWidth": 375,
+   "height": 26847,
+   "brokenLinks": [],
+   "placeholders": [],
+   "failedRequests": [],
+   "consoleErrors": [],
+   "badLinks": [],
+   "linksChecked": 3,
+   "fullPageSegments": [
+    "audit/visual_qa/en_mobile_full_00.jpg",
+    "audit/visual_qa/en_mobile_full_01.jpg",
+    "audit/visual_qa/en_mobile_full_02.jpg",
+    "audit/visual_qa/en_mobile_full_03.jpg",
+    "audit/visual_qa/en_mobile_full_04.jpg",
+    "audit/visual_qa/en_mobile_full_05.jpg",
+    "audit/visual_qa/en_mobile_full_06.jpg"
+   ],
+   "firstScreen": "audit/visual_qa/en_mobile_first.png"
+  },
+  {
+   "page": "zh",
+   "path": "/zh-tw/",
+   "viewport": "desktop",
+   "size": [
+    1440,
+    900,
+    1
+   ],
+   "ok": true,
+   "title": "工業影像檢測：從原型到營運決策",
+   "lang": "zh-Hant-TW",
+   "expected": 5,
+   "loaded": 5,
+   "visible": 5,
+   "images": [
+    {
+     "src": "../assets/img/pcb3_mask_rules.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_mask_rules.jpg",
+     "natural": [
+      1200,
+      242
+     ],
+     "box": [
+      1116,
+      227
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/pcb3_roi.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_roi.jpg",
+     "natural": [
+      1200,
+      840
+     ],
+     "box": [
+      1116,
+      782
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_caught.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_caught.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      359,
+      240
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_false_alarm.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_false_alarm.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      359,
+      240
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_missed.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_missed.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      359,
+      240
+     ],
+     "alt": true
+    }
+   ],
+   "svg": 1,
+   "overflowX": false,
+   "scrollWidth": 1440,
+   "clientWidth": 1440,
+   "height": 14042,
+   "brokenLinks": [],
+   "placeholders": [],
+   "failedRequests": [],
+   "consoleErrors": [],
+   "badLinks": [],
+   "linksChecked": 3,
+   "fullPageSegments": [
+    "audit/visual_qa/zh_desktop_full_00.jpg",
+    "audit/visual_qa/zh_desktop_full_01.jpg",
+    "audit/visual_qa/zh_desktop_full_02.jpg",
+    "audit/visual_qa/zh_desktop_full_03.jpg"
+   ],
+   "firstScreen": "audit/visual_qa/zh_desktop_first.png"
+  },
+  {
+   "page": "zh",
+   "path": "/zh-tw/",
+   "viewport": "tablet",
+   "size": [
+    820,
+    1180,
+    1
+   ],
+   "ok": true,
+   "title": "工業影像檢測：從原型到營運決策",
+   "lang": "zh-Hant-TW",
+   "expected": 5,
+   "loaded": 5,
+   "visible": 5,
+   "images": [
+    {
+     "src": "../assets/img/pcb3_mask_rules.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_mask_rules.jpg",
+     "natural": [
+      1200,
+      242
+     ],
+     "box": [
+      756,
+      154
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/pcb3_roi.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_roi.jpg",
+     "natural": [
+      1200,
+      840
+     ],
+     "box": [
+      756,
+      530
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_caught.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_caught.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      754,
+      503
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_false_alarm.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_false_alarm.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      754,
+      503
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_missed.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_missed.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      754,
+      503
+     ],
+     "alt": true
+    }
+   ],
+   "svg": 1,
+   "overflowX": false,
+   "scrollWidth": 820,
+   "clientWidth": 820,
+   "height": 19869,
+   "brokenLinks": [],
+   "placeholders": [],
+   "failedRequests": [],
+   "consoleErrors": [],
+   "badLinks": [],
+   "linksChecked": 3,
+   "fullPageSegments": [
+    "audit/visual_qa/zh_tablet_full_00.jpg",
+    "audit/visual_qa/zh_tablet_full_01.jpg",
+    "audit/visual_qa/zh_tablet_full_02.jpg",
+    "audit/visual_qa/zh_tablet_full_03.jpg",
+    "audit/visual_qa/zh_tablet_full_04.jpg"
+   ],
+   "firstScreen": "audit/visual_qa/zh_tablet_first.png"
+  },
+  {
+   "page": "zh",
+   "path": "/zh-tw/",
+   "viewport": "mobile",
+   "size": [
+    375,
+    812,
+    2
+   ],
+   "ok": true,
+   "title": "工業影像檢測：從原型到營運決策",
+   "lang": "zh-Hant-TW",
+   "expected": 5,
+   "loaded": 5,
+   "visible": 5,
+   "images": [
+    {
+     "src": "../assets/img/pcb3_mask_rules.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_mask_rules.jpg",
+     "natural": [
+      1200,
+      242
+     ],
+     "box": [
+      343,
+      71
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/pcb3_roi.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/pcb3_roi.jpg",
+     "natural": [
+      1200,
+      840
+     ],
+     "box": [
+      343,
+      241
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_caught.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_caught.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      341,
+      227
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_false_alarm.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_false_alarm.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      341,
+      227
+     ],
+     "alt": true
+    },
+    {
+     "src": "../assets/img/workflow_missed.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_missed.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      341,
+      227
+     ],
+     "alt": true
+    }
+   ],
+   "svg": 1,
+   "overflowX": false,
+   "scrollWidth": 375,
+   "clientWidth": 375,
+   "height": 24930,
+   "brokenLinks": [],
+   "placeholders": [],
+   "failedRequests": [],
+   "consoleErrors": [],
+   "badLinks": [],
+   "linksChecked": 3,
+   "fullPageSegments": [
+    "audit/visual_qa/zh_mobile_full_00.jpg",
+    "audit/visual_qa/zh_mobile_full_01.jpg",
+    "audit/visual_qa/zh_mobile_full_02.jpg",
+    "audit/visual_qa/zh_mobile_full_03.jpg",
+    "audit/visual_qa/zh_mobile_full_04.jpg",
+    "audit/visual_qa/zh_mobile_full_05.jpg",
+    "audit/visual_qa/zh_mobile_full_06.jpg"
+   ],
+   "firstScreen": "audit/visual_qa/zh_mobile_first.png"
+  },
+  {
+   "page": "print",
+   "path": "/print/",
+   "viewport": "desktop",
+   "size": [
+    1440,
+    900,
+    1
+   ],
+   "ok": true,
+   "title": "Industrial Visual Inspection: From Prototype to Operational Decision — executive summary",
+   "lang": "en",
+   "expected": 3,
+   "loaded": 3,
+   "visible": 3,
+   "images": [
+    {
+     "src": "../assets/img/workflow_caught.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_caught.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      475,
+      128
+     ],
+     "alt": false
+    },
+    {
+     "src": "../assets/img/workflow_false_alarm.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_false_alarm.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      475,
+      128
+     ],
+     "alt": false
+    },
+    {
+     "src": "../assets/img/workflow_missed.jpg",
+     "resolved": "http://127.0.0.1:8765/assets/img/workflow_missed.jpg",
+     "natural": [
+      960,
+      640
+     ],
+     "box": [
+      475,
+      128
+     ],
+     "alt": false
+    }
+   ],
+   "svg": 1,
+   "overflowX": false,
+   "scrollWidth": 1440,
+   "clientWidth": 1440,
+   "height": 1568,
+   "brokenLinks": [],
+   "placeholders": [],
+   "failedRequests": [],
+   "consoleErrors": [],
+   "badLinks": [],
+   "linksChecked": 0,
+   "fullPageSegments": [
+    "audit/visual_qa/print_desktop_full_00.jpg"
+   ],
+   "firstScreen": "audit/visual_qa/print_desktop_first.png"
+  }
+ ],
+ "note": "Captured by `node site/visual_qa.mjs` (headless Chrome via DevTools protocol) against `python -m http.server` serving site/dist. Full-page segments re-encoded from PNG to JPEG (quality 80) for size. pdf_page_*.jpg: reports/executive_summary.pdf rasterised with the Windows.Data.Pdf renderer. Mobile full-page segments downscaled to CSS-pixel width (375 px) for size; first screens are the original captures."
+}

@@ -1,0 +1,3 @@
+# command: python verification/recompute_pcb3.py   (development repository, dataset present) -> reports/pcb3_verification/
+PCB3 independent recomputation: 90/90 checks agree, 0 disagree, 0 SKIPPED; outcome ROBUSTNESS IMPROVEMENT SUPPORTED; verdicts baseline INCONCLUSIVE, candidate INCONCLUSIVE
+# exit=0

@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Industrial Visual Inspection: From Prototype to Operational Decision</title>
+<meta name="description" content="An independent project on public benchmark images: a normal-only anomaly detector that flags circuit-board images for human review, tested under pre-registered protocols, with the operational decision it supports.">
+<meta name="theme-color" content="#ffffff">
+<link rel="alternate" hreflang="en" href="./">
+<link rel="alternate" hreflang="zh-Hant-TW" href="zh-tw/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body class="lang-en">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#summary">Industrial Visual Inspection · Case Study</a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#summary">Summary</a>
+      <a href="#lifecycle">Lifecycle</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#pcb3">Lighting test</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#handoff">Handoff</a>
+    </nav>
+    <nav class="lang-switch" aria-label="Language">
+      <a href="./" hreflang="en" lang="en" aria-current="page">EN</a>
+      <a href="zh-tw/" hreflang="zh-Hant-TW" lang="zh-Hant-TW">繁體中文</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section id="summary" class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">Independent project · Public benchmark images (VisA) · Not factory data</p>
+      <h1 id="hero-title">Industrial Visual Inspection: From Prototype to Operational Decision</h1>
+      <p class="lede">A prototype that learns only from defect-free circuit-board images and flags new images for a human reviewer. Each change was pre-registered, frozen, and tested once on a board type it had never seen.</p>
+      <div class="verdict"><span class="verdict-label">Recommendation</span><strong class="verdict-head">No manufacturing pilot recommended yet.</strong> Next: one bounded validation step — agree requirements with a quality engineer and collect real line images in shadow mode — before any further model work.</div>
+      <p class="secondary-finding"><span class="sf-label">Additional finding · separate board type (PCB3)</span>The v2 baseline achieved 90% recall on a separately evaluated PCB category, but remained sensitive to brighter images (false alarms +15.2 pts). A lighting correction tested there is not adopted: it introduced a blur sensitivity. <a href="#pcb3">PCB3 experiment →</a></p>
+      <p class="cta">
+        <a class="btn btn-primary" href="#lifecycle">Read the case study</a>
+        <a class="btn" href="executive-summary.pdf">Executive summary (PDF, A4)</a>
+      </p>
+      <p class="disclosure-line">One analysis-code repair was made after PCB3 test scoring; it changed no score, threshold or decision. <a href="#pcb3-repair">Technical disclosure</a></p>
+    </div>
+
+    <aside class="card metric-card" aria-labelledby="card-title">
+      <h2 id="card-title" class="card-title">Measured on a held-back board type (PCB2)</h2>
+      <p class="card-sub">100 defective + 100 normal test images · thresholds frozen before testing <span class="badge badge-demonstrated">Measured</span></p>
+      <table class="metrics">
+        <thead>
+          <tr><th scope="col">Metric</th><th scope="col" class="num">v1</th><th scope="col" class="num">v2</th><th scope="col">Change</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Defect recall<span class="hint">defective boards sent to review</span></th>
+            <td class="num">80%</td><td class="num strong">80%</td>
+            <td class="change change-flat">unchanged<span class="hint">95% CI −3 to +3 pts</span></td>
+          </tr>
+          <tr>
+            <th scope="row">False-alarm rate<span class="hint">normal boards sent to review</span></th>
+            <td class="num">13%</td><td class="num strong">3%</td>
+            <td class="change change-good">−10 pts<span class="hint">95% CI −17 to −3</span></td>
+          </tr>
+          <tr>
+            <th scope="row">AUROC<span class="hint">how well scores rank defects above normals</span></th>
+            <td class="num">0.927</td><td class="num strong">0.979</td>
+            <td class="change change-good">+0.052<span class="hint">95% CI +0.028 to +0.082</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <figure class="unit-figure">
+        <svg class="unit-chart" viewBox="0 0 498 158" width="498" height="158" role="img" aria-labelledby="uc-title uc-desc" preserveAspectRatio="xMinYMin meet"><title id="uc-title">PCB2 test images flagged for review, v1 and v2</title><desc id="uc-desc">Unit chart. Normal boards: v1 flags 13 of 100, v2 flags 3. Defective boards: v1 and v2 each catch 80 of 100.</desc><text class="u-head" x="34" y="12">Normal boards</text><text class="u-head" x="280" y="12">Defective boards</text><text class="u-row" x="0" y="50.5">v1</text><rect class="u-fa" x="34" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="45" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="56" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="67" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="78" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="89" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="100" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="111" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="122" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="133" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="144" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="155" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="166" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="64" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="53" width="9" height="9" rx="1.5"/><rect class="u-miss" x="280.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="291.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="302.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="313.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="324.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="335.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="346.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="357.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="368.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="379.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="390.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="401.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="412.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="423.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="434.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="445.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="456.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="467.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="478.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="489.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><text class="u-row" x="0" y="125.5">v2</text><rect class="u-fa" x="34" y="95" width="9" height="9" rx="1.5"/><rect class="u-fa" x="45" y="95" width="9" height="9" rx="1.5"/><rect class="u-fa" x="56" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="139" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="128" width="9" height="9" rx="1.5"/><rect class="u-miss" x="280.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="291.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="302.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="313.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="324.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="335.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="346.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="357.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="368.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="379.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="390.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="401.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="412.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="423.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="434.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="445.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="456.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="467.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="478.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="489.75" y="139.75" width="7.5" height="7.5" rx="1.5"/></svg>
+        <figcaption>
+          <ul class="legend">
+            <li><span class="key key-ok" aria-hidden="true"></span>normal, not flagged</li>
+            <li><span class="key key-fa" aria-hidden="true"></span>false alarm</li>
+            <li><span class="key key-hit" aria-hidden="true"></span>defect caught</li>
+            <li><span class="key key-miss" aria-hidden="true"></span>defect missed</li>
+          </ul>
+          <span class="caption">Each square is one test image, at the threshold fixed before testing.</span>
+        </figcaption>
+      </figure>
+      <p class="card-note">The gain is in false alarms and ranking. Recall did not improve and stays below the proposed 90% target.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="brief" class="section section-tight" aria-labelledby="brief-title">
+  <div class="wrap">
+    <h2 id="brief-title">At a glance</h2>
+    <dl class="brief">
+      <div><dt>Inspection problem</dt><dd>Board defects are rare and varied, so there is no large labelled defect library to train on. Question: can a model that has only seen good boards send the right images to a reviewer, without burying the reviewer in false alarms?</dd></div>
+      <div><dt>What was built</dt><dd>A working prototype: frozen pretrained CNN features, a per-position Gaussian (Mahalanobis) model of normal appearance, board registration, and — in v2 — a score taken over the board region only. Thresholds are set on separate normal images and frozen before any test image is scored.</dd></div>
+      <div><dt>Remaining risks</dt><dd><ul><li>Detection: PCB2 recall 80% against a proposed 90%; smallest third of defects 56%.</li><li>Lighting: a 10% darker image raised PCB2 false alarms by +25.1 pts; brighter images raised PCB3 false alarms by +15.2 pts.</li><li>Portability: on a green background the original board-finding rule marked 96% of the frame as board.</li></ul></dd></div>
+      <div><dt>What is not established</dt><dd>No manufacturing user was interviewed, no factory image was used, no pilot was run, and no labour saving or financial return was measured. The project owner's review and an independent audit are pending.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="band band-plain" aria-labelledby="phases-title">
+  <div class="wrap">
+    <h2 id="phases-title">Measured, proposed, not yet validated</h2>
+    <p class="section-intro">Phase A is finished technical feasibility on public data. Phase B is the operational validation a project owner would propose next; none of it has been done with a manufacturing user.</p>
+    <div class="phase-grid">
+      <div class="phase-col phase-demonstrated">
+        <h3><span class="badge badge-demonstrated">Demonstrated</span> Phase A · completed technical feasibility</h3>
+        <ul><li>Normal-only detector, registration and board-region scoring, implemented and unit-tested.</li><li>PCB2 confirmatory run: false alarms 13% → 3%, recall 80% in both versions.</li><li>Robustness to synthetic lighting, blur and shift measured at frozen thresholds.</li><li>PCB3 pre-registered illumination-correction experiment, run once; the correction is not adopted.</li></ul>
+      </div>
+      <div class="phase-col phase-proposed">
+        <h3><span class="badge badge-proposed">Proposed</span> Phase B · proposed operational validation</h3>
+        <ul><li>Requirements interview and shift observation with a quality engineer.</li><li>Shadow mode on real line images, with agreed cost ratio and review capacity.</li><li>Site acceptance checks before any decision is influenced by the tool.</li><li>A second Go/No-Go on operational evidence.</li></ul>
+      </div>
+      <div class="phase-col phase-not_validated">
+        <h3><span class="badge badge-not_validated">Not yet validated</span> Beyond what this project can show</h3>
+        <ul><li>Any factory image, camera, lamp, line speed or real defect mix.</li><li>Usability of the review interface; reviewer agreement.</li><li>Labour saving or financial return.</li><li>Robustness to real (not synthetic) lighting changes.</li></ul>
+      </div>
+    </div>
+    <div class="dates">
+      <h3>Verified milestones</h3>
+      <ol class="timeline">
+        <li><time datetime="2026-10-09">2026-10-09</time><span>PCB1 proof of concept: working prototype, frozen split, tests, v1 evaluation</span></li>
+        <li><time datetime="2026-10-09">2026-10-09</time><span>v2 pre-registered before PCB2 data access; thresholds frozen; one confirmatory evaluation</span></li>
+        <li><time datetime="2026-10-09">2026-10-09</time><span>PCB3 lighting experiment pre-registered, frozen, evaluated once; paired analysis</span></li>
+        <li class="pending"><span class="when"><span class="badge badge-pending">Pending</span></span><span>Independent final audit of code and results</span></li>
+        <li class="pending"><span class="when"><span class="badge badge-pending">Pending</span></span><span>Project owner's technical review</span></li>
+      </ol>
+      <p class="fine">Dates are commit dates in the development repository (Taiwan time). The first commit already contains a working prototype; earlier local work is not separately timestamped, and no total delivery time is claimed. Exact commit times and hashes are kept in the repository's audit history.</p>
+    </div>
+  </div>
+</section>
+
+<section id="lifecycle" class="band" aria-labelledby="lifecycle-title">
+  <div class="wrap">
+    <h2 id="lifecycle-title">Delivery lifecycle: seven decisions</h2>
+    <p class="section-intro">Each stage states the decision taken, the evidence behind it, what it costs, and what should happen next. Status: demonstrated in this project, proposed for a real engagement, or pending evidence that only operations can provide.</p>
+    <ol class="stages">
+      <li class="stage-card stage-demonstrated">
+        <header>
+          <span class="step-n" aria-hidden="true">1</span>
+          <h3>Preliminary value and Go/No-Go</h3>
+          <span class="badge badge-demonstrated">Demonstrated</span>
+        </header>
+        <dl>
+          <dt>Decision</dt><dd>Frame the tool as review support — it never rejects a board — and write proposed targets and No-Go rules before any test.</dd>
+          <dt>Evidence</dt><dd>Targets (recall ≥ 90%, false alarms ≤ 10%, AUROC ≥ 0.90, latency ≤ 1 s) unchanged since v1; every run is scored against them by code.</dd>
+          <dt>Trade-off</dt><dd>The targets are the developer's proposal, not a user's requirement. They keep the verdict honest; they do not make it right.</dd>
+          <dt>Next action</dt><dd>Replace them with targets agreed with a quality owner.</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-proposed">
+        <header>
+          <span class="step-n" aria-hidden="true">2</span>
+          <h3>Evidence-based understanding of user needs</h3>
+          <span class="badge badge-proposed">Proposed</span>
+        </header>
+        <dl>
+          <dt>Decision</dt><dd>Do not guess the reviewer's workflow. List the questions only a user can answer: cost of a miss versus a false alarm, review capacity, which defects matter.</dd>
+          <dt>Evidence</dt><dd>Requirements document marks every target as proposed; the cost analysis is a break-even range, not a saving.</dd>
+          <dt>Trade-off</dt><dd>No manufacturing user was interviewed in this project.</dd>
+          <dt>Next action</dt><dd>Interview a quality engineer and observe one inspection shift; record the agreed cost ratio and capacity.</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-proposed">
+        <header>
+          <span class="step-n" aria-hidden="true">3</span>
+          <h3>First-Time-Right alignment</h3>
+          <span class="badge badge-proposed">Proposed</span>
+        </header>
+        <dl>
+          <dt>Decision</dt><dd>Show a mock-up built from real model output before building any interface or integration.</dd>
+          <dt>Evidence</dt><dd>The workflow mock-up below uses real images, real heat maps and recorded scores — including a false alarm and a missed defect.</dd>
+          <dt>Trade-off</dt><dd>A mock-up communicates the idea; it says nothing about usability until someone uses it.</dd>
+          <dt>Next action</dt><dd>Walk an inspector through it; turn each field into an acceptance criterion or remove it.</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-demonstrated">
+        <header>
+          <span class="step-n" aria-hidden="true">4</span>
+          <h3>Model selection and implementation</h3>
+          <span class="badge badge-demonstrated">Demonstrated</span>
+        </header>
+        <dl>
+          <dt>Decision</dt><dd>Frozen pretrained CNN features with a per-position Gaussian (Mahalanobis) model: learns from good boards only, no training loop, explainable heat map.</dd>
+          <dt>Evidence</dt><dd>Implemented with unit tests, freeze checks and consistency gates; one change at a time (v2 = board-region scoring).</dd>
+          <dt>Trade-off</dt><dd>Weak on small and low-contrast defects; supervised detectors were not tested here.</dd>
+          <dt>Next action</dt><dd>Only once Phase B yields real defect labels, compare against a supervised detector on those labels.</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-demonstrated">
+        <header>
+          <span class="step-n" aria-hidden="true">5</span>
+          <h3>Controlled validation</h3>
+          <span class="badge badge-demonstrated">Demonstrated</span>
+        </header>
+        <dl>
+          <dt>Decision</dt><dd>Pre-register each change, freeze thresholds on separate normal images, evaluate once on a board type not used in development.</dd>
+          <dt>Evidence</dt><dd>PCB2: false alarms 13% → 3% with recall unchanged. PCB3 lighting experiment: the pre-registered rule says “improvement supported” (weakly informative), but the correction is not adopted because it made blur false alarms rise by +14.5 pts.</dd>
+          <dt>Trade-off</dt><dd>Benchmark images and synthetic perturbations, not a production domain shift. Two deviations are disclosed: PCB3 Addendum B1 committed after fitting, and one analysis-code repair after PCB3 test scoring that changed no score or decision.</dd>
+          <dt>Next action</dt><dd>Run the same protocol on site images in shadow mode.</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-pending">
+        <header>
+          <span class="step-n" aria-hidden="true">6</span>
+          <h3>Value realization and Go/No-Go</h3>
+          <span class="badge badge-pending">Pending</span>
+        </header>
+        <dl>
+          <dt>Decision</dt><dd>No-Go for a pilot; Go for a bounded validation step.</dd>
+          <dt>Evidence</dt><dd>Rule-based verdict for PCB2 v2: INCONCLUSIVE (recall below target, at the No-Go floor). Break-even analysis shows when review support beats reviewing everything or nothing.</dd>
+          <dt>Trade-off</dt><dd>Without operational data no labour saving or financial return can be claimed.</dd>
+          <dt>Next action</dt><dd>Repeat the Go/No-Go with shadow-mode results and the user's own costs.</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-proposed">
+        <header>
+          <span class="step-n" aria-hidden="true">7</span>
+          <h3>Cross-site readiness, maintenance and handoff</h3>
+          <span class="badge badge-proposed">Proposed</span>
+        </header>
+        <dl>
+          <dt>Decision</dt><dd>Treat each new board, background, camera or lamp as a new site that must pass its own checks.</dd>
+          <dt>Evidence</dt><dd>Versioned configs and thresholds; evaluation refuses a changed model or uncommitted freeze; PCB3 proved that board segmentation does not transfer automatically.</dd>
+          <dt>Trade-off</dt><dd>Monitoring, rollback and escalation are documented, not operated.</dd>
+          <dt>Next action</dt><dd>Turn the site checklist below into pilot entry gates.</dd>
+        </dl>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="evidence" class="section" aria-labelledby="evidence-title">
+  <div class="wrap">
+    <h2 id="evidence-title">What the data actually showed</h2>
+    <p class="section-intro">Findings from this project, in the order they shaped decisions. Each states the board type, whether it was measured, demonstrated or found after the fact, and what it changes.</p>
+    <ol class="findings">
+      <li class="finding">
+        <p class="finding-tag">PCB1 <span class="badge badge-demonstrated">Demonstrated</span></p>
+        <h3>Boards arrive in different orientations</h3>
+        <p>116 of 600 training images (19%) were turned half a round; placement and tilt also varied.</p>
+        <p class="finding-so"><strong>So:</strong> Registration (centroid, tilt, and a template check for the half-turn) runs before any modelling.</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB1 <span class="badge badge-post_hoc">Post hoc</span></p>
+        <h3>False alarms came from the background</h3>
+        <p>All 13/13 false alarms of v1 on PCB1 normals peaked on the cloth (dust, lint), not on the board.</p>
+        <p class="finding-so"><strong>So:</strong> v2 takes the score over the board region only. PCB1 could not confirm this, so it was tested on PCB2.</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB2 <span class="badge badge-measured">Measured</span></p>
+        <h3>Board-region scoring cut false alarms</h3>
+        <p>On a held-back board type, test false alarms fell from 13% to 3% (−10 pts, CI −17 to −3); AUROC rose from 0.927 to 0.979.</p>
+        <p class="finding-so"><strong>So:</strong> The change works for the problem it targeted.</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB2 <span class="badge badge-measured">Measured</span></p>
+        <h3>Recall did not improve</h3>
+        <p>80% of defects flagged by both versions, against a proposed 90%; the pre-registered recall hypothesis was not supported. Smallest third of defects: 56% (19/34).</p>
+        <p class="finding-so"><strong>So:</strong> Detection sensitivity, not false alarms, is now the binding constraint.</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB2 <span class="badge badge-measured">Measured</span></p>
+        <h3>Darkening breaks the operating point</h3>
+        <p>A 10% darker, lower-contrast copy of each image raised v2 false alarms from 3.6% to 28.7%; brightening did not.</p>
+        <p class="finding-so"><strong>So:</strong> Lighting must be controlled or corrected — and that must be validated — before a line trial.</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB3 <span class="badge badge-demonstrated">Demonstrated</span></p>
+        <h3>Board-finding assumed a grey background</h3>
+        <p>On PCB3's saturated green cloth the original colour rule marked 96% of every frame as board, so registration silently did nothing. A hue band measured on training images restored a board mask of 15%.</p>
+        <p class="finding-so"><strong>So:</strong> Background-dependent preprocessing must be re-validated at every site; it failed silently here.</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB3 <span class="badge badge-demonstrated">Demonstrated</span></p>
+        <h3>Registration and the board region are only approximately portable</h3>
+        <p>Without correction, a 10% darkening moved the estimated board pose by 10.7 px (median) on training images. The board region covers 48% of the frame; about 31% of its pixels are cloth.</p>
+        <p class="finding-so"><strong>So:</strong> Lint close to the board can still trigger a false alarm (see the workflow example); pose estimation depends on brightness.</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB3 <span class="badge badge-measured">Measured</span></p>
+        <h3>Illumination correction experiment</h3>
+        <p>The pre-registered rule returned “improvement supported”: under global darkening the candidate's false-alarm rise was −0.4 pts versus +4.3 pts (difference −4.7, CI −8.6 to −0.8). But the baseline barely failed on PCB3, so the endpoint is weakly informative — and the correction made a mild blur raise false alarms by +14.5 pts (baseline +0.4).</p>
+        <p class="finding-so"><strong>So:</strong> Not adopted. A correction can trade one sensitivity for another; every fix must be checked against the full set of perturbations, not only the one it targets.</p>
+      </li>
+    </ol>
+    <figure class="wide-fig">
+      <img src="assets/img/pcb3_mask_rules.jpg" width="1200" height="242" alt="Three panels of one PCB3 training image: the photo, the original board mask covering almost the whole frame in magenta, and the adapted mask covering only the board.">
+      <figcaption>PCB3 training image: as captured · original colour rule (magenta = classed as board, 96% of the frame) · after the hue-band adaptation (15%). Median over 600 training images. VisA image, CC BY 4.0, resized with overlay.</figcaption>
+    </figure>
+
+    <h3 id="boards" class="sub-h">Results by board type — separate datasets</h3>
+    <p class="section-intro">PCB1, PCB2 and PCB3 are different board types, each with its own fitted model, board region and frozen threshold. Rows on different board types are not a matched comparison and do not show progress over time; only rows on the same board type are paired comparisons.</p>
+    <div class="table-scroll" role="region" aria-labelledby="boards" tabindex="0">
+      <table class="grid-table boards-table">
+        <thead><tr><th scope="col">Board type</th><th scope="col">Version / arm</th><th scope="col">Evidence</th><th scope="col" class="num">Recall, official test</th><th scope="col" class="num">95% CI</th><th scope="col" class="num">False alarms, test normals</th><th scope="col" class="num">False alarms, holdout normals</th><th scope="col" class="num">AUROC</th></tr></thead>
+        <tbody>
+          <tr class="board-pcb1">
+            <th scope="row">PCB1</th><td>v1 (original pipeline)</td><td>Development board type; motivated v2</td>
+            <td class="num strong">72% <span class="frac">(72/100)</span></td><td class="num">62%–81%</td>
+            <td class="num">7% (7/100)</td><td class="num">3.9% (6/154)</td><td class="num">0.938</td>
+          </tr>
+          <tr class="board-pcb1">
+            <th scope="row">PCB1</th><td>v2, retrospective</td><td>Post hoc, on the data that motivated v2 — not independent</td>
+            <td class="num strong">88% <span class="frac">(88/100)</span></td><td class="num">80%–94%</td>
+            <td class="num">6% (6/100)</td><td class="num">1.9% (3/154)</td><td class="num">0.974</td>
+          </tr>
+          <tr class="board-pcb2 board-first">
+            <th scope="row">PCB2</th><td>v1</td><td>Confirmatory, held-back board type</td>
+            <td class="num strong">80% <span class="frac">(80/100)</span></td><td class="num">71%–87%</td>
+            <td class="num">13% (13/100)</td><td class="num">5.3% (8/151)</td><td class="num">0.927</td>
+          </tr>
+          <tr class="board-pcb2">
+            <th scope="row">PCB2</th><td>v2</td><td>Confirmatory, held-back board type — the controlled v1/v2 comparison</td>
+            <td class="num strong">80% <span class="frac">(80/100)</span></td><td class="num">71%–87%</td>
+            <td class="num">3% (3/100)</td><td class="num">4.0% (6/151)</td><td class="num">0.979</td>
+          </tr>
+          <tr class="board-pcb3 board-first">
+            <th scope="row">PCB3</th><td>v2 pipeline — baseline arm of the lighting experiment</td><td>Confirmatory, new board type; not a new model version</td>
+            <td class="num strong">90% <span class="frac">(90/100)</span></td><td class="num">82%–95%</td>
+            <td class="num">3% (3/101)</td><td class="num">5.2% (8/155)</td><td class="num">0.982</td>
+          </tr>
+          <tr class="board-pcb3">
+            <th scope="row">PCB3</th><td>v2 + lighting correction — candidate arm</td><td>Confirmatory, new board type; not adopted</td>
+            <td class="num strong">91% <span class="frac">(91/100)</span></td><td class="num">84%–96%</td>
+            <td class="num">3% (3/101)</td><td class="num">3.9% (6/155)</td><td class="num">0.983</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">Each recall is measured on 100 defective benchmark images, so it is uncertain by several points (see the intervals). The PCB3 baseline's 90% is a benchmark measurement on one board type, not an expected recall on a real line.</p>
+  </div>
+</section>
+
+<section id="pcb3" class="band" aria-labelledby="pcb3-title">
+  <div class="wrap">
+    <h2 id="pcb3-title">PCB3: a pre-registered illumination-correction experiment</h2>
+    <p class="section-intro">PCB2 showed that a 10% darker image raised false alarms by +25.1 pts. This experiment tested one candidate fix on a board type never used before, under a protocol committed before the data was opened, evaluated once. In one line: the fix did what it was designed to do, the problem it targets barely appeared on PCB3, and it introduced a new weakness.</p>
+    <div class="two-col">
+      <div>
+        <h3>Design (fixed before PCB3 was opened)</h3>
+        <ul class="plain"><li>One change: standardise each image's global brightness and contrast to the training-image median, with one gain for all colour channels, before registration.</li><li>Baseline = v2 pipeline; candidate = v2 + correction. Same images, own thresholds, each frozen on 150 separate normal images.</li><li>Primary endpoint: difference-in-differences of the false-alarm rise under global darkening (G1) on 101 test + 155 holdout normals; paired bootstrap.</li><li>Gates: clean recall and clean false alarms must not get worse beyond fixed margins. Non-uniform lighting (N1) is the out-of-class test.</li><li>Known in advance: G1 is a global change, so the correction can undo it almost by construction. A good G1 result is not evidence of robustness to real lighting.</li></ul>
+      </div>
+      <div class="card result-card">
+        <h3>Two decisions, kept separate</h3>
+        <div class="decision-block decision-a">
+          <p class="decision-label">A · Pre-registered experimental outcome</p>
+          <p><strong>ROBUSTNESS IMPROVEMENT SUPPORTED</strong> — exactly as computed by the frozen rule, and <strong>weakly informative</strong> on PCB3. It says only that under a synthetic global darkening the candidate's false-alarm rise was smaller than the baseline's (−0.4 vs +4.3 pts; difference −4.7, CI −8.6 to −0.8). The baseline's own rise was below the protocol's pre-set line for an informative test.</p>
+        </div>
+        <div class="decision-block decision-b">
+          <p class="decision-label">B · Engineering adoption decision</p>
+          <p><strong>Do not adopt the lighting correction as the preferred pipeline.</strong> It cut the brightening false-alarm rise (+15.2 → +2.7 pts) but raised false alarms under a mild blur by +14.5 pts (9/256 → 46/256 normals; baseline +0.4), beyond the original 10-point limit.</p>
+        </div>
+        <p class="baseline-note">Rejecting the candidate does not approve the baseline. The baseline also fails the robustness criterion (brightening +15.2 pts), and neither variant has real end-user validation, a factory pilot or a measured operational return.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Result (single planned run)</h3>
+    <div class="table-scroll" role="region" aria-label="Result (single planned run)" tabindex="0">
+      <table class="grid-table cond-table">
+        <thead>
+          <tr><th scope="col" rowspan="2">Condition</th><th scope="colgroup" colspan="2" class="grp">False-alarm rate (false alarms / unseen normals)</th><th scope="colgroup" colspan="2" class="grp">Change from clean, pts</th></tr>
+          <tr><th scope="col" class="num">Baseline</th><th scope="col" class="num">Candidate</th><th scope="col" class="num">Baseline</th><th scope="col" class="num">Candidate</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Clean (P0)<span class="hint">no perturbation</span></th>
+            <td class="num">4.3% <span class="frac">(11/256)</span></td>
+            <td class="num">3.5% <span class="frac">(9/256)</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td></tr>
+          <tr><th scope="row">Global darkening (G1)<span class="hint">primary endpoint</span></th>
+            <td class="num">8.6% <span class="frac">(22/256)</span></td>
+            <td class="num">3.1% <span class="frac">(8/256)</span></td>
+            <td class="num">+4.3</td>
+            <td class="num">−0.4</td></tr>
+          <tr><th scope="row">Brightening (B1)<span class="hint">secondary; opposite direction</span></th>
+            <td class="num">19.5% <span class="frac">(50/256)</span></td>
+            <td class="num">6.2% <span class="frac">(16/256)</span></td>
+            <td class="num">+15.2</td>
+            <td class="num">+2.7</td></tr>
+          <tr><th scope="row">Non-uniform lighting (N1)<span class="hint">secondary; out-of-class limitation test</span></th>
+            <td class="num">6.2% <span class="frac">(16/256)</span></td>
+            <td class="num">5.9% <span class="frac">(15/256)</span></td>
+            <td class="num">+2.0</td>
+            <td class="num">+2.3</td></tr>
+          <tr><th scope="row">Mild blur<span class="hint">acceptance check only; not an endpoint</span></th>
+            <td class="num">4.7% <span class="frac">(12/256)</span></td>
+            <td class="num">18.0% <span class="frac">(46/256)</span></td>
+            <td class="num">+0.4</td>
+            <td class="num flag">+14.5</td></tr>
+          <tr><th scope="row">Shift<span class="hint">acceptance check only; not an endpoint</span></th>
+            <td class="num">4.3% <span class="frac">(11/256)</span></td>
+            <td class="num">4.3% <span class="frac">(11/256)</span></td>
+            <td class="num">+0.0</td>
+            <td class="num">+0.8</td></tr>
+          <tr class="recall-row"><th scope="row">Clean recall<span class="hint">defects caught / official-test defects</span></th>
+            <td class="num">90/100</td><td class="num">91/100</td><td class="num">—</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">256 unseen normal images (101 official test + 155 supplementary holdout), each variant at its own frozen threshold. Absolute rates and changes are separate columns: a change is the difference of two absolute rates on the same images. Full analysis and an independent recomputation are in the repository.</p>
+
+    <h3 class="sub-h">Original acceptance criteria (unchanged) — both variants</h3>
+    <div class="table-scroll" role="region" aria-label="Original acceptance criteria (unchanged) — both variants" tabindex="0">
+      <table class="grid-table acc-table">
+        <thead><tr><th scope="col">Criterion</th><th scope="col">Baseline</th><th scope="col">Candidate</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Recall ≥ 90% (official test)</th>
+            <td class="ok"><strong>met</strong>
+ · 90% (90/100)</td>
+            <td class="ok"><strong>met</strong>
+ · 91% (91/100)</td>
+          </tr>
+          <tr><th scope="row">False alarms ≤ 10%, official-test normals</th>
+            <td class="ok"><strong>met</strong>
+ · 3% (3/101)</td>
+            <td class="ok"><strong>met</strong>
+ · 3% (3/101)</td>
+          </tr>
+          <tr><th scope="row">False alarms ≤ 10%, holdout normals</th>
+            <td class="ok"><strong>met</strong>
+ · 5.2% (8/155)</td>
+            <td class="ok"><strong>met</strong>
+ · 3.9% (6/155)</td>
+          </tr>
+          <tr><th scope="row">AUROC ≥ 0.90</th>
+            <td class="ok"><strong>met</strong>
+ · 0.982</td>
+            <td class="ok"><strong>met</strong>
+ · 0.983</td>
+          </tr>
+          <tr><th scope="row">Median latency ≤ 1 s</th>
+            <td class="ok"><strong>met</strong>
+ · 187 ms</td>
+            <td class="ok"><strong>met</strong>
+ · 292 ms</td>
+          </tr>
+          <tr><th scope="row">Robustness: no perturbation raises false alarms by more than 10 pts (G1, B1, blur, shift)</th>
+            <td class="fail"><strong>not met</strong>
+: Brightening (B1) +15.2 pts</td>
+            <td class="fail"><strong>not met</strong>
+: Mild blur +14.5 pts</td>
+          </tr>
+          <tr class="verdict-row"><th scope="row">Verdict</th><td><strong>INCONCLUSIVE</strong></td><td><strong>INCONCLUSIVE</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">INCONCLUSIVE means no No-Go rule fired but not every criterion was met; it is not an approval. Recall meets its target at a point estimate on 100 images only.</p>
+    <h3 class="sub-h">How to read it</h3>
+    <dl class="interp">
+      <div><dt><span class="letter">A</span>Did the correction fix global darkening?</dt><dd>Yes, for what it could fix: the candidate's rise under darkening was −0.4 pts against the baseline's +4.3 (difference −4.7 pts, CI −8.6 to −0.8). But the baseline's rise was below the pre-set line for a meaningful test, and a global darkening is exactly what a global correction undoes. This is not evidence of robustness to real lighting.</dd></div>
+      <div><dt><span class="letter">B</span>Did registration and segmentation become more stable?</dt><dd>Very likely part of the effect. On training images, darkening moved the baseline's estimated board pose by 10.7 px (median) and the candidate's by 0.2 px; board-region fail-safe events 8 versus 0. The experiment cannot separate registration from feature effects, so no split is claimed.</dd></div>
+      <div><dt><span class="letter">C</span>Did anomaly-score behaviour improve?</dt><dd>Clean behaviour unchanged (AUROC 0.982 → 0.983; recall 90% → 91%). Brightening: rise +15.2 → +2.7 pts. But under a mild blur the candidate's false alarms rose by +14.5 pts (9/256 → 46/256) against +0.4 for the baseline — an unplanned observation; a plausible cause is that blur lowers global contrast, which the correction then stretches.</dd></div>
+      <div><dt><span class="letter">D</span>What remains under non-uniform lighting?</dt><dd>No improvement: difference +0.4 pts (CI −2.7 to +3.9). Both rises were small on PCB3, so the limitation rule was not triggered, but a global correction does not address a lighting gradient — as stated before the test.</dd></div>
+      <div><dt><span class="letter">E</span>Is it ready for a manufacturing pilot?</dt><dd>No. Against the unchanged criteria both variants are INCONCLUSIVE: clean targets are met on PCB3, but the robustness criterion fails for both (baseline under brightening, candidate under blur). The correction also adds latency (187 → 292 ms median). All perturbations were synthetic. The candidate is not adopted, and the baseline is not production-ready.</dd></div>
+    </dl>
+    <figure class="wide-fig">
+      <img src="assets/img/pcb3_roi.jpg" width="1200" height="840" alt="Mean registered PCB3 training image with the board region's construction stages outlined, and three individual images with the cloth inside the board region tinted magenta.">
+      <figcaption>Training images only. The board region (48% of the frame) contains the board, pins and LEDs, but about 31% of its pixels are cloth (magenta). Colour classes are heuristic. VisA images, CC BY 4.0, registered, cropped, with overlays.</figcaption>
+    </figure>
+    <p class="fine">Disclosed deviation: the protocol required the PCB3 board-mask adaptation (Addendum B1) to be committed before fitting; it was decided before fitting but committed about five minutes after both models were fitted. No calibration or test image had been scored. The diagnostics and this disclosure (Addendum B2) were committed before calibration.</p>
+
+    <div id="pcb3-repair" class="disclosure" role="region" aria-labelledby="repair-title">
+      <h3 id="repair-title">Technical disclosure: analysis-code repair after PCB3 testing</h3>
+      <p>After the PCB3 test and holdout images had been scored once, the pre-registered paired-analysis program refused to run, and one check in it was corrected. The analysis program that produced the PCB3 result is therefore not identical to the frozen one. Nothing here is backdated.</p>
+      <table class="metrics compact repair-table">
+        <thead><tr><th scope="col">Time</th><th scope="col">Event</th></tr></thead>
+        <tbody><tr><td class="when">16:58</td><td>Freeze committed (eb4e7a9): thresholds, configurations, split and source code</td></tr><tr><td class="when">16:58–17:07</td><td>Single planned evaluation of both variants. No PCB3 test or holdout image was scored after this.</td></tr><tr><td class="when">17:09, 17:10</td><td>Paired analysis refused twice, unchanged code: an input check required the label “anomaly”, but VisA records the defect type (bent, melt, scratch, missing).</td></tr><tr><td class="when">17:14</td><td>Check corrected (7dbd302). Summary test metrics had already been seen on the evaluation console.</td></tr><tr><td class="when">17:15</td><td>Paired analysis completed and committed (9c9f7c5).</td></tr></tbody>
+      </table>
+      <dl class="repair-facts">
+        <div><dt>What changed</dt><dd>One condition in the function that reads ground-truth masks for the descriptive small/low-contrast defect table. That table could not be produced before the repair; its arithmetic did not change.</dd></div>
+        <div><dt>What did not change</dt><dd>Model fitting, preprocessing, thresholds, test scores, predictions, the primary statistic and the decision rule. No image was re-scored and the test was not repeated.</dd></div>
+        <div><dt>Independent check</dt><dd>A separate script that imports none of the project code recomputed every PCB3 number from the raw score files and the original masks: 90 of 90 checks agree with the recorded outputs.</dd></div>
+      </dl>
+      <p class="fine">Full incident record — chronology, exact patch, file hashes, deviations — in the repository at <code>docs/pcb3_post_evaluation_repair.md</code>; every post-test event in <code>docs/illumination_experiment_deviations.md</code>; the recomputation in <code>reports/pcb3_verification/recompute.md</code>. Times are 2026-10-09, Taiwan time.</p>
+    </div>
+  </div>
+</section>
+
+<section id="model" class="section" aria-labelledby="model-title">
+  <div class="wrap">
+    <h2 id="model-title">Why a frozen CNN + Mahalanobis model</h2>
+    <p class="section-intro">The need was a normal-only baseline that can be fitted from defect-free images in minutes, explained to an engineer, and frozen. The comparison is qualitative: YOLO-style detection and fine-tuning were not trained or tested in this project.</p>
+    <div class="table-scroll" role="region" aria-labelledby="model-title" tabindex="0">
+      <table class="grid-table">
+        <thead><tr><th scope="col">Approach</th><th scope="col">Labels needed</th><th scope="col">Output</th><th scope="col">Fits when</th><th scope="col">Main risk</th></tr></thead>
+        <tbody>
+          <tr class="chosen"><th scope="row">Frozen CNN features + per-position Gaussian (chosen)</th><td>Defect-free images only</td><td>Anomaly score and heat map</td><td>Defects are rare and not known in advance; a reviewer stays in the loop</td><td>Misses subtle defects whose features look normal; sensitive to pose and lighting</td></tr>
+          <tr><th scope="row">Object detector (e.g. YOLO family)</th><td>Boxes for every defect type, many examples of each</td><td>Located and classified defects</td><td>Defect types are known, stable and plentiful, and a defect class is needed</td><td>Cannot flag a defect type it never saw; labelling cost and upkeep</td></tr>
+          <tr><th scope="row">Fine-tuned classifier or backbone</th><td>Labelled good and bad images</td><td>Image-level class or score</td><td>Enough labelled defects exist and the process is stable</td><td>Overfits small defect sets; needs a training, validation and retraining process</td></tr>
+          <tr><th scope="row">Golden-image or rule-based comparison</th><td>None, but tuning per product</td><td>Differences from a reference</td><td>Fixture, lighting and product are tightly controlled</td><td>Breaks under pose, lighting and normal part-to-part variation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">Choosing the normal-only model is a statement about this stage — no defect labels, a reviewer in the loop — not a claim that it beats supervised models. Phase B data would allow a fair comparison.</p>
+  </div>
+</section>
+
+<section id="roi" class="band band-plain" aria-labelledby="roi-title">
+  <div class="wrap">
+    <h2 id="roi-title">Two meanings of “ROI”</h2>
+    <p class="section-intro">The same abbreviation means two different things in this project, and they are kept apart.</p>
+    <div class="two-col">
+      <div class="roi-box">
+        <h3>Image ROI — region of interest</h3>
+        <p>The part of the image where the score is taken. v2 uses the maximum anomaly over a board region built from defect-free training images plus a 16-pixel margin. If less than 0.95 of an image's own board mask lies inside the region, the system does not trust it and scores the whole frame instead, which can only make a review more likely.</p>
+      </div>
+      <div class="roi-box">
+        <h3>Business ROI — return on investment</h3>
+        <p>Not measured. What the data supports is a simplified classification-cost sensitivity. Let k = defect odds × (cost of a missed defect ÷ cost of one review). With PCB2 v2's measured miss rate 0.20 and false-alarm rate 0.03, the cheapest policy is:</p>
+        <table class="metrics compact">
+          <thead><tr><th scope="col">Policy</th><th scope="col">Cheapest when</th></tr></thead>
+          <tbody>
+<tr><th scope="row">Review nothing</th><td>k below 0.0375</td></tr><tr><th scope="row">Review only images flagged by v2</th><td>k between 0.0375 and 4.85</td></tr><tr><th scope="row">Review everything</th><td>k above 4.85</td></tr>          </tbody>
+        </table>
+        <p class="fine">This compares classification error costs only. It ignores review time, line speed, downstream escapes, staffing and implementation cost, and k must come from the user's own prevalence and costs. It is not a financial ROI, and no labour saving is claimed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="workflow" class="section" aria-labelledby="workflow-title">
+  <div class="wrap">
+    <h2 id="workflow-title">Human review workflow — mock-up <span class="badge badge-proposed">Proposed</span></h2>
+    <p class="section-intro">How the output could reach a reviewer: one card per image, with the heat map, the score against the frozen threshold, and a check that the board was located. Images, heat maps and numbers are real PCB2 v2 test outputs.</p>
+    <p class="mock-banner">Proposed decision-support interface — not a deployed application. The tool recommends a review; a person decides.</p>
+    <div class="mock-grid">
+      <article class="mock-card mock-caught">
+        <header class="mock-head">
+          <span class="mock-id">006.JPG</span>
+          <span class="mock-decision mock-review">REVIEW</span>
+        </header>
+        <img src="assets/img/workflow_caught.jpg" width="960" height="640" alt="PCB2 board with bent header pins; the heat map highlights the pins.">
+        <dl class="mock-fields">
+          <div><dt>Anomaly score</dt><dd>88.6</dd></div>
+          <div><dt>Frozen threshold (P95)</dt><dd>51.2</dd></div>
+          <div><dt>Board located (ROI coverage)</dt><dd>1.00</dd></div>
+          <div><dt>Benchmark label</dt><dd>defective</dd></div>
+        </dl>
+        <h3>Defect caught</h3>
+        <p>The heat map concentrates on the bent header pins; the score is well above the threshold.</p>
+        <p class="mock-action"><strong>Reviewer action:</strong> Inspect the pins and record the defect type.</p>
+      </article>
+      <article class="mock-card mock-false_alarm">
+        <header class="mock-head">
+          <span class="mock-id">0484.JPG</span>
+          <span class="mock-decision mock-review">REVIEW</span>
+        </header>
+        <img src="assets/img/workflow_false_alarm.jpg" width="960" height="640" alt="Normal PCB2 board; the only highlighted spot is on the background cloth near the lower-left board edge.">
+        <dl class="mock-fields">
+          <div><dt>Anomaly score</dt><dd>65.1</dd></div>
+          <div><dt>Frozen threshold (P95)</dt><dd>51.2</dd></div>
+          <div><dt>Board located (ROI coverage)</dt><dd>1.00</dd></div>
+          <div><dt>Benchmark label</dt><dd>normal</dd></div>
+        </dl>
+        <h3>False alarm</h3>
+        <p>A normal board. The highest anomaly sits on a mark on the cloth just inside the board region's margin — the specificity limit found in the diagnostics.</p>
+        <p class="mock-action"><strong>Reviewer action:</strong> Confirm no defect; tag the cause as background so false alarms can be tracked.</p>
+      </article>
+      <article class="mock-card mock-missed">
+        <header class="mock-head">
+          <span class="mock-id">072.JPG</span>
+          <span class="mock-decision mock-no_review">NO REVIEW</span>
+        </header>
+        <img src="assets/img/workflow_missed.jpg" width="960" height="640" alt="PCB2 board with a small defect at a header pin outlined in cyan; no heat map is visible.">
+        <dl class="mock-fields">
+          <div><dt>Anomaly score</dt><dd>31.4</dd></div>
+          <div><dt>Frozen threshold (P95)</dt><dd>51.2</dd></div>
+          <div><dt>Board located (ROI coverage)</dt><dd>1.00</dd></div>
+          <div><dt>Benchmark label</dt><dd>defective</dd></div>
+        </dl>
+        <h3>Known limitation: defect missed</h3>
+        <p>A small defect at a header pin scores below the threshold, so no review is suggested. The cyan outline is the benchmark's ground truth, shown here only to explain the miss.</p>
+        <p class="mock-action"><strong>Reviewer action:</strong> None prompted. Small defects need a different safeguard, such as sampling audits.</p>
+      </article>
+    </div>
+    <p class="fine">Dashed green: scoring region. Heat map: smoothed anomaly score where it exceeds the median of calibration normals. Scores are the recorded official-test values; the threshold is the one frozen before testing. VisA images (CC BY 4.0), registered, cropped and resized, with overlays.</p>
+  </div>
+</section>
+
+<section id="sites" class="band" aria-labelledby="sites-title">
+  <div class="wrap">
+    <h2 id="sites-title">Cross-site readiness: what a new site must prove</h2>
+    <p class="section-intro">PCB1, PCB2 and PCB3 are board types from a public dataset, not manufacturing sites. They still show, concretely, which assumptions break when anything changes.</p>
+    <div class="table-scroll" role="region" aria-labelledby="sites-title" tabindex="0">
+      <table class="grid-table">
+        <thead><tr><th scope="col">Risk</th><th scope="col">What this project observed</th><th scope="col">What a new site must provide or pass</th></tr></thead>
+        <tbody>
+<tr><th scope="row">Background-dependent board segmentation</th><td>Grey cloth worked; PCB3's green cloth made the original rule mark 96% of the frame as board, with no error raised.</td><td>Segmentation check on the site's own normal images: board-mask area within an expected range, visual sign-off of a contact sheet.</td></tr><tr><th scope="row">Lighting sensitivity</th><td>PCB2 false alarms rose by +25.1 pts under a 10% darkening; on PCB3, brightness changes also moved the estimated board pose.</td><td>Lighting specification and a brightness/contrast check on every image; a perturbation test at the site's frozen threshold.</td></tr><tr><th scope="row">Orientation and placement</th><td>19% of PCB1 boards were turned half a round; placement varied on every board type.</td><td>Fixture or registration acceptance: pose spread on site normals, no wrong-orientation decisions on a labelled sample.</td></tr><tr><th scope="row">ROI compatibility</th><td>The board region covered 48% of the PCB3 frame with about 31% cloth inside; false alarms can start on cloth near the board.</td><td>Region built from the site's own normals, coverage gate passing, fail-safe rate on calibration images below the agreed limit.</td></tr><tr><th scope="row">Small and low-contrast defects</th><td>Smallest third of PCB2 defects: 56% recall.</td><td>A labelled sample of the site's real defect mix; recall per size class reported, not just overall.</td></tr><tr><th scope="row">Site-specific data and calibration</th><td>Every board type needed its own fitted model, board region and threshold.</td><td>Enough normal images for fit and a separate set for calibration; a held-out set the team never looks at during tuning.</td></tr><tr><th scope="row">Threshold and model versioning</th><td>Evaluation refuses to run if the model, config or split changed after the freeze, or if the freeze is not committed.</td><td>Versioned model + threshold + config released together; any change triggers recalibration and a regression run.</td></tr>        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="handoff" class="section" aria-labelledby="handoff-title">
+  <div class="wrap">
+    <h2 id="handoff-title">Operations and engineering handoff</h2>
+    <p class="section-intro">What an engineer taking this over must know. Documented in the repository's handoff guide; none of it has been operated on a line.</p>
+    <dl class="handoff-grid">
+<div><dt>Input specification</dt><dd>One RGB image of one board, fixed overhead camera, the same board type and background as the fitted model. Other inputs are out of scope.</dd></div><div><dt>Registration failures</dt><dd>No board found raises an error, never a silent pass. Such images go to human review and are counted.</dd></div><div><dt>ROI fallbacks</dt><dd>If the board mask is not inside the board region, the whole-frame score is used (more conservative). Fallback rate is a monitored quantity; calibration stops if it exceeds its limit.</dd></div><div><dt>Lighting alerts</dt><dd>Proposed: compare each image's global brightness and contrast with the training range and flag outliers for review, because measured false alarms rise sharply under darkening.</dd></div><div><dt>Test and threshold versioning</dt><dd>Model, threshold, config and split are hashed at freeze; evaluation refuses mismatches. Every release carries its freeze record.</dd></div><div><dt>Monitoring</dt><dd>Track review rate, fallback rate, brightness drift and reviewer-confirmed false alarms per shift; a shift in any of them triggers investigation.</dd></div><div><dt>Regression tests</dt><dd>Unit and synthetic end-to-end tests, plus consistency checks that every reported number traces to a recorded output. Re-run on every change.</dd></div><div><dt>Rollback</dt><dd>Keep the previous model and threshold set deployable; roll back on a review-rate or fallback-rate alarm, then recalibrate offline.</dd></div><div><dt>Human escalation</dt><dd>The tool only recommends; a reviewer decides. Unclear cases and any suspected systematic miss go to the quality owner, never to automatic disposition.</dd></div>    </dl>
+    <details class="terms">
+      <summary>Terms used on this page</summary>
+      <dl>
+<dt>Recall</dt><dd>Share of defective boards the tool sends to human review.</dd><dt>False-alarm rate</dt><dd>Share of normal boards the tool sends to review. The tool only recommends a review, so a false alarm costs reviewer time, not product.</dd><dt>AUROC</dt><dd>Threshold-free ranking quality: the probability that a random defective board scores higher than a random normal one.</dd><dt>Frozen threshold (P95)</dt><dd>The score above which an image is flagged, set from separate normal images to target about 5% false alarms, and fixed before any test image is scored.</dd><dt>Pre-registration</dt><dd>Writing the hypothesis, data split, endpoint and decision rule into the repository before the test data is opened.</dd><dt>Difference-in-differences</dt><dd>How much less (or more) the candidate's false alarms rise under a perturbation than the baseline's, on the same images.</dd><dt>Shadow mode</dt><dd>Running the tool alongside existing inspection without affecting any decision, to measure it on real production images.</dd>      </dl>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Independent project on the public VisA dataset (Amazon Science). Not affiliated with or endorsed by the dataset authors or any company. PCB1–PCB3 are benchmark board types, not manufacturing sites. No production deployment, factory data, end-user sign-off or financial return is claimed.</p>
+    <p>Images: VisA, Zou et al., ECCV 2022, CC BY 4.0 (github.com/amazon-science/spot-diff). Shown resized, registered and cropped, with heat-map, outline and mask overlays added by this project.</p>
+    <p>Code and documentation were produced with AI coding assistance (Claude Code) under the project owner's direction. The owner's review of this work is pending.</p>
+    <p>Project owner: Leon Lai</p>
+  </div>
+</footer>
+</body>
+</html>

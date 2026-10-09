@@ -8,9 +8,11 @@ C2  per run: freeze matches config/model/split and precedes evaluation; for runs
     repository's history (curated snapshot).
 C3  split manifests pass the leakage audit
 C4  paired comparison recomputed from the score CSVs; pairing checks all true
-C5  executive PDF: one page, every numeric token traces to a recorded output, headline numbers present
+C5  executive PDF (A4, at most two pages; built from site/ since the PCB3 experiment): every numeric token
+    traces to a recorded output, headline numbers present
 C6  README results block equals the generated block
-C7  repository hygiene: no dataset, weights, large files or secret-like strings tracked
+C7  repository hygiene: no dataset, weights, large files or secret-like strings tracked (the website's
+    resized, overlaid VisA derivatives under site/static/img/ are the one allowed image set, each < 500 kB)
 C8  the pilot recommendation sentence is identical in the PDF, README, decision record and handoff
 """
 from __future__ import annotations
@@ -31,7 +33,10 @@ from .data import audit_split, expected_counts, read_split
 from .pipeline import check_freeze, freeze_path, read_scores
 
 # Literal numbers allowed in PDF prose that are not measurements (section numbers, board names).
-PDF_LITERALS = {"1", "2", "3", "4", "5", "6", "100", "200", "600", "150", "50", "10", "95"}
+PDF_LITERALS = {"1", "2", "3", "4", "5", "6", "7", "100", "200", "600", "150", "50", "10", "95",
+                "2022", "4.0"}  # dataset citation year and CC BY licence version
+# Website images derived from VisA (CC BY 4.0, resized + overlays): the only images allowed in git.
+SITE_IMG_DIR, SITE_IMG_MAX_BYTES = "site/static/img/", 500_000
 
 
 def _numbers(obj: Any) -> Iterable[float]:
@@ -52,7 +57,7 @@ def traceable_tokens(sources: list[Any]) -> set[str]:
     out: set[str] = set()
     for v in (x for s in sources for x in _numbers(s)):
         for w in (v, 100 * v, 1000 * v, v / 1000, abs(v), 100 * abs(v)):
-            for nd in (0, 1, 2, 3):
+            for nd in (0, 1, 2, 3, 4):
                 out.add(f"{w:.{nd}f}")
         if v == int(v):
             out.add(str(int(v)))
@@ -173,9 +178,15 @@ def run_checks() -> bool:
                 if (rep / fn).exists():
                     srcs.append(json.loads((rep / fn).read_text(encoding="utf-8")))
             srcs.append(cfg["robustness"])
+        # Since the PCB3 experiment the executive PDF is printed from the website, whose numbers all come
+        # from site/facts.py -> site/data/facts.json (itself read only from recorded outputs).
+        for extra in ("reports/pcb3_illum_comparison/comparison.json", "reports/pcb3_baseline/robustness.json",
+                      "reports/pcb3_illum/robustness.json", "site/data/facts.json", "site/assets_manifest.json"):
+            if (REPO_ROOT / extra).exists():
+                srcs.append(json.loads((REPO_ROOT / extra).read_text(encoding="utf-8")))
         allowed = traceable_tokens(srcs) | PDF_LITERALS | PDF_FIXED_LABELS
         untraced = sorted({t for t in pdf_tokens(text) if t not in allowed})
-        record("C5 executive summary is one page", len(reader.pages) == 1, f"{len(reader.pages)} page(s)")
+        record("C5 executive summary is at most two A4 pages", 1 <= len(reader.pages) <= 2, f"{len(reader.pages)} page(s)")
         record("C5 every number in the PDF traces to recorded outputs", not untraced, f"untraced: {untraced}")
         f = facts()
         must = []
@@ -183,7 +194,7 @@ def run_checks() -> bool:
             r_ = f["runs"][n_]
             must += [f"{r_['auroc']['value']:.3f}", f"{100 * r_['op']['recall']['value']:.0f}%",
                      f"{100 * r_['op']['fpr']['value']:.0f}%", f"{r_['lat']['median_ms']:.0f}",
-                     f"{100 * r_['hold']['value']:.1f}% ({'v1' if n_ == BASE else 'v2'})"]
+                     f"{100 * r_['hold']['value']:.1f}%"]
         flat = " ".join(text.split())
         missing = [s for s in must if s not in flat]
         record("C5 headline numbers present in the PDF", not missing, f"missing: {missing}")
@@ -213,8 +224,10 @@ def run_checks() -> bool:
     # C7
     try:
         tracked = _git("ls-files").stdout.split()
+        site_img = [t for t in tracked if t.startswith(SITE_IMG_DIR)]
         bad_paths = [t for t in tracked if t.startswith(("data/", "artifacts/")) or
-                     t.lower().endswith((".pt", ".pth", ".jpg", ".tar", ".npz", ".npy", ".env"))]
+                     (t.lower().endswith((".pt", ".pth", ".jpg", ".tar", ".npz", ".npy", ".env")) and t not in site_img)]
+        bad_paths += [t for t in site_img if (REPO_ROOT / t).stat().st_size > SITE_IMG_MAX_BYTES]
         big = [t for t in tracked if (REPO_ROOT / t).exists() and (REPO_ROOT / t).stat().st_size > 5_000_000]
         secret_re = re.compile(r"(AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|ghp_[A-Za-z0-9]{36}|"
                                r"github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{32,}|xox[baprs]-[A-Za-z0-9-]{10,})")

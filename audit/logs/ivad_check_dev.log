@@ -1,0 +1,20 @@
+# command: python site/build.py && python -m ivad check   (development repository at e397094)
+site built -> site/dist
+PASS  C1 PCB1 v1: metrics recomputed from per-image scores                        
+PASS  C2 PCB1 v1: freeze intact and precedes evaluation                           frozen 2026-10-08T16:06:00+00:00 < evaluated 2026-10-08T16:07:09+00:00
+PASS  C1 PCB2 v1: metrics recomputed from per-image scores                        
+PASS  C2 PCB2 v1: freeze intact and precedes evaluation                           frozen 2026-10-09T03:33:58+00:00 < evaluated 2026-10-09T03:35:49+00:00; freeze committed 2026-10-09 03:34:33+00:00; identical at evaluation HEAD 862c28f: True
+PASS  C1 PCB2 v2: metrics recomputed from per-image scores                        
+PASS  C2 PCB2 v2: freeze intact and precedes evaluation                           frozen 2026-10-09T03:34:21+00:00 < evaluated 2026-10-09T03:37:10+00:00; freeze committed 2026-10-09 03:34:33+00:00; identical at evaluation HEAD 862c28f: True
+PASS  C3 pcb1 split leakage audit                                                 
+PASS  C3 pcb2 split leakage audit                                                 
+PASS  C4 paired comparison recomputed; pairing checks true                        
+PASS  C5 executive summary is at most two A4 pages                                
+PASS  C5 every number in the PDF traces to recorded outputs                       
+PASS  C5 headline numbers present in the PDF                                      
+PASS  C8 pilot recommendation identical in PDF, README, decision record, handoff  
+PASS  C6 README results block equals generated block                              
+PASS  C7 no dataset, weights or large files tracked                               
+PASS  C7 no secret-like strings in tracked files                                  
+ALL CHECKS PASS
+# exit=0

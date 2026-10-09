@@ -1,0 +1,273 @@
+{
+  "frozen_operating_point": {
+    "primary": "P95",
+    "frozen_at_utc": "2026-10-09T08:57:52+00:00",
+    "config_hash": "f224e2503cb43eb28d384b88d94c75e7896d6258a1420897c97ff53dd911d7e4"
+  },
+  "official_test": {
+    "n_normal": 101,
+    "n_anomaly": 100,
+    "auroc": {
+      "value": 0.9832673267326733,
+      "ci_low": 0.9684133663366337,
+      "ci_high": 0.994059405940594,
+      "level": 0.95,
+      "ci_method": "stratified percentile bootstrap, B=2000, seed=7"
+    },
+    "operating_points": {
+      "P90": {
+        "threshold": 40.55462646484375,
+        "confusion": {
+          "TP": 93,
+          "FN": 7,
+          "FP": 9,
+          "TN": 92
+        },
+        "recall": {
+          "value": 0.93,
+          "x": 93,
+          "n": 100,
+          "ci_low": 0.8610802715441427,
+          "ci_high": 0.9713947110925613,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        },
+        "fpr": {
+          "value": 0.0891089108910891,
+          "x": 9,
+          "n": 101,
+          "ci_low": 0.0415594702792003,
+          "ci_high": 0.1624256090480684,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      },
+      "P95": {
+        "threshold": 47.71668243408203,
+        "confusion": {
+          "TP": 91,
+          "FN": 9,
+          "FP": 3,
+          "TN": 98
+        },
+        "recall": {
+          "value": 0.91,
+          "x": 91,
+          "n": 100,
+          "ci_low": 0.8360177449703647,
+          "ci_high": 0.9580164043716077,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        },
+        "fpr": {
+          "value": 0.0297029702970297,
+          "x": 3,
+          "n": 101,
+          "ci_low": 0.006167859543564685,
+          "ci_high": 0.08435689827612244,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      },
+      "P99": {
+        "threshold": 113.87610626220703,
+        "confusion": {
+          "TP": 17,
+          "FN": 83,
+          "FP": 0,
+          "TN": 101
+        },
+        "recall": {
+          "value": 0.17,
+          "x": 17,
+          "n": 100,
+          "ci_low": 0.10226491003552825,
+          "ci_high": 0.25817541063215865,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        },
+        "fpr": {
+          "value": 0.0,
+          "x": 0,
+          "n": 101,
+          "ci_low": 0.0,
+          "ci_high": 0.03586462039000372,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      }
+    }
+  },
+  "supplementary_holdout": {
+    "n_normal": 155,
+    "operating_points": {
+      "P90": {
+        "threshold": 40.55462646484375,
+        "confusion": {
+          "TP": 0,
+          "FN": 0,
+          "FP": 14,
+          "TN": 141
+        },
+        "fpr": {
+          "value": 0.09032258064516129,
+          "x": 14,
+          "n": 155,
+          "ci_low": 0.05026314630567575,
+          "ci_high": 0.14690201114270243,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      },
+      "P95": {
+        "threshold": 47.71668243408203,
+        "confusion": {
+          "TP": 0,
+          "FN": 0,
+          "FP": 6,
+          "TN": 149
+        },
+        "fpr": {
+          "value": 0.03870967741935484,
+          "x": 6,
+          "n": 155,
+          "ci_low": 0.014336086736216004,
+          "ci_high": 0.08234812174499023,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      },
+      "P99": {
+        "threshold": 113.87610626220703,
+        "confusion": {
+          "TP": 0,
+          "FN": 0,
+          "FP": 0,
+          "TN": 155
+        },
+        "fpr": {
+          "value": 0.0,
+          "x": 0,
+          "n": 155,
+          "ci_low": 0.0,
+          "ci_high": 0.023518254148532765,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      }
+    }
+  },
+  "pooled_unseen_normals": {
+    "n_normal": 256,
+    "note": "supplemental descriptive estimate; not the official benchmark",
+    "operating_points": {
+      "P90": {
+        "threshold": 40.55462646484375,
+        "confusion": {
+          "TP": 0,
+          "FN": 0,
+          "FP": 23,
+          "TN": 233
+        },
+        "fpr": {
+          "value": 0.08984375,
+          "x": 23,
+          "n": 256,
+          "ci_low": 0.057807257482065943,
+          "ci_high": 0.13175848654719316,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      },
+      "P95": {
+        "threshold": 47.71668243408203,
+        "confusion": {
+          "TP": 0,
+          "FN": 0,
+          "FP": 9,
+          "TN": 247
+        },
+        "fpr": {
+          "value": 0.03515625,
+          "x": 9,
+          "n": 256,
+          "ci_low": 0.016199410860957122,
+          "ci_high": 0.06568621418387194,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      },
+      "P99": {
+        "threshold": 113.87610626220703,
+        "confusion": {
+          "TP": 0,
+          "FN": 0,
+          "FP": 0,
+          "TN": 256
+        },
+        "fpr": {
+          "value": 0.0,
+          "x": 0,
+          "n": 256,
+          "ci_low": 0.0,
+          "ci_high": 0.014306362729039374,
+          "ci_method": "Clopper-Pearson exact",
+          "level": 0.95
+        }
+      }
+    }
+  },
+  "score_quantiles": {
+    "test_normal": [
+      16.827369689941406,
+      20.666597366333008,
+      24.017324447631836,
+      29.749439239501953,
+      64.42245483398438
+    ],
+    "test_anomaly": [
+      29.93733787536621,
+      58.109703063964844,
+      79.66051483154297,
+      102.00846481323242,
+      236.78759765625
+    ],
+    "holdout_normal": [
+      15.265259742736816,
+      20.795610427856445,
+      24.80637550354004,
+      30.188632011413574,
+      66.20664978027344
+    ]
+  },
+  "latency": {
+    "n_images": 201,
+    "median_ms": 292.08509996533394,
+    "p95_ms": 827.339299954474,
+    "mean_ms": 361.72983183615855,
+    "device": "cuda:0",
+    "device_name": "NVIDIA GeForce RTX 4070 Ti",
+    "definition": "decode JPEG + register + crop + resize + normalise + CNN forward + Mahalanobis + map + max (ROI: + board mask + coverage); batch 1; after warm-up"
+  },
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.14.1+cu126",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "evaluated_at_utc": "2026-10-09T09:02:39+00:00",
+  "git_head_at_evaluation": "eb4e7a92c417e2c76750e8acb530e3bddbd04b2d",
+  "roi_fallback": {
+    "test": {
+      "n": 201,
+      "n_fallback": 0,
+      "coverage_min": 0.9851356409700742,
+      "coverage_median": 1.0
+    },
+    "holdout": {
+      "n": 155,
+      "n_fallback": 0,
+      "coverage_min": 1.0,
+      "coverage_median": 1.0
+    }
+  }
+}

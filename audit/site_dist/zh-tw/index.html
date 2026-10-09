@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工業影像檢測：從原型到營運決策</title>
+<meta name="description" content="以公開基準影像進行的獨立專案：只用良品學習的異常偵測器，替電路板影像標記待人工複判；每項變更都依事前登錄的計畫測試，並說明證據支持的營運決策。">
+<meta name="theme-color" content="#ffffff">
+<link rel="alternate" hreflang="en" href="../">
+<link rel="alternate" hreflang="zh-Hant-TW" href="../zh-tw/">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body class="lang-zh-TW">
+<a class="skip" href="#main">跳到主要內容</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#summary">工業影像檢測 · 案例研究</a>
+    <nav class="site-nav" aria-label="章節">
+      <a href="#summary">摘要</a>
+      <a href="#lifecycle">交付流程</a>
+      <a href="#evidence">證據</a>
+      <a href="#pcb3">光照實驗</a>
+      <a href="#workflow">複判流程</a>
+      <a href="#handoff">交接</a>
+    </nav>
+    <nav class="lang-switch" aria-label="語言">
+      <a href="../" hreflang="en" lang="en">EN</a>
+      <a href="../zh-tw/" hreflang="zh-Hant-TW" lang="zh-Hant-TW" aria-current="page">繁體中文</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section id="summary" class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">獨立專案 · 公開基準影像（VisA）· 非工廠資料</p>
+      <h1 id="hero-title">工業影像檢測：從原型到營運決策</h1>
+      <p class="lede">一個只看過良品電路板影像的原型，替新影像標記需要人工複判的對象。每項變更都事前登錄、凍結門檻，並只在從未見過的板型上測試一次。</p>
+      <div class="verdict"><span class="verdict-label">建議</span><strong class="verdict-head">目前不建議進行製造試產。</strong> 下一步：只投入一個範圍明確的驗證步驟——先與品保工程師確認需求，並以影子模式收集實際產線影像——之後才考慮繼續開發模型。</div>
+      <p class="secondary-finding"><span class="sf-label">補充發現 · 另一個獨立板型（PCB3）</span>v2 基準流程在另一個獨立評估的 PCB 類別上達到 90% 檢出率，但對較亮的影像仍然敏感（誤報率上升 +15.2 個百分點）。在該板型上測試的光照校正不予採用：它帶來了對模糊的敏感度。 <a href="#pcb3">PCB3 實驗 →</a></p>
+      <p class="cta">
+        <a class="btn btn-primary" href="#lifecycle">閱讀案例研究</a>
+        <a class="btn" href="../executive-summary.pdf">英文決策摘要（PDF，A4）</a>
+      </p>
+      <p class="disclosure-line">PCB3 測試計分完成後，分析程式曾做過一次修正；它沒有改變任何分數、門檻或決策。 <a href="#pcb3-repair">技術揭露</a></p>
+    </div>
+
+    <aside class="card metric-card" aria-labelledby="card-title">
+      <h2 id="card-title" class="card-title">開發期間未使用的板型實測（PCB2）</h2>
+      <p class="card-sub">瑕疵 100 張＋良品 100 張測試影像 · 門檻值於測試前凍結 <span class="badge badge-demonstrated">實測</span></p>
+      <table class="metrics">
+        <thead>
+          <tr><th scope="col">指標</th><th scope="col" class="num">v1</th><th scope="col" class="num">v2</th><th scope="col">變化</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">瑕疵檢出率<span class="hint">瑕疵板被送去複判的比例</span></th>
+            <td class="num">80%</td><td class="num strong">80%</td>
+            <td class="change change-flat">不變<span class="hint">95% 信賴區間 −3 至 +3 個百分點</span></td>
+          </tr>
+          <tr>
+            <th scope="row">誤報率<span class="hint">良品板被送去複判的比例</span></th>
+            <td class="num">13%</td><td class="num strong">3%</td>
+            <td class="change change-good">−10 個百分點<span class="hint">95% 信賴區間 −17 至 −3</span></td>
+          </tr>
+          <tr>
+            <th scope="row">AUROC<span class="hint">分數能否把瑕疵排在良品前面</span></th>
+            <td class="num">0.927</td><td class="num strong">0.979</td>
+            <td class="change change-good">+0.052<span class="hint">95% 信賴區間 +0.028 至 +0.082</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <figure class="unit-figure">
+        <svg class="unit-chart" viewBox="0 0 498 158" width="498" height="158" role="img" aria-labelledby="uc-title uc-desc" preserveAspectRatio="xMinYMin meet"><title id="uc-title">PCB2 測試影像中被標記待複判者：v1 與 v2</title><desc id="uc-desc">單位圖。良品板：v1 標記 100 張中的 13 張，v2 標記 3 張。瑕疵板：v1 與 v2 都抓到 100 張中的 80 張。</desc><text class="u-head" x="34" y="12">良品板</text><text class="u-head" x="280" y="12">瑕疵板</text><text class="u-row" x="0" y="50.5">v1</text><rect class="u-fa" x="34" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="45" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="56" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="67" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="78" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="89" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="100" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="111" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="122" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="133" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="144" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="155" y="20" width="9" height="9" rx="1.5"/><rect class="u-fa" x="166" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="20" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="31" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="42" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="53" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="64" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="64" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="20" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="31" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="42" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="53" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="53" width="9" height="9" rx="1.5"/><rect class="u-miss" x="280.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="291.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="302.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="313.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="324.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="335.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="346.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="357.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="368.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="379.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="390.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="401.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="412.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="423.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="434.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="445.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="456.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="467.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="478.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="489.75" y="64.75" width="7.5" height="7.5" rx="1.5"/><text class="u-row" x="0" y="125.5">v2</text><rect class="u-fa" x="34" y="95" width="9" height="9" rx="1.5"/><rect class="u-fa" x="45" y="95" width="9" height="9" rx="1.5"/><rect class="u-fa" x="56" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="95" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="106" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="117" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="128" width="9" height="9" rx="1.5"/><rect class="u-ok" x="34" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="45" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="56" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="67" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="78" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="89" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="100" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="111" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="122" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="133" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="144" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="155" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="166" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="177" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="188" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="199" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="210" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="221" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="232" y="139" width="9" height="9" rx="1.5"/><rect class="u-ok" x="243" y="139" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="95" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="106" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="117" width="9" height="9" rx="1.5"/><rect class="u-hit" x="280" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="291" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="302" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="313" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="324" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="335" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="346" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="357" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="368" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="379" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="390" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="401" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="412" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="423" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="434" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="445" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="456" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="467" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="478" y="128" width="9" height="9" rx="1.5"/><rect class="u-hit" x="489" y="128" width="9" height="9" rx="1.5"/><rect class="u-miss" x="280.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="291.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="302.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="313.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="324.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="335.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="346.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="357.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="368.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="379.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="390.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="401.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="412.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="423.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="434.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="445.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="456.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="467.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="478.75" y="139.75" width="7.5" height="7.5" rx="1.5"/><rect class="u-miss" x="489.75" y="139.75" width="7.5" height="7.5" rx="1.5"/></svg>
+        <figcaption>
+          <ul class="legend">
+            <li><span class="key key-ok" aria-hidden="true"></span>良品，未標記</li>
+            <li><span class="key key-fa" aria-hidden="true"></span>誤報</li>
+            <li><span class="key key-hit" aria-hidden="true"></span>抓到瑕疵</li>
+            <li><span class="key key-miss" aria-hidden="true"></span>漏掉瑕疵</li>
+          </ul>
+          <span class="caption">每個方格代表一張測試影像，使用測試前凍結的門檻值。</span>
+        </figcaption>
+      </figure>
+      <p class="card-note">改善來自誤報減少與排序變好；檢出率沒有提升，仍低於提議的 90% 目標。</p>
+    </aside>
+  </div>
+</section>
+
+<section id="brief" class="section section-tight" aria-labelledby="brief-title">
+  <div class="wrap">
+    <h2 id="brief-title">重點摘要</h2>
+    <dl class="brief">
+      <div><dt>檢測問題</dt><dd>電路板瑕疵少見又多變，拿不到大量已標註的瑕疵影像來訓練。要回答的問題是：只看過良品的模型，能不能把該看的影像送到複判人員面前，同時不讓誤報淹沒複判人員？</dd></div>
+      <div><dt>實際做了什麼</dt><dd>一個可運作的原型：凍結的預訓練 CNN 特徵、逐位置的良品外觀高斯（馬氏距離）模型、板件影像對位；v2 再改為只在板面區域內計分。門檻值用另一批良品影像設定，並在任何測試影像計分前凍結。</dd></div>
+      <div><dt>仍存在的風險</dt><dd><ul><li>檢出能力：PCB2 檢出率 80%，未達提議的 90%；面積最小的三分之一瑕疵只有 56%。</li><li>光照：影像變暗 10%，PCB2 誤報率上升 +25.1 個百分點；影像變亮時，PCB3 誤報率上升 +15.2 個百分點。</li><li>可移植性：背景換成綠色布面時，原本的板件判定規則把 96% 的畫面都當成板子。</li></ul></dd></div>
+      <div><dt>尚未確立的事</dt><dd>沒有訪談任何製造端使用者、沒有使用工廠影像、沒有進行試產，也沒有量測任何人力節省或財務報酬。專案負責人的審閱與獨立稽核都尚未完成。</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="band band-plain" aria-labelledby="phases-title">
+  <div class="wrap">
+    <h2 id="phases-title">已實測、提議中、尚未驗證</h2>
+    <p class="section-intro">A 階段是以公開資料完成的技術可行性驗證；B 階段是專案負責人接下來會提出的營運驗證，目前完全沒有與製造端使用者一起做過。</p>
+    <div class="phase-grid">
+      <div class="phase-col phase-demonstrated">
+        <h3><span class="badge badge-demonstrated">已實證</span> A 階段 · 已完成的技術可行性</h3>
+        <ul><li>只學良品的偵測器、影像對位、板面區域計分：已實作並有單元測試。</li><li>PCB2 確認性測試：誤報率 13% → 3%，兩個版本的檢出率都是 80%。</li><li>在凍結門檻下量測對合成光照、模糊、位移的穩健性。</li><li>PCB3 事前登錄的光照校正實驗，只執行一次；該校正不予採用。</li></ul>
+      </div>
+      <div class="phase-col phase-proposed">
+        <h3><span class="badge badge-proposed">提議</span> B 階段 · 提議的營運驗證</h3>
+        <ul><li>與品保工程師訪談需求，並實際觀察一個檢驗班次。</li><li>以實際產線影像跑影子模式，並事先約定成本比例與複判人力。</li><li>工具影響任何判定之前，先通過該廠區的驗收檢查。</li><li>依營運證據再做一次 Go / No-Go。</li></ul>
+      </div>
+      <div class="phase-col phase-not_validated">
+        <h3><span class="badge badge-not_validated">尚未驗證</span> 本專案無法證明的範圍</h3>
+        <ul><li>任何工廠影像、相機、光源、產線節拍或實際瑕疵組成。</li><li>複判介面的易用性與複判人員之間的一致性。</li><li>人力節省或財務報酬。</li><li>對真實（非合成）光照變化的穩健性。</li></ul>
+      </div>
+    </div>
+    <div class="dates">
+      <h3>可驗證的里程碑</h3>
+      <ol class="timeline">
+        <li><time datetime="2026-10-09">2026-10-09</time><span>PCB1 概念驗證：可運作的原型、凍結的資料切分、測試、v1 評估</span></li>
+        <li><time datetime="2026-10-09">2026-10-09</time><span>v2 在開啟 PCB2 資料前事前登錄；門檻值凍結；唯一一次確認性評估</span></li>
+        <li><time datetime="2026-10-09">2026-10-09</time><span>PCB3 光照實驗事前登錄、凍結、只評估一次；成對分析</span></li>
+        <li class="pending"><span class="when"><span class="badge badge-pending">待完成</span></span><span>程式與結果的獨立最終稽核</span></li>
+        <li class="pending"><span class="when"><span class="badge badge-pending">待完成</span></span><span>專案負責人的技術審閱</span></li>
+      </ol>
+      <p class="fine">日期為開發用儲存庫的 commit 日期（台灣時間）。第一個 commit 已包含可運作的原型；更早的本機工作沒有獨立時間紀錄，也不主張任何總交付時間。精確的 commit 時間與雜湊值保留在儲存庫的稽核紀錄中。</p>
+    </div>
+  </div>
+</section>
+
+<section id="lifecycle" class="band" aria-labelledby="lifecycle-title">
+  <div class="wrap">
+    <h2 id="lifecycle-title">交付流程：七個決策</h2>
+    <p class="section-intro">每個階段都寫出做了什麼決策、依據的證據、付出的代價，以及下一步。狀態分為：本專案已實證、真實專案中的提議、或只有營運才能提供證據的待驗證。</p>
+    <ol class="stages">
+      <li class="stage-card stage-demonstrated">
+        <header>
+          <span class="step-n" aria-hidden="true">1</span>
+          <h3>初步價值評估與 Go / No-Go</h3>
+          <span class="badge badge-demonstrated">已實證</span>
+        </header>
+        <dl>
+          <dt>決策</dt><dd>把工具定位為複判輔助——它從不判退任何板子——並在任何測試前寫好提議的目標與 No-Go 規則。</dd>
+          <dt>證據</dt><dd>目標（檢出率 ≥ 90%、誤報率 ≤ 10%、AUROC ≥ 0.90、延遲 ≤ 1 s）自 v1 起未曾修改；每次執行都由程式依此判定。</dd>
+          <dt>取捨</dt><dd>這些目標是開發者的提議，不是使用者的需求。它們讓結論誠實，但不保證結論正確。</dd>
+          <dt>下一步</dt><dd>改用與品質負責人共同確認的目標。</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-proposed">
+        <header>
+          <span class="step-n" aria-hidden="true">2</span>
+          <h3>以證據理解使用者需求</h3>
+          <span class="badge badge-proposed">提議</span>
+        </header>
+        <dl>
+          <dt>決策</dt><dd>不去猜複判人員怎麼工作。列出只有使用者能回答的問題：漏檢與誤報各自的成本、複判人力、哪些瑕疵最重要。</dd>
+          <dt>證據</dt><dd>需求文件把每個目標都標示為「提議」；成本分析以損益兩平區間呈現，而不是一個節省金額。</dd>
+          <dt>取捨</dt><dd>本專案沒有訪談任何製造端使用者。</dd>
+          <dt>下一步</dt><dd>訪談品保工程師並觀察一個檢驗班次；記下雙方同意的成本比例與人力。</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-proposed">
+        <header>
+          <span class="step-n" aria-hidden="true">3</span>
+          <h3>First-Time-Right 需求對齊</h3>
+          <span class="badge badge-proposed">提議</span>
+        </header>
+        <dl>
+          <dt>決策</dt><dd>在開發任何介面或系統整合之前，先拿用真實模型輸出做的模擬畫面給使用者看。</dd>
+          <dt>證據</dt><dd>下方的複判流程模擬畫面使用真實影像、真實熱圖與實際紀錄的分數——包含一次誤報與一次漏檢。</dd>
+          <dt>取捨</dt><dd>模擬畫面能傳達概念，但在有人實際使用之前，無法說明是否好用。</dd>
+          <dt>下一步</dt><dd>帶檢驗人員走一遍畫面；每個欄位要嘛變成驗收條件，要嘛拿掉。</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-demonstrated">
+        <header>
+          <span class="step-n" aria-hidden="true">4</span>
+          <h3>模型選擇與實作</h3>
+          <span class="badge badge-demonstrated">已實證</span>
+        </header>
+        <dl>
+          <dt>決策</dt><dd>凍結的預訓練 CNN 特徵加上逐位置高斯（馬氏距離）模型：只需良品、不需訓練迴圈、熱圖可解釋。</dd>
+          <dt>證據</dt><dd>已實作並有單元測試、凍結檢查與一致性檢查；一次只改一件事（v2 ＝ 板面區域計分）。</dd>
+          <dt>取捨</dt><dd>對小型、低對比瑕疵較弱；監督式偵測模型並未在此測試。</dd>
+          <dt>下一步</dt><dd>等 B 階段取得真實瑕疵標註後，再用那些標註與監督式偵測模型比較。</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-demonstrated">
+        <header>
+          <span class="step-n" aria-hidden="true">5</span>
+          <h3>受控驗證</h3>
+          <span class="badge badge-demonstrated">已實證</span>
+        </header>
+        <dl>
+          <dt>決策</dt><dd>每項變更都事前登錄，用另一批良品影像凍結門檻值，並在開發期間未使用的板型上只評估一次。</dd>
+          <dt>證據</dt><dd>PCB2：誤報率 13% → 3%，檢出率不變。PCB3 光照實驗：事前登錄的規則判定為「支持改善」（弱證據），但校正讓模糊影像的誤報率上升 +14.5 個百分點，因此不予採用。</dd>
+          <dt>取捨</dt><dd>使用基準影像與合成擾動，不是產線上的真實領域偏移。揭露兩項偏差：PCB3 附錄 B1 在擬合後才提交；PCB3 測試計分後分析程式做過一次修正，未改變任何分數或決策。</dd>
+          <dt>下一步</dt><dd>以影子模式在廠區影像上執行同一套計畫。</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-pending">
+        <header>
+          <span class="step-n" aria-hidden="true">6</span>
+          <h3>價值實現與 Go / No-Go</h3>
+          <span class="badge badge-pending">待驗證</span>
+        </header>
+        <dl>
+          <dt>決策</dt><dd>不建議試產（No-Go）；建議進行範圍明確的驗證（Go）。</dd>
+          <dt>證據</dt><dd>PCB2 v2 的規則判定結果：INCONCLUSIVE（檢出率低於目標、剛好落在 No-Go 下限）。損益兩平分析顯示複判輔助在什麼條件下比全檢或不檢划算。</dd>
+          <dt>取捨</dt><dd>沒有營運資料，就不能主張任何人力節省或財務報酬。</dd>
+          <dt>下一步</dt><dd>取得影子模式結果與使用者自己的成本後，再做一次 Go / No-Go。</dd>
+        </dl>
+      </li>
+      <li class="stage-card stage-proposed">
+        <header>
+          <span class="step-n" aria-hidden="true">7</span>
+          <h3>跨廠區準備、維運與交接</h3>
+          <span class="badge badge-proposed">提議</span>
+        </header>
+        <dl>
+          <dt>決策</dt><dd>每一種新板型、背景、相機或光源，都視為必須通過自己檢查的新廠區。</dd>
+          <dt>證據</dt><dd>設定檔與門檻值有版本管理；模型變更或凍結未提交時評估會拒絕執行；PCB3 證明板件分割不會自動移植。</dd>
+          <dt>取捨</dt><dd>監控、回滾與升級處理目前只有文件，尚未實際運作。</dd>
+          <dt>下一步</dt><dd>把下方的廠區檢查表變成試產的進場關卡。</dd>
+        </dl>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="evidence" class="section" aria-labelledby="evidence-title">
+  <div class="wrap">
+    <h2 id="evidence-title">資料實際顯示了什麼</h2>
+    <p class="section-intro">本專案的發現，依其影響決策的先後排列。每一項都標出板型、屬於實測／已實證／事後分析，以及它改變了什麼。</p>
+    <ol class="findings">
+      <li class="finding">
+        <p class="finding-tag">PCB1 <span class="badge badge-demonstrated">已實證</span></p>
+        <h3>板子擺放方向不一致</h3>
+        <p>600 張訓練影像中有 116 張（19%）是轉了半圈放的；位置與傾斜角度也各不相同。</p>
+        <p class="finding-so"><strong>所以：</strong> 建模前一律先做影像對位（重心、傾角，再用模板判斷是否轉了半圈）。</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB1 <span class="badge badge-post_hoc">事後分析</span></p>
+        <h3>誤報來自背景</h3>
+        <p>v1 在 PCB1 良品上的 13/13 次誤報，異常最高點全部落在布面（灰塵、棉絮），不在板子上。</p>
+        <p class="finding-so"><strong>所以：</strong> v2 只在板面區域內取分數。這個假設無法在 PCB1 上確認，所以改到 PCB2 測試。</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB2 <span class="badge badge-measured">實測</span></p>
+        <h3>板面區域計分減少了誤報</h3>
+        <p>在開發期間未使用的板型上，測試誤報率從 13% 降到 3%（−10 個百分點，信賴區間 −17 至 −3）；AUROC 從 0.927 升到 0.979。</p>
+        <p class="finding-so"><strong>所以：</strong> 這項變更確實解決了它鎖定的問題。</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB2 <span class="badge badge-measured">實測</span></p>
+        <h3>檢出率沒有提升</h3>
+        <p>兩個版本都抓到 80% 的瑕疵，未達提議的 90%；事前登錄的檢出率假設未獲支持。面積最小的三分之一瑕疵：56%（19/34）。</p>
+        <p class="finding-so"><strong>所以：</strong> 現在的瓶頸是檢出能力，而不是誤報。</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB2 <span class="badge badge-measured">實測</span></p>
+        <h3>影像變暗會破壞操作點</h3>
+        <p>把每張影像調暗 10% 並降低對比後，v2 的誤報率從 3.6% 升到 28.7%；調亮則沒有這個問題。</p>
+        <p class="finding-so"><strong>所以：</strong> 上產線試行之前，必須先控制或校正光照，而且要驗證過。</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB3 <span class="badge badge-demonstrated">已實證</span></p>
+        <h3>板件判定假設了灰色背景</h3>
+        <p>PCB3 的背景是高飽和度的綠色布面，原本的顏色規則把每張影像的 96% 都判成板子，對位因此在沒有任何錯誤訊息的情況下失效。用訓練影像量出的色相範圍排除背景後，板件遮罩恢復為 15%。</p>
+        <p class="finding-so"><strong>所以：</strong> 依賴背景的前處理，必須在每個廠區重新驗證；這次它是無聲無息地失效。</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB3 <span class="badge badge-demonstrated">已實證</span></p>
+        <h3>對位與板面區域只能大致移植</h3>
+        <p>未校正時，影像變暗 10% 會讓訓練影像上估計的板件位置平均偏移 10.7 像素（中位數）。板面區域佔畫面的 48%，其中約 31% 的像素其實是布面。</p>
+        <p class="finding-so"><strong>所以：</strong> 靠近板邊的棉絮仍可能引發誤報（見複判流程範例）；位置估計會受亮度影響。</p>
+      </li>
+      <li class="finding">
+        <p class="finding-tag">PCB3 <span class="badge badge-measured">實測</span></p>
+        <h3>光照校正實驗</h3>
+        <p>事前登錄的規則判定為「支持改善」：整體變暗時，候選組誤報率上升 −0.4 個百分點，基準組為 +4.3（差異 −4.7，信賴區間 −8.6 至 −0.8）。但基準組在 PCB3 上幾乎沒有出問題，所以這個指標只是弱證據——而且校正讓輕微模糊的影像誤報率上升 +14.5 個百分點（基準組 +0.4）。</p>
+        <p class="finding-so"><strong>所以：</strong> 不予採用。校正可能是用一種敏感度換來另一種敏感度；任何修正都必須用完整的擾動組合檢查，而不只檢查它鎖定的那一種。</p>
+      </li>
+    </ol>
+    <figure class="wide-fig">
+      <img src="../assets/img/pcb3_mask_rules.jpg" width="1200" height="242" alt="同一張 PCB3 訓練影像的三個畫面：原始照片、原本的板件遮罩幾乎以洋紅色蓋滿整個畫面、調整後的遮罩只覆蓋板子。">
+      <figcaption>PCB3 訓練影像：原圖 · 原本的顏色規則（洋紅色＝判為板子，佔畫面 96%）· 加入色相範圍排除後（15%）。數值為 600 張訓練影像的中位數。VisA 影像，CC BY 4.0，經縮放並加上疊圖。</figcaption>
+    </figure>
+
+    <h3 id="boards" class="sub-h">各板型結果——彼此獨立的資料集</h3>
+    <p class="section-intro">PCB1、PCB2、PCB3 是不同的板型，各自有自己擬合的模型、板面區域與凍結門檻。不同板型的列並不是對照比較，也不代表隨時間進步；只有同一板型內的列才是成對比較。</p>
+    <div class="table-scroll" role="region" aria-labelledby="boards" tabindex="0">
+      <table class="grid-table boards-table">
+        <thead><tr><th scope="col">板型</th><th scope="col">版本／組別</th><th scope="col">證據性質</th><th scope="col" class="num">檢出率（官方測試）</th><th scope="col" class="num">95% 信賴區間</th><th scope="col" class="num">誤報率（測試良品）</th><th scope="col" class="num">誤報率（保留良品）</th><th scope="col" class="num">AUROC</th></tr></thead>
+        <tbody>
+          <tr class="board-pcb1">
+            <th scope="row">PCB1</th><td>v1（原始流程）</td><td>開發用板型；v2 的構想來源</td>
+            <td class="num strong">72% <span class="frac">(72/100)</span></td><td class="num">62%–81%</td>
+            <td class="num">7% (7/100)</td><td class="num">3.9% (6/154)</td><td class="num">0.938</td>
+          </tr>
+          <tr class="board-pcb1">
+            <th scope="row">PCB1</th><td>v2，回溯分析</td><td>事後分析，使用的是啟發 v2 的同一批資料——不是獨立證據</td>
+            <td class="num strong">88% <span class="frac">(88/100)</span></td><td class="num">80%–94%</td>
+            <td class="num">6% (6/100)</td><td class="num">1.9% (3/154)</td><td class="num">0.974</td>
+          </tr>
+          <tr class="board-pcb2 board-first">
+            <th scope="row">PCB2</th><td>v1</td><td>確認性測試，開發期間未使用的板型</td>
+            <td class="num strong">80% <span class="frac">(80/100)</span></td><td class="num">71%–87%</td>
+            <td class="num">13% (13/100)</td><td class="num">5.3% (8/151)</td><td class="num">0.927</td>
+          </tr>
+          <tr class="board-pcb2">
+            <th scope="row">PCB2</th><td>v2</td><td>確認性測試，開發期間未使用的板型——受控的 v1／v2 比較</td>
+            <td class="num strong">80% <span class="frac">(80/100)</span></td><td class="num">71%–87%</td>
+            <td class="num">3% (3/100)</td><td class="num">4.0% (6/151)</td><td class="num">0.979</td>
+          </tr>
+          <tr class="board-pcb3 board-first">
+            <th scope="row">PCB3</th><td>v2 流程——光照實驗的基準組</td><td>確認性測試，新板型；不是新的模型版本</td>
+            <td class="num strong">90% <span class="frac">(90/100)</span></td><td class="num">82%–95%</td>
+            <td class="num">3% (3/101)</td><td class="num">5.2% (8/155)</td><td class="num">0.982</td>
+          </tr>
+          <tr class="board-pcb3">
+            <th scope="row">PCB3</th><td>v2＋光照校正——候選組</td><td>確認性測試，新板型；不予採用</td>
+            <td class="num strong">91% <span class="frac">(91/100)</span></td><td class="num">84%–96%</td>
+            <td class="num">3% (3/101)</td><td class="num">3.9% (6/155)</td><td class="num">0.983</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">每個檢出率都只量測 100 張瑕疵基準影像，因此有數個百分點的不確定性（見信賴區間）。PCB3 基準組的 90% 是單一板型上的基準量測值，不是實際產線上可預期的檢出率。</p>
+  </div>
+</section>
+
+<section id="pcb3" class="band" aria-labelledby="pcb3-title">
+  <div class="wrap">
+    <h2 id="pcb3-title">PCB3：事前登錄的光照校正實驗</h2>
+    <p class="section-intro">PCB2 顯示，影像變暗 10% 會讓誤報率上升 +25.1 個百分點。這個實驗在從未使用過的板型上測試一個候選修正：實驗計畫在開啟資料前就已提交，而且只評估一次。一句話總結：修正做到了它設計要做的事，但它要解決的問題在 PCB3 上幾乎沒有出現，同時還帶來了新的弱點。</p>
+    <div class="two-col">
+      <div>
+        <h3>實驗設計（開啟 PCB3 資料前就已固定）</h3>
+        <ul class="plain"><li>只改一件事：在對位前，把每張影像整體的亮度與對比標準化到訓練影像的中位數，三個色彩通道使用同一個增益。</li><li>基準組＝v2 流程；候選組＝v2 加上校正。使用同一批影像，各自有自己的門檻值，各自以 150 張另外的良品影像凍結。</li><li>主要指標：整體變暗（G1）造成的誤報率上升幅度之差異中的差異（DiD），以 101 張測試良品＋155 張保留良品計算，採成對拔靴法。</li><li>關卡：乾淨條件下的檢出率與誤報率，不得惡化超過事先訂好的容許範圍。非均勻光照（N1）是校正模型範圍以外的測試。</li><li>事先就知道：G1 是整體性的變化，校正幾乎「依定義」就能還原它。G1 結果好，並不代表對真實光照變化有穩健性。</li></ul>
+      </div>
+      <div class="card result-card">
+        <h3>兩個決策，分開陳述</h3>
+        <div class="decision-block decision-a">
+          <p class="decision-label">A · 事前登錄的實驗結果</p>
+          <p><strong>ROBUSTNESS IMPROVEMENT SUPPORTED</strong>——完全依凍結的規則計算，在 PCB3 上屬於<strong>弱證據</strong>。它只表示：在合成的整體變暗下，候選組的誤報率上升幅度小於基準組（−0.4 對 +4.3 個百分點；差異 −4.7，信賴區間 −8.6 至 −0.8）。基準組本身的上升幅度低於實驗計畫事先訂定、能構成有效檢驗的門檻。</p>
+        </div>
+        <div class="decision-block decision-b">
+          <p class="decision-label">B · 工程採用決策</p>
+          <p><strong>不採用光照校正作為首選流程。</strong>它降低了調亮時的誤報率上升（+15.2 → +2.7 個百分點），但在輕微模糊下讓誤報率上升 +14.5 個百分點（良品誤報 9/256 → 46/256；基準組 +0.4），超過原本 10 個百分點的上限。</p>
+        </div>
+        <p class="baseline-note">否決候選組不等於核准基準組。基準組同樣未通過穩健性標準（調亮 +15.2 個百分點），兩組都沒有真實使用者驗證、工廠試產或實際量測的營運效益。</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">結果（唯一一次計畫內執行）</h3>
+    <div class="table-scroll" role="region" aria-label="結果（唯一一次計畫內執行）" tabindex="0">
+      <table class="grid-table cond-table">
+        <thead>
+          <tr><th scope="col" rowspan="2">條件</th><th scope="colgroup" colspan="2" class="grp">誤報率（誤報數／未見過的良品數）</th><th scope="colgroup" colspan="2" class="grp">相對乾淨條件的變化（百分點）</th></tr>
+          <tr><th scope="col" class="num">基準組</th><th scope="col" class="num">候選組</th><th scope="col" class="num">基準組</th><th scope="col" class="num">候選組</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">乾淨（P0）<span class="hint">無擾動</span></th>
+            <td class="num">4.3% <span class="frac">(11/256)</span></td>
+            <td class="num">3.5% <span class="frac">(9/256)</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td></tr>
+          <tr><th scope="row">整體變暗（G1）<span class="hint">主要指標</span></th>
+            <td class="num">8.6% <span class="frac">(22/256)</span></td>
+            <td class="num">3.1% <span class="frac">(8/256)</span></td>
+            <td class="num">+4.3</td>
+            <td class="num">−0.4</td></tr>
+          <tr><th scope="row">調亮（B1）<span class="hint">次要指標；反方向</span></th>
+            <td class="num">19.5% <span class="frac">(50/256)</span></td>
+            <td class="num">6.2% <span class="frac">(16/256)</span></td>
+            <td class="num">+15.2</td>
+            <td class="num">+2.7</td></tr>
+          <tr><th scope="row">非均勻光照（N1）<span class="hint">次要指標；模型範圍外的限制測試</span></th>
+            <td class="num">6.2% <span class="frac">(16/256)</span></td>
+            <td class="num">5.9% <span class="frac">(15/256)</span></td>
+            <td class="num">+2.0</td>
+            <td class="num">+2.3</td></tr>
+          <tr><th scope="row">輕微模糊<span class="hint">僅用於驗收檢查，非比較指標</span></th>
+            <td class="num">4.7% <span class="frac">(12/256)</span></td>
+            <td class="num">18.0% <span class="frac">(46/256)</span></td>
+            <td class="num">+0.4</td>
+            <td class="num flag">+14.5</td></tr>
+          <tr><th scope="row">位移<span class="hint">僅用於驗收檢查，非比較指標</span></th>
+            <td class="num">4.3% <span class="frac">(11/256)</span></td>
+            <td class="num">4.3% <span class="frac">(11/256)</span></td>
+            <td class="num">+0.0</td>
+            <td class="num">+0.8</td></tr>
+          <tr class="recall-row"><th scope="row">乾淨條件檢出率<span class="hint">抓到的瑕疵／官方測試瑕疵</span></th>
+            <td class="num">90/100</td><td class="num">91/100</td><td class="num">—</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">256 張未見過的良品影像（官方測試 101 張＋補充保留集 155 張），兩組各用自己凍結的門檻值。絕對誤報率與變化量分欄呈現：變化量是同一批影像上兩個絕對誤報率的差。完整分析與獨立重算見儲存庫。</p>
+
+    <h3 class="sub-h">原始驗收標準（未修改）——兩組</h3>
+    <div class="table-scroll" role="region" aria-label="原始驗收標準（未修改）——兩組" tabindex="0">
+      <table class="grid-table acc-table">
+        <thead><tr><th scope="col">標準</th><th scope="col">基準組</th><th scope="col">候選組</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">檢出率 ≥ 90%（官方測試）</th>
+            <td class="ok"><strong>達成</strong>
+ · 90% (90/100)</td>
+            <td class="ok"><strong>達成</strong>
+ · 91% (91/100)</td>
+          </tr>
+          <tr><th scope="row">誤報率 ≤ 10%，官方測試良品</th>
+            <td class="ok"><strong>達成</strong>
+ · 3% (3/101)</td>
+            <td class="ok"><strong>達成</strong>
+ · 3% (3/101)</td>
+          </tr>
+          <tr><th scope="row">誤報率 ≤ 10%，保留良品</th>
+            <td class="ok"><strong>達成</strong>
+ · 5.2% (8/155)</td>
+            <td class="ok"><strong>達成</strong>
+ · 3.9% (6/155)</td>
+          </tr>
+          <tr><th scope="row">AUROC ≥ 0.90</th>
+            <td class="ok"><strong>達成</strong>
+ · 0.982</td>
+            <td class="ok"><strong>達成</strong>
+ · 0.983</td>
+          </tr>
+          <tr><th scope="row">延遲中位數 ≤ 1 s</th>
+            <td class="ok"><strong>達成</strong>
+ · 187 ms</td>
+            <td class="ok"><strong>達成</strong>
+ · 292 ms</td>
+          </tr>
+          <tr><th scope="row">穩健性：任何擾動造成的誤報率上升不超過 10 個百分點（G1、B1、模糊、位移）</th>
+            <td class="fail"><strong>未達成</strong>
+: 調亮（B1） +15.2 個百分點</td>
+            <td class="fail"><strong>未達成</strong>
+: 輕微模糊 +14.5 個百分點</td>
+          </tr>
+          <tr class="verdict-row"><th scope="row">判定</th><td><strong>INCONCLUSIVE</strong></td><td><strong>INCONCLUSIVE</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">INCONCLUSIVE 表示沒有觸發任何 No-Go 規則，但並非所有標準都達成；它不是核准。檢出率只在 100 張影像的點估計上達標。</p>
+    <h3 class="sub-h">如何解讀</h3>
+    <dl class="interp">
+      <div><dt><span class="letter">A</span>校正有沒有解決整體變暗的問題？</dt><dd>就它能處理的部分而言，有：變暗時候選組上升 −0.4 個百分點，基準組 +4.3（差異 −4.7 個百分點，信賴區間 −8.6 至 −0.8）。但基準組的上升幅度低於事先訂定、能構成有效檢驗的門檻；而整體變暗正好是整體校正可以還原的情況。這不能證明對真實光照有穩健性。</dd></div>
+      <div><dt><span class="letter">B</span>對位與分割有沒有變得更穩定？</dt><dd>很可能是效果的一部分。在訓練影像上，變暗讓基準組估計的板件位置偏移 10.7 像素（中位數），候選組只有 0.2 像素；板面區域退回事件 8 次對 0 次。本實驗無法區分對位效果與特徵效果，因此不主張兩者各佔多少。</dd></div>
+      <div><dt><span class="letter">C</span>異常分數的行為有沒有改善？</dt><dd>乾淨條件下沒有變化（AUROC 0.982 → 0.983；檢出率 90% → 91%）。調亮時：上升幅度 +15.2 → +2.7 個百分點。但在輕微模糊下，候選組誤報率上升 +14.5 個百分點（9/256 → 46/256），基準組只有 +0.4——這是計畫外的觀察；可能的原因是模糊降低了整體對比，校正再把它拉高。</dd></div>
+      <div><dt><span class="letter">D</span>非均勻光照下還剩下什麼問題？</dt><dd>沒有改善：差異 +0.4 個百分點（信賴區間 −2.7 至 +3.9）。兩組在 PCB3 上的上升幅度都很小，所以沒有觸發限制規則；但正如測試前所述，整體校正無法處理光照的空間梯度。</dd></div>
+      <div><dt><span class="letter">E</span>可以進入產線試行了嗎？</dt><dd>還不行。依未修改的驗收標準，兩組都是 INCONCLUSIVE：PCB3 的乾淨條件目標都達到了，但兩組都未通過穩健性標準（基準組在調亮時、候選組在模糊時）。校正也增加了延遲（中位數 187 → 292 毫秒）。所有擾動都是合成的。候選組不予採用，基準組也尚未達到可上線的程度。</dd></div>
+    </dl>
+    <figure class="wide-fig">
+      <img src="../assets/img/pcb3_roi.jpg" width="1200" height="840" alt="PCB3 訓練影像對位後的平均影像，標出板面區域各建構階段的輪廓；另有三張個別影像，以洋紅色標出板面區域內的布面。">
+      <figcaption>僅使用訓練影像。板面區域（佔畫面 48%）涵蓋了板子、排針與 LED，但其中約 31% 的像素是布面（洋紅色）。顏色分類屬經驗法則。VisA 影像，CC BY 4.0，經對位、裁切並加上疊圖。</figcaption>
+    </figure>
+    <p class="fine">揭露的偏差：實驗計畫要求 PCB3 板件遮罩的調整（附錄 B1）必須在擬合前提交；它在擬合前就已決定，但實際上是兩個模型擬合完成約五分鐘後才提交。當時沒有任何校準或測試影像被計分。相關診斷與此揭露（附錄 B2）在校準前已提交。</p>
+
+    <div id="pcb3-repair" class="disclosure" role="region" aria-labelledby="repair-title">
+      <h3 id="repair-title">技術揭露：PCB3 測試後的分析程式修正</h3>
+      <p>PCB3 測試與保留影像各計分一次之後，事前登錄的成對分析程式拒絕執行，其中一項檢查因此被修正。所以產生 PCB3 結果的分析程式，與凍結時的版本並不完全相同。此處沒有任何回填日期。</p>
+      <table class="metrics compact repair-table">
+        <thead><tr><th scope="col">時間</th><th scope="col">事件</th></tr></thead>
+        <tbody><tr><td class="when">16:58</td><td>凍結提交（eb4e7a9）：門檻值、設定檔、資料切分與原始碼</td></tr><tr><td class="when">16:58–17:07</td><td>兩組唯一一次計畫內評估。此後沒有任何 PCB3 測試或保留影像再被計分。</td></tr><tr><td class="when">17:09、17:10</td><td>成對分析在程式未變更下兩度拒絕執行：輸入檢查要求標籤為「anomaly」，但 VisA 記錄的是瑕疵類型（bent、melt、scratch、missing）。</td></tr><tr><td class="when">17:14</td><td>修正該檢查（7dbd302）。當時已在評估主控台上看過測試的摘要指標。</td></tr><tr><td class="when">17:15</td><td>成對分析完成並提交（9c9f7c5）。</td></tr></tbody>
+      </table>
+      <dl class="repair-facts">
+        <div><dt>改了什麼</dt><dd>讀取瑕疵標註遮罩的函式中的一個條件；該函式只用於描述性的小型／低對比瑕疵表。修正前這張表無法產生；它的計算方式沒有改變。</dd></div>
+        <div><dt>沒有改變的部分</dt><dd>模型擬合、前處理、門檻值、測試分數、預測結果、主要統計量與判定規則。沒有任何影像被重新計分，測試也沒有重做。</dd></div>
+        <div><dt>獨立檢查</dt><dd>另一支完全不引用專案程式碼的腳本，從原始分數檔與原始遮罩重新計算 PCB3 的每個數字：90 項檢查中有 90 項與紀錄輸出一致。</dd></div>
+      </dl>
+      <p class="fine">完整事件紀錄（時序、確切修改內容、檔案雜湊值、偏差）見儲存庫 <code>docs/pcb3_post_evaluation_repair.md</code>；所有測試後事件見 <code>docs/illumination_experiment_deviations.md</code>；重算結果見 <code>reports/pcb3_verification/recompute.md</code>。時間為 2026-10-09，台灣時間。</p>
+    </div>
+  </div>
+</section>
+
+<section id="model" class="section" aria-labelledby="model-title">
+  <div class="wrap">
+    <h2 id="model-title">為什麼選擇凍結 CNN＋馬氏距離模型</h2>
+    <p class="section-intro">當時需要的是一個只用良品的基準方法：幾分鐘內就能用無瑕疵影像擬合、能向工程師解釋、而且可以凍結。下表是定性比較：YOLO 類偵測模型與微調方法都沒有在本專案中訓練或測試。</p>
+    <div class="table-scroll" role="region" aria-labelledby="model-title" tabindex="0">
+      <table class="grid-table">
+        <thead><tr><th scope="col">方法</th><th scope="col">需要的標註</th><th scope="col">輸出</th><th scope="col">適用情境</th><th scope="col">主要風險</th></tr></thead>
+        <tbody>
+          <tr class="chosen"><th scope="row">凍結 CNN 特徵＋逐位置高斯模型（本專案採用）</th><td>只需要良品影像</td><td>異常分數與熱圖</td><td>瑕疵少見且無法事先列舉；有人員參與複判</td><td>特徵看起來正常的細微瑕疵會漏掉；對擺放位置與光照敏感</td></tr>
+          <tr><th scope="row">物件偵測模型（例如 YOLO 系列）</th><td>每種瑕疵都要框選標註，而且每種都要很多張</td><td>瑕疵位置與類別</td><td>瑕疵種類已知、穩定且樣本充足，而且需要分類</td><td>沒看過的瑕疵類型無法標出；標註與維護成本高</td></tr>
+          <tr><th scope="row">微調分類模型或骨幹網路</th><td>已標註的良品與不良品影像</td><td>整張影像的類別或分數</td><td>已有足夠的瑕疵標註，製程穩定</td><td>瑕疵樣本少時容易過擬合；需要訓練、驗證與再訓練流程</td></tr>
+          <tr><th scope="row">黃金樣本比對或規則式方法</th><td>不需要，但每個產品都要調參</td><td>與參考影像的差異</td><td>治具、光源與產品都嚴格受控</td><td>擺放、光照與正常個體差異一變就失效</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">選擇只學良品的模型，是針對這個階段（沒有瑕疵標註、有人員複判）的判斷，並不是主張它勝過監督式模型。B 階段的資料才能做公平比較。</p>
+  </div>
+</section>
+
+<section id="roi" class="band band-plain" aria-labelledby="roi-title">
+  <div class="wrap">
+    <h2 id="roi-title">「ROI」的兩種意思</h2>
+    <p class="section-intro">在這個專案裡，同一個縮寫代表兩件不同的事，必須分開來看。</p>
+    <div class="two-col">
+      <div class="roi-box">
+        <h3>影像 ROI——感興趣區域（Region of Interest）</h3>
+        <p>取分數的影像範圍。v2 在板面區域內取異常值的最大值；板面區域由無瑕疵的訓練影像建立，再外擴 16 個像素。若某張影像自己的板件遮罩有不到 0.95 落在區域內，系統就不信任該區域，改用整張畫面計分——這只會讓送複判的機率變高。</p>
+      </div>
+      <div class="roi-box">
+        <h3>商業 ROI——投資報酬率（Return on Investment）</h3>
+        <p>沒有量測。目前資料能支持的，只是簡化的分類成本敏感度分析。令 k ＝ 瑕疵勝算 ×（漏掉一件瑕疵的成本 ÷ 複判一張影像的成本）。以 PCB2 v2 實測的漏檢率 0.20 與誤報率 0.03 計算，最省成本的做法是：</p>
+        <table class="metrics compact">
+          <thead><tr><th scope="col">做法</th><th scope="col">何時最省</th></tr></thead>
+          <tbody>
+<tr><th scope="row">全部不複判</th><td>k 小於 0.0375</td></tr><tr><th scope="row">只複判 v2 標記的影像</th><td>k 介於 0.0375 與 4.85 之間</td></tr><tr><th scope="row">全部複判</th><td>k 大於 4.85</td></tr>          </tbody>
+        </table>
+        <p class="fine">這裡只比較分類錯誤的成本，沒有計入複判時間、產線節拍、流到下游的漏檢、人力配置與導入成本；k 也必須來自使用者自己的不良率與成本。這不是財務上的投資報酬率，也不主張任何人力節省。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="workflow" class="section" aria-labelledby="workflow-title">
+  <div class="wrap">
+    <h2 id="workflow-title">人工複判流程：模擬畫面 <span class="badge badge-proposed">提議</span></h2>
+    <p class="section-intro">模型輸出可能如何送到複判人員手上：每張影像一張卡片，包含熱圖、相對於凍結門檻值的分數，以及板子是否被正確定位的檢查。影像、熱圖與數字都是 PCB2 v2 的真實測試輸出。</p>
+    <p class="mock-banner">提議中的決策輔助介面——不是已上線的系統。工具只建議是否複判，最後由人判定。</p>
+    <div class="mock-grid">
+      <article class="mock-card mock-caught">
+        <header class="mock-head">
+          <span class="mock-id">006.JPG</span>
+          <span class="mock-decision mock-review">送複判</span>
+        </header>
+        <img src="../assets/img/workflow_caught.jpg" width="960" height="640" alt="排針彎曲的 PCB2 板子，熱圖標示出排針位置。">
+        <dl class="mock-fields">
+          <div><dt>異常分數</dt><dd>88.6</dd></div>
+          <div><dt>凍結門檻值（P95）</dt><dd>51.2</dd></div>
+          <div><dt>板件定位（ROI 覆蓋率）</dt><dd>1.00</dd></div>
+          <div><dt>基準資料標籤</dt><dd>瑕疵品</dd></div>
+        </dl>
+        <h3>抓到瑕疵</h3>
+        <p>熱圖集中在彎曲的排針上，分數遠高於門檻值。</p>
+        <p class="mock-action"><strong>複判人員動作：</strong> 檢查排針並記錄瑕疵類型。</p>
+      </article>
+      <article class="mock-card mock-false_alarm">
+        <header class="mock-head">
+          <span class="mock-id">0484.JPG</span>
+          <span class="mock-decision mock-review">送複判</span>
+        </header>
+        <img src="../assets/img/workflow_false_alarm.jpg" width="960" height="640" alt="PCB2 良品板，唯一被標示的點位於板子左下角附近的背景布面上。">
+        <dl class="mock-fields">
+          <div><dt>異常分數</dt><dd>65.1</dd></div>
+          <div><dt>凍結門檻值（P95）</dt><dd>51.2</dd></div>
+          <div><dt>板件定位（ROI 覆蓋率）</dt><dd>1.00</dd></div>
+          <div><dt>基準資料標籤</dt><dd>良品</dd></div>
+        </dl>
+        <h3>誤報</h3>
+        <p>這是良品。異常最高點落在板面區域外擴邊界內、布面上的一個痕跡——正是診斷中發現的區域特異性限制。</p>
+        <p class="mock-action"><strong>複判人員動作：</strong> 確認沒有瑕疵，並把原因標為「背景」，方便追蹤誤報來源。</p>
+      </article>
+      <article class="mock-card mock-missed">
+        <header class="mock-head">
+          <span class="mock-id">072.JPG</span>
+          <span class="mock-decision mock-no_review">不送複判</span>
+        </header>
+        <img src="../assets/img/workflow_missed.jpg" width="960" height="640" alt="PCB2 板子，排針旁的小瑕疵以青色輪廓標出，看不到熱圖。">
+        <dl class="mock-fields">
+          <div><dt>異常分數</dt><dd>31.4</dd></div>
+          <div><dt>凍結門檻值（P95）</dt><dd>51.2</dd></div>
+          <div><dt>板件定位（ROI 覆蓋率）</dt><dd>1.00</dd></div>
+          <div><dt>基準資料標籤</dt><dd>瑕疵品</dd></div>
+        </dl>
+        <h3>已知限制：漏掉瑕疵</h3>
+        <p>排針旁的一個小瑕疵分數低於門檻值，所以系統沒有建議複判。青色輪廓是基準資料的標準答案，這裡只用來說明為什麼會漏掉。</p>
+        <p class="mock-action"><strong>複判人員動作：</strong> 系統不會提示。小型瑕疵需要其他防線，例如抽樣稽核。</p>
+      </article>
+    </div>
+    <p class="fine">綠色虛線：計分區域。熱圖：平滑後的異常分數，只顯示高於校準良品中位數的部分。分數是官方測試集的紀錄值；門檻值是測試前凍結的那一個。VisA 影像（CC BY 4.0），經對位、裁切、縮放並加上疊圖。</p>
+  </div>
+</section>
+
+<section id="sites" class="band" aria-labelledby="sites-title">
+  <div class="wrap">
+    <h2 id="sites-title">跨廠區準備：新廠區必須證明什麼</h2>
+    <p class="section-intro">PCB1、PCB2、PCB3 是公開資料集中的板型，不是製造廠區。但它們很具體地顯示：條件一改變，哪些假設就會失效。</p>
+    <div class="table-scroll" role="region" aria-labelledby="sites-title" tabindex="0">
+      <table class="grid-table">
+        <thead><tr><th scope="col">風險</th><th scope="col">本專案觀察到的現象</th><th scope="col">新廠區必須提供或通過的項目</th></tr></thead>
+        <tbody>
+<tr><th scope="row">依賴背景的板件分割</th><td>灰色布面沒問題；PCB3 的綠色布面讓原本的規則把 96% 的畫面當成板子，而且沒有任何錯誤訊息。</td><td>用該廠區自己的良品影像做分割檢查：板件遮罩面積落在預期範圍內，並由人目視確認縮圖總表。</td></tr><tr><th scope="row">光照敏感度</th><td>影像變暗 10% 時，PCB2 誤報率上升 +25.1 個百分點；在 PCB3 上，亮度變化也會讓估計的板件位置偏移。</td><td>光源規格，以及每張影像的亮度／對比檢查；在該廠區凍結的門檻值下做擾動測試。</td></tr><tr><th scope="row">方向與擺放</th><td>PCB1 有 19% 的板子是轉了半圈放的；每種板型的擺放位置都有差異。</td><td>治具或對位驗收：該廠區良品的位置分布，以及在已標註樣本上沒有方向判斷錯誤。</td></tr><tr><th scope="row">ROI 相容性</th><td>PCB3 的板面區域佔畫面 48%，其中約 31% 是布面；誤報可能從板子附近的布面開始。</td><td>用該廠區自己的良品建立區域、覆蓋率關卡通過、校準影像上的退回（fail-safe）比例低於約定上限。</td></tr><tr><th scope="row">小型與低對比瑕疵</th><td>PCB2 面積最小的三分之一瑕疵，檢出率只有 56%。</td><td>該廠區實際瑕疵組成的已標註樣本；依尺寸分類回報檢出率，而不只是整體數字。</td></tr><tr><th scope="row">廠區專屬資料與校準</th><td>每一種板型都需要自己擬合的模型、板面區域與門檻值。</td><td>足夠擬合用的良品影像、另一組校準用影像，以及一組調整期間團隊從不查看的保留集。</td></tr><tr><th scope="row">門檻值與模型版本管理</th><td>凍結後若模型、設定或資料切分有變，或凍結狀態未提交，評估就會拒絕執行。</td><td>模型、門檻值、設定檔一起版本化發布；任何變更都觸發重新校準與回歸測試。</td></tr>        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="handoff" class="section" aria-labelledby="handoff-title">
+  <div class="wrap">
+    <h2 id="handoff-title">維運與工程交接</h2>
+    <p class="section-intro">接手的工程師必須知道的事。內容記錄在儲存庫的交接文件中；都還沒有在產線上實際運作過。</p>
+    <dl class="handoff-grid">
+<div><dt>輸入規格</dt><dd>每張影像一塊板子的 RGB 影像，固定俯拍相機，板型與背景必須和擬合模型時相同。其他輸入不在範圍內。</dd></div><div><dt>對位失敗</dt><dd>找不到板子會直接報錯，絕不默默放行。這類影像一律送人工複判並計數。</dd></div><div><dt>ROI 退回機制</dt><dd>若板件遮罩不在板面區域內，就改用整張畫面的分數（較保守）。退回比例是監控項目；校準時超過上限就停止。</dd></div><div><dt>光照警示</dt><dd>提議：把每張影像的整體亮度與對比和訓練範圍比較，超出範圍就標記送複判——因為實測顯示變暗時誤報會急遽上升。</dd></div><div><dt>測試與門檻值版本</dt><dd>凍結時對模型、門檻值、設定與資料切分取雜湊值；不一致時評估會拒絕執行。每次發布都附上凍結紀錄。</dd></div><div><dt>監控</dt><dd>每個班次追蹤送複判比例、退回比例、亮度漂移與經人員確認的誤報；任何一項偏移都要啟動調查。</dd></div><div><dt>回歸測試</dt><dd>單元測試與合成資料的端對端測試，加上一致性檢查，確保每個報告數字都能追溯到實際紀錄的輸出。每次變更都要重跑。</dd></div><div><dt>回滾</dt><dd>保留上一版模型與門檻值可隨時部署；送複判比例或退回比例觸發警報時就回滾，再離線重新校準。</dd></div><div><dt>人工升級處理</dt><dd>工具只提供建議，由複判人員判定。不明確的案例，以及任何疑似系統性漏檢，都要上報品質負責人，絕不自動判定處置。</dd></div>    </dl>
+    <details class="terms">
+      <summary>本頁使用的名詞</summary>
+      <dl>
+<dt>檢出率（Recall）</dt><dd>瑕疵板被工具送去人工複判的比例。</dd><dt>誤報率（False-alarm rate）</dt><dd>良品板被工具送去複判的比例。工具只建議複判，所以誤報的代價是複判人員的時間，而不是產品。</dd><dt>AUROC</dt><dd>與門檻無關的排序品質：隨機挑一張瑕疵板，其分數高於隨機挑一張良品板的機率。</dd><dt>凍結門檻值（P95）</dt><dd>超過就標記的分數，用另一批良品影像設定，目標誤報率約 5%，並在任何測試影像計分前固定。</dd><dt>事前登錄（Pre-registration）</dt><dd>在開啟測試資料前，就把假設、資料切分、指標與決策規則寫進儲存庫。</dd><dt>差異中的差異（DiD）</dt><dd>在同一批影像上，候選組的誤報率上升幅度比基準組少（或多）多少。</dd><dt>影子模式（Shadow mode）</dt><dd>讓工具與現有檢驗並行運作，但不影響任何判定，藉此在真實產線影像上量測。</dd>      </dl>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>以公開的 VisA 資料集（Amazon Science）進行的獨立專案。與資料集作者或任何公司均無隸屬或背書關係。PCB1–PCB3 是基準資料中的板型，不是製造廠區。本專案不主張任何正式上線、工廠資料、使用者簽核或財務報酬。</p>
+    <p>影像來源：VisA，Zou 等人，ECCV 2022，CC BY 4.0（github.com/amazon-science/spot-diff）。本專案將影像縮放、對位、裁切，並加上熱圖、輪廓與遮罩疊圖。</p>
+    <p>程式碼與文件是在專案負責人指導下，藉助 AI 程式開發工具（Claude Code）產出的。專案負責人對本成果的審閱尚未完成。</p>
+    <p>專案負責人：Leon Lai</p>
+  </div>
+</footer>
+</body>
+</html>

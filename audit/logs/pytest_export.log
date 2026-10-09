@@ -1,0 +1,15 @@
+# command: PYTHONPATH=src python -m pytest -rs -p no:cacheprovider   (clean export, own src/, no dataset/models/dev history)
+# start 2026-10-09 21:27:38 +0800
+........................................................................ [ 47%]
+...............s...........s...ssss.................................s... [ 95%]
+.......                                                                  [100%]
+=========================== short test summary info ===========================
+SKIPPED [1] tests\test_illum_e2e.py:388: VisA PCB3 not extracted
+SKIPPED [1] tests\test_pcb3_verification.py:109: VisA PCB3 images/masks not present (data/ is never committed)
+SKIPPED [1] tests\test_pcb3_verification.py:45: development history not present (commits ['eb4e7a92c417e2c76750e8acb530e3bddbd04b2d', '115c54be2e7422f4b1e5bba4ab9d12cb4a00b880', '7dbd302940bc7ceca3aee5f139adaca927459923', '9c9f7c54de7c3580322dfc062579e0ee480d8875']); clean export
+SKIPPED [1] tests\test_pcb3_verification.py:45: development history not present (commits ['eb4e7a9', '7dbd302']); clean export
+SKIPPED [1] tests\test_pcb3_verification.py:45: development history not present (commits ['eb4e7a9', '115c54b']); clean export
+SKIPPED [1] tests\test_pcb3_verification.py:45: development history not present (commits ['eb4e7a9']); clean export
+SKIPPED [1] tests\test_site.py:133: visual QA not run here (node site/visual_qa.mjs against a served site/dist)
+144 passed, 7 skipped in 182.30s (0:03:02)
+# end 2026-10-09 21:30:44 +0800

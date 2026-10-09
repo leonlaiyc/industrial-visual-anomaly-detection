@@ -23,14 +23,14 @@ from .features import center_crop, load_rgb
 
 
 def registration_analysis(fit: list[str], data_root: Path, out_dir: Path, chosen: list[str],
-                          crop_wh, pmap=map) -> dict[str, Any]:
+                          crop_wh, pmap=map, mask_kw=None) -> dict[str, Any]:
     """Pose statistics over ALL fit normals and the registered mean/std image.
 
     Uses only FIT images (unlabelled normals), so it cannot leak test information.
     """
     paths = [data_root / p for p in fit]
-    poses = list(pmap(lambda p: board_pose(load_rgb(p)), paths))
-    reg = Registrar.build_template(paths, load_rgb, pmap)
+    poses = list(pmap(lambda p: board_pose(load_rgb(p), mask_kw), paths))
+    reg = Registrar.build_template(paths, load_rgb, pmap, mask_kw)
     infos = list(pmap(lambda p: _reg_small(reg, p), paths))
     stack = np.stack([i[0] for i in infos])
     flips = np.array([i[1]["flipped"] for i in infos])
@@ -80,7 +80,8 @@ def _reg_small(reg: Registrar, p: Path):
 
 
 def run_inspection(split_rows, data_root: Path, out_dir: Path, seed: int, n: int = 20,
-                   candidate_widths=(256, 384, 512, 768), crop_wh=None, pmap=map) -> dict[str, Any]:
+                   candidate_widths=(256, 384, 512, 768), crop_wh=None, pmap=map,
+                   mask_kw=None) -> dict[str, Any]:
     fit = sorted(r["image"] for r in select(split_rows, "fit"))
     rng = np.random.default_rng(seed)
     chosen = [fit[i] for i in sorted(rng.choice(len(fit), size=n, replace=False))]
@@ -140,7 +141,7 @@ def run_inspection(split_rows, data_root: Path, out_dir: Path, seed: int, n: int
     fig.savefig(out_dir / "resize_loss_crops.png", dpi=110)
     plt.close(fig)
 
-    reg = registration_analysis(fit, data_root, out_dir, chosen, crop_wh, pmap)
+    reg = registration_analysis(fit, data_root, out_dir, chosen, crop_wh, pmap, mask_kw)
 
     report = {
         "registration_all_fit": reg,

@@ -1,0 +1,7 @@
+# command: python -m pytest -rs -p no:cacheprovider   (development repository at e397094, dataset + fitted models + full history present)
+# start 2026-10-09 21:33:29 +0800
+........................................................................ [ 47%]
+........................................................................ [ 95%]
+.......                                                                  [100%]
+151 passed in 168.25s (0:02:48)
+# end 2026-10-09 21:36:20 +0800

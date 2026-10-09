@@ -29,12 +29,22 @@ from scipy import ndimage
 DOWN = 4  # mask / template computed at 1/4 resolution
 
 
-def foreground_mask(img: Image.Image, sat_min: int = 90, val_min: int = 170) -> np.ndarray:
-    """Board mask at 1/DOWN scale: saturated or bright pixels, cleaned, largest component."""
+def foreground_mask(img: Image.Image, sat_min: int = 90, val_min: int = 170,
+                    exclude_hue: Sequence[int] | None = None) -> np.ndarray:
+    """Board mask at 1/DOWN scale: saturated or bright pixels, cleaned, largest component.
+
+    exclude_hue = [lo, hi] (PIL hue units 0-255, inclusive): saturated pixels in this band are
+    background, not board. Needed when the background itself is saturated (PCB3: green cloth;
+    docs/illumination_experiment_protocol.md Addendum B1). None = the original PCB1/PCB2 rule.
+    """
     w, h = img.size
     small = img.resize((w // DOWN, h // DOWN), Image.BILINEAR)
     hsv = np.asarray(small.convert("HSV"), dtype=np.uint8)
-    m = (hsv[..., 1] > sat_min) | (hsv[..., 2] > val_min)
+    sat = hsv[..., 1] > sat_min
+    if exclude_hue is not None:
+        lo, hi = int(exclude_hue[0]), int(exclude_hue[1])
+        sat &= ~((hsv[..., 0] >= lo) & (hsv[..., 0] <= hi))
+    m = sat | (hsv[..., 2] > val_min)
     m = ndimage.binary_opening(m, iterations=1)
     m = ndimage.binary_fill_holes(ndimage.binary_closing(m, iterations=3))
     lab, n = ndimage.label(m)
@@ -44,9 +54,9 @@ def foreground_mask(img: Image.Image, sat_min: int = 90, val_min: int = 170) -> 
     return lab == (1 + int(np.argmax(sizes)))
 
 
-def board_pose(img: Image.Image) -> dict[str, float]:
+def board_pose(img: Image.Image, mask_kw: dict[str, Any] | None = None) -> dict[str, float]:
     """Centroid (native px) and principal-axis angle (deg, in (-90, 90]) of the board."""
-    m = foreground_mask(img)
+    m = foreground_mask(img, **(mask_kw or {}))
     ys, xs = np.nonzero(m)
     cx, cy = xs.mean(), ys.mean()
     cov = np.cov(np.vstack([xs - cx, ys - cy]))
@@ -91,13 +101,14 @@ def ncc(a: np.ndarray, b: np.ndarray) -> float:
 class Registrar:
     """Holds the canonical template; `__call__` registers one PIL image."""
 
-    def __init__(self, template: np.ndarray | None = None) -> None:
+    def __init__(self, template: np.ndarray | None = None, mask_kw: dict[str, Any] | None = None) -> None:
         self.template = template
+        self.mask_kw = dict(mask_kw or {})
 
     def register(self, img: Image.Image) -> tuple[Image.Image, dict[str, Any]]:
         if self.template is None:
             raise RuntimeError("template not built; call build_template first")
-        pose = board_pose(img)
+        pose = board_pose(img, self.mask_kw)
         cand = [warp(img, pose, flip=False), warp(img, pose, flip=True)]
         scores = [ncc(_gray_small(c), self.template) for c in cand]
         k = int(np.argmax(scores))
@@ -108,7 +119,7 @@ class Registrar:
 
     @classmethod
     def build_template(cls, paths: Sequence, load: Callable[[Any], Image.Image],
-                       pmap: Callable = map) -> "Registrar":
+                       pmap: Callable = map, mask_kw: dict[str, Any] | None = None) -> "Registrar":
         """Template from FIT images: seed orientation = first image (sorted order),
         then template = mean of all FIT images registered against that seed.
 
@@ -118,7 +129,7 @@ class Registrar:
         if len(paths) == 0:
             raise ValueError("need at least one image")
         first = load(paths[0])
-        seed = cls(_gray_small(warp(first, board_pose(first), flip=False)))
+        seed = cls(_gray_small(warp(first, board_pose(first, mask_kw), flip=False)), mask_kw)
         acc = sum(pmap(lambda p: _gray_small(seed(load(p))).astype(np.float64), paths))
         acc = (acc / len(paths)).astype(np.float32)
-        return cls((acc - acc.mean()) / (acc.std() + 1e-6))
+        return cls((acc - acc.mean()) / (acc.std() + 1e-6), mask_kw)

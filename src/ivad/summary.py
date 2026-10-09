@@ -363,9 +363,13 @@ def build_pdf(f: dict | None = None) -> Path:
     return PDF_PATH
 
 
-def build_summary() -> None:
+def build_summary(legacy_pdf: bool = False) -> None:
+    """README results block. Since the PCB3 experiment the executive PDF is printed from the website
+    (`python site/build.py` then `python site/render.py pdf`, which writes reports/executive_summary.pdf);
+    `legacy_pdf=True` rebuilds the earlier one-page PCB2 PDF instead, for comparison only."""
     f = facts()
     sync_readme(f)
-    build_pdf(f)
+    if legacy_pdf:
+        build_pdf(f)
 
 

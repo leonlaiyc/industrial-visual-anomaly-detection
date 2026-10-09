@@ -1,0 +1,14 @@
+start 2026-10-09 16:58:51 +0800
+evaluate: AUROC 0.9818  recall 0.900  FPR 0.030  holdout FPR 0.052
+evaluate: AUROC 0.9833  recall 0.910  FPR 0.030  holdout FPR 0.039
+robustness darker_lower_contrast: recall 0.900 FPR 0.086
+robustness brighter_higher_contrast: recall 0.910 FPR 0.195
+robustness gaussian_blur_s1.5: recall 0.880 FPR 0.047
+robustness shift_40_25px: recall 0.910 FPR 0.043
+robustness illum_ramp_lr_1.0_0.8: recall 0.900 FPR 0.062
+robustness darker_lower_contrast: recall 0.910 FPR 0.031
+robustness brighter_higher_contrast: recall 0.900 FPR 0.062
+robustness gaussian_blur_s1.5: recall 0.870 FPR 0.180
+robustness shift_40_25px: recall 0.890 FPR 0.043
+robustness illum_ramp_lr_1.0_0.8: recall 0.880 FPR 0.059
+end 2026-10-09 17:07:55 +0800

@@ -1,0 +1,73 @@
+{
+  "registration_all_fit": {
+    "n_images": 600,
+    "native_size_wh": [
+      1562,
+      960
+    ],
+    "centroid_x_px": {
+      "0": 726.4336252908171,
+      "5": 779.6954868092557,
+      "50": 806.3075006038566,
+      "95": 838.4370884139597,
+      "100": 913.6428462418924
+    },
+    "centroid_y_px": {
+      "0": 449.30405838376646,
+      "5": 469.4746916865512,
+      "50": 486.6560394076921,
+      "95": 503.396262763102,
+      "100": 531.6707745135444
+    },
+    "tilt_deg": {
+      "0": -5.658966829976066,
+      "5": -4.43238883178243,
+      "50": -2.9578784392699617,
+      "95": -1.3207593613754944,
+      "100": 1.0538205572561026
+    },
+    "board_area_fraction": {
+      "0": 0.1285897435897436,
+      "5": 0.13560523504273506,
+      "50": 0.15050213675213675,
+      "95": 0.15613621794871796,
+      "100": 0.16732905982905982
+    },
+    "rotated_180_count": 0,
+    "orientation_ncc_margin_min": 0.3249872624874115
+  },
+  "images_inspected": [
+    "pcb3/Data/Images/Normal/0064.JPG",
+    "pcb3/Data/Images/Normal/0099.JPG",
+    "pcb3/Data/Images/Normal/0115.JPG",
+    "pcb3/Data/Images/Normal/0131.JPG",
+    "pcb3/Data/Images/Normal/0185.JPG",
+    "pcb3/Data/Images/Normal/0217.JPG",
+    "pcb3/Data/Images/Normal/0245.JPG",
+    "pcb3/Data/Images/Normal/0344.JPG",
+    "pcb3/Data/Images/Normal/0395.JPG",
+    "pcb3/Data/Images/Normal/0707.JPG",
+    "pcb3/Data/Images/Normal/0756.JPG",
+    "pcb3/Data/Images/Normal/0805.JPG",
+    "pcb3/Data/Images/Normal/0809.JPG",
+    "pcb3/Data/Images/Normal/0823.JPG",
+    "pcb3/Data/Images/Normal/0846.JPG",
+    "pcb3/Data/Images/Normal/0872.JPG",
+    "pcb3/Data/Images/Normal/0939.JPG",
+    "pcb3/Data/Images/Normal/0946.JPG",
+    "pcb3/Data/Images/Normal/0978.JPG",
+    "pcb3/Data/Images/Normal/0980.JPG"
+  ],
+  "role": "fit",
+  "native_sizes_wh": [
+    [
+      1562,
+      960
+    ]
+  ],
+  "brightness_mean_0_255": {
+    "min": 88.55272674560547,
+    "max": 94.9111328125,
+    "std": 1.6884090900421143
+  }
+}

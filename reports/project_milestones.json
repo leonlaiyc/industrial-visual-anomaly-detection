@@ -1,0 +1,59 @@
+{
+ "note": "Commit timestamps (committer date, +08:00) of the development repository. The commit hashes refer to the private development history; the public release is a sanitized export and does not contain these commits. No review or completion date is recorded: owner review pending.",
+ "milestones": [
+  {
+   "key": "first_commit",
+   "commit": "1c5b1213dd8db260279e0c2e9dcec543339e9462",
+   "committed_at": "2026-10-09T00:03:55+08:00",
+   "subject": "Initial PoC: requirements baseline, data prep, frozen split, registration, Mahalanobis model, tests"
+  },
+  {
+   "key": "pcb1_eval",
+   "commit": "5a66747efde8d47c3a4edd5826da7c57c7344304",
+   "committed_at": "2026-10-09T00:21:57+08:00",
+   "subject": "Final evaluation, robustness, diagnostics, reports, PDF and docs (WIP)"
+  },
+  {
+   "key": "v2_prereg",
+   "commit": "ad8a386694108d7a15863ed125fec7111e5093b2",
+   "committed_at": "2026-10-09T11:06:27+08:00",
+   "subject": "Pre-register v2 hypothesis and PCB2 protocol (before any PCB2 data access)"
+  },
+  {
+   "key": "pcb2_freeze",
+   "commit": "862c28f4d2c6b56f4ff795a2b6f769c01d4dbe6c",
+   "committed_at": "2026-10-09T11:34:33+08:00",
+   "subject": "FREEZE PCB2 v1 and v2 before any test/holdout scoring"
+  },
+  {
+   "key": "pcb2_eval",
+   "commit": "2b775be42eae7fd0554ebeb3dcc5222644f72ca5",
+   "committed_at": "2026-10-09T11:37:22+08:00",
+   "subject": "PCB2 confirmatory evaluation (single run), v1 and v2 — raw outputs"
+  },
+  {
+   "key": "pcb3_prereg",
+   "commit": "d7f5e813619fa2da219398f60f4938c70b1d7e42",
+   "committed_at": "2026-10-09T14:01:57+08:00",
+   "subject": "Pre-register PCB3 illumination-correction experiment (before any PCB3 data access)"
+  },
+  {
+   "key": "pcb3_b2",
+   "commit": "d8b5f1e802672b58d4b250cf418cb4a9da3441f8",
+   "committed_at": "2026-10-09T16:56:24+08:00",
+   "subject": "PCB3 Addendum B2 (before calibration): chronology disclosure, FIT-only diagnostics, illum-compare validation"
+  },
+  {
+   "key": "pcb3_freeze",
+   "commit": "eb4e7a92c417e2c76750e8acb530e3bddbd04b2d",
+   "committed_at": "2026-10-09T16:58:10+08:00",
+   "subject": "FREEZE PCB3 baseline and candidate before any test/holdout scoring"
+  },
+  {
+   "key": "pcb3_eval",
+   "commit": "115c54be2e7422f4b1e5bba4ab9d12cb4a00b880",
+   "committed_at": "2026-10-09T17:11:40+08:00",
+   "subject": "PCB3 single planned evaluation (baseline, candidate) — raw outputs; paired analysis attempt 1 refused"
+  }
+ ]
+}

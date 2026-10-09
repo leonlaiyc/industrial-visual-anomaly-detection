@@ -1,0 +1,420 @@
+{% set v1 = f.pcb2.v1 %}{% set v2 = f.pcb2.v2 %}{% set p3 = f.pcb3 %}
+<!doctype html>
+<html lang="{{ meta.html_lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ t.meta.title }}</title>
+<meta name="description" content="{{ t.meta.description | striptags }}">
+<meta name="theme-color" content="#ffffff">
+{% for l, m in langs.items() %}
+<link rel="alternate" hreflang="{{ m.html_lang }}" href="{{ alt[l] or './' }}">
+{% endfor %}
+<link rel="icon" href="{{ root }}assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{{ root }}assets/site.css">
+</head>
+<body class="lang-{{ lang }}">
+<a class="skip" href="#main">{{ t.nav.skip }}</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#summary">{{ t.meta.site_name }}</a>
+    <nav class="site-nav" aria-label="{{ t.nav.label }}">
+      <a href="#summary">{{ t.nav.summary }}</a>
+      <a href="#lifecycle">{{ t.nav.lifecycle }}</a>
+      <a href="#evidence">{{ t.nav.evidence }}</a>
+      <a href="#pcb3">{{ t.nav.pcb3 }}</a>
+      <a href="#workflow">{{ t.nav.workflow }}</a>
+      <a href="#handoff">{{ t.nav.handoff }}</a>
+    </nav>
+    <nav class="lang-switch" aria-label="{{ t.nav.lang_switch_label }}">
+      {% for l, m in langs.items() %}
+      <a href="{{ alt[l] or './' }}" hreflang="{{ m.html_lang }}" lang="{{ m.html_lang }}"{% if l == lang %} aria-current="page"{% endif %}>{{ m.label }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+{# ------------------------------------------------------------------ first screen #}
+<section id="summary" class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">{{ t.hero.eyebrow }}</p>
+      <h1 id="hero-title">{{ t.hero.title }}</h1>
+      <p class="lede">{{ t.hero.lede }}</p>
+      <div class="verdict"><span class="verdict-label">{{ t.hero.q_decision }}</span><strong class="verdict-head">{{ t.hero.decision_head }}</strong> {{ t.hero.decision_body }}</div>
+      <p class="secondary-finding"><span class="sf-label">{{ t.hero.pcb3_label }}</span>{{ t.hero.pcb3_line }} <a href="#pcb3">{{ t.hero.pcb3_link }} →</a></p>
+      <p class="cta">
+        <a class="btn btn-primary" href="#lifecycle">{{ t.hero.cta_case }}</a>
+        <a class="btn" href="{{ root }}executive-summary.pdf">{{ t.hero.cta_pdf }}</a>
+      </p>
+      <p class="disclosure-line">{{ t.hero.disclosure }} <a href="#pcb3-repair">{{ t.hero.disclosure_link }}</a></p>
+    </div>
+
+    <aside class="card metric-card" aria-labelledby="card-title">
+      <h2 id="card-title" class="card-title">{{ t.hero.card_title }}</h2>
+      <p class="card-sub">{{ t.hero.card_sub }} <span class="badge badge-demonstrated">{{ t.status.measured }}</span></p>
+      <table class="metrics">
+        <thead>
+          <tr><th scope="col">{{ t.hero.col_metric }}</th><th scope="col" class="num">v1</th><th scope="col" class="num">v2</th><th scope="col">{{ t.hero.col_change }}</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">{{ t.hero.recall_label }}<span class="hint">{{ t.hero.recall_hint }}</span></th>
+            <td class="num">{{ v1.recall.pct }}</td><td class="num strong">{{ v2.recall.pct }}</td>
+            <td class="change change-flat">{{ t.hero.recall_change }}<span class="hint">{{ t.hero.recall_change_ci }}</span></td>
+          </tr>
+          <tr>
+            <th scope="row">{{ t.hero.fpr_label }}<span class="hint">{{ t.hero.fpr_hint }}</span></th>
+            <td class="num">{{ v1.fpr.pct }}</td><td class="num strong">{{ v2.fpr.pct }}</td>
+            <td class="change change-good">{{ t.hero.fpr_change }}<span class="hint">{{ t.hero.fpr_change_ci }}</span></td>
+          </tr>
+          <tr>
+            <th scope="row">{{ t.hero.auroc_label }}<span class="hint">{{ t.hero.auroc_hint }}</span></th>
+            <td class="num">{{ v1.auroc.fmt }}</td><td class="num strong">{{ v2.auroc.fmt }}</td>
+            <td class="change change-good">{{ t.hero.auroc_change }}<span class="hint">{{ t.hero.auroc_change_ci }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <figure class="unit-figure">
+        {{ unit_chart }}
+        <figcaption>
+          <ul class="legend">
+            <li><span class="key key-ok" aria-hidden="true"></span>{{ t.chart.legend_ok }}</li>
+            <li><span class="key key-fa" aria-hidden="true"></span>{{ t.chart.legend_fa }}</li>
+            <li><span class="key key-hit" aria-hidden="true"></span>{{ t.chart.legend_hit }}</li>
+            <li><span class="key key-miss" aria-hidden="true"></span>{{ t.chart.legend_miss }}</li>
+          </ul>
+          <span class="caption">{{ t.chart.caption }}</span>
+        </figcaption>
+      </figure>
+      <p class="card-note">{{ t.hero.card_note }}</p>
+    </aside>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ at a glance (moved out of the first screen) #}
+<section id="brief" class="section section-tight" aria-labelledby="brief-title">
+  <div class="wrap">
+    <h2 id="brief-title">{{ t.brief.title }}</h2>
+    <dl class="brief">
+      <div><dt>{{ t.brief.q_problem }}</dt><dd>{{ t.brief.a_problem }}</dd></div>
+      <div><dt>{{ t.brief.q_built }}</dt><dd>{{ t.brief.a_built }}</dd></div>
+      <div><dt>{{ t.brief.q_risks }}</dt><dd><ul>{% for r in t.brief.risks %}<li>{{ r }}</li>{% endfor %}</ul></dd></div>
+      <div><dt>{{ t.brief.q_status }}</dt><dd>{{ t.brief.status }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ phases + dates #}
+<section class="band band-plain" aria-labelledby="phases-title">
+  <div class="wrap">
+    <h2 id="phases-title">{{ t.phases.title }}</h2>
+    <p class="section-intro">{{ t.phases.intro }}</p>
+    <div class="phase-grid">
+      {% for col in t.phases.cols %}
+      <div class="phase-col phase-{{ col.kind }}">
+        <h3><span class="badge badge-{{ col.kind }}">{{ t.status[col.kind] }}</span> {{ col.title }}</h3>
+        <ul>{% for it in col["items"] %}<li>{{ it }}</li>{% endfor %}</ul>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="dates">
+      <h3>{{ t.dates.title }}</h3>
+      <ol class="timeline">
+        {% for m in f.milestones %}
+        {% if m.pending %}
+        <li class="pending"><span class="when"><span class="badge badge-pending">{{ t.dates.pending }}</span></span><span>{{ t.dates.events[m.key] }}</span></li>
+        {% else %}
+        <li><time datetime="{{ m.iso }}">{{ m.date }}</time><span>{{ t.dates.events[m.key] }}</span></li>
+        {% endif %}
+        {% endfor %}
+      </ol>
+      <p class="fine">{{ t.dates.note }}</p>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ lifecycle #}
+<section id="lifecycle" class="band" aria-labelledby="lifecycle-title">
+  <div class="wrap">
+    <h2 id="lifecycle-title">{{ t.lifecycle.title }}</h2>
+    <p class="section-intro">{{ t.lifecycle.intro }}</p>
+    <ol class="stages">
+      {% for s in t.lifecycle.stages %}
+      <li class="stage-card stage-{{ s.status }}">
+        <header>
+          <span class="step-n" aria-hidden="true">{{ loop.index }}</span>
+          <h3>{{ s.name }}</h3>
+          <span class="badge badge-{{ s.status }}">{{ t.status[s.status] }}</span>
+        </header>
+        <dl>
+          <dt>{{ t.lifecycle.labels.decision }}</dt><dd>{{ s.decision }}</dd>
+          <dt>{{ t.lifecycle.labels.evidence }}</dt><dd>{{ s.evidence }}</dd>
+          <dt>{{ t.lifecycle.labels.tradeoff }}</dt><dd>{{ s.tradeoff }}</dd>
+          <dt>{{ t.lifecycle.labels.next }}</dt><dd>{{ s.next }}</dd>
+        </dl>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ evidence #}
+<section id="evidence" class="section" aria-labelledby="evidence-title">
+  <div class="wrap">
+    <h2 id="evidence-title">{{ t.evidence.title }}</h2>
+    <p class="section-intro">{{ t.evidence.intro }}</p>
+    <ol class="findings">
+      {% for e in t.evidence["items"] %}
+      <li class="finding">
+        <p class="finding-tag">{{ e.tag }} <span class="badge badge-{{ e.status }}">{{ t.status[e.status] }}</span></p>
+        <h3>{{ e.title }}</h3>
+        <p>{{ e.body }}</p>
+        <p class="finding-so"><strong>{{ t.evidence.so }}</strong> {{ e.so }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+    <figure class="wide-fig">
+      <img src="{{ root }}assets/img/pcb3_mask_rules.jpg" width="{{ f.assets.pcb3_mask_rules.w }}" height="{{ f.assets.pcb3_mask_rules.h }}" alt="{{ t.evidence.fig_mask_alt }}">
+      <figcaption>{{ t.evidence.fig_mask_caption }}</figcaption>
+    </figure>
+
+    <h3 id="boards" class="sub-h">{{ t.boards.title }}</h3>
+    <p class="section-intro">{{ t.boards.intro }}</p>
+    <div class="table-scroll" role="region" aria-labelledby="boards" tabindex="0">
+      <table class="grid-table boards-table">
+        <thead><tr>{% for c in t.boards.cols %}<th scope="col"{% if loop.index > 3 %} class="num"{% endif %}>{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for r in f.boards %}
+          {% set tr = t.boards.rows[r.key] %}
+          <tr class="board-{{ r.board | lower }}{% if loop.index > 1 and f.boards[loop.index0 - 1].board != r.board %} board-first{% endif %}">
+            <th scope="row">{{ r.board }}</th><td>{{ tr.version }}</td><td>{{ tr.evidence }}</td>
+            <td class="num strong">{{ r.recall }} <span class="frac">({{ r.recall_frac }})</span></td><td class="num">{{ r.recall_ci }}</td>
+            <td class="num">{{ r.fpr }}</td><td class="num">{{ r.fpr_holdout }}</td><td class="num">{{ r.auroc }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">{{ t.boards.note }}</p>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ PCB3 experiment #}
+<section id="pcb3" class="band" aria-labelledby="pcb3-title">
+  <div class="wrap">
+    <h2 id="pcb3-title">{{ t.pcb3.title }}</h2>
+    <p class="section-intro">{{ t.pcb3.intro }}</p>
+    <div class="two-col">
+      <div>
+        <h3>{{ t.pcb3.design_title }}</h3>
+        <ul class="plain">{% for d in t.pcb3.design %}<li>{{ d }}</li>{% endfor %}</ul>
+      </div>
+      <div class="card result-card">
+        <h3>{{ t.pcb3.decisions_title }}</h3>
+        <div class="decision-block decision-a">
+          <p class="decision-label">{{ t.pcb3.decision_a_label }}</p>
+          <p>{{ t.pcb3.decision_a }}</p>
+        </div>
+        <div class="decision-block decision-b">
+          <p class="decision-label">{{ t.pcb3.decision_b_label }}</p>
+          <p>{{ t.pcb3.decision_b }}</p>
+        </div>
+        <p class="baseline-note">{{ t.pcb3.baseline_note }}</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">{{ t.pcb3.result_title }}</h3>
+    {% set dc = p3.detail.cond %}
+    <div class="table-scroll" role="region" aria-label="{{ t.pcb3.result_title }}" tabindex="0">
+      <table class="grid-table cond-table">
+        <thead>
+          <tr><th scope="col" rowspan="2">{{ t.pcb3.col_cond }}</th><th scope="colgroup" colspan="2" class="grp">{{ t.pcb3.col_abs }}</th><th scope="colgroup" colspan="2" class="grp">{{ t.pcb3.col_change }}</th></tr>
+          <tr><th scope="col" class="num">{{ t.pcb3.col_base }}</th><th scope="col" class="num">{{ t.pcb3.col_cand }}</th><th scope="col" class="num">{{ t.pcb3.col_base }}</th><th scope="col" class="num">{{ t.pcb3.col_cand }}</th></tr>
+        </thead>
+        <tbody>
+          {% for row in t.pcb3.table %}
+          {% set c = dc[row.pid] %}
+          <tr><th scope="row">{{ t.pcb3.cond_names[row.pid] }}<span class="hint">{{ row.hint }}</span></th>
+            <td class="num">{{ c.base.fpr }} <span class="frac">({{ c.base.fp }})</span></td>
+            <td class="num">{{ c.cand.fpr }} <span class="frac">({{ c.cand.fp }})</span></td>
+            <td class="num">{{ c.base.rise if c.base.rise else "—" }}</td>
+            <td class="num{% if row.pid == 'blur' %} flag{% endif %}">{{ c.cand.rise if c.cand.rise else "—" }}</td></tr>
+          {% endfor %}
+          <tr class="recall-row"><th scope="row">{{ t.pcb3.recall_label }}<span class="hint">{{ t.pcb3.recall_hint }}</span></th>
+            <td class="num">{{ dc.P0.base.tp }}</td><td class="num">{{ dc.P0.cand.tp }}</td><td class="num">—</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">{{ t.pcb3.table_note }}</p>
+
+    <h3 class="sub-h">{{ t.pcb3.acc_title }}</h3>
+    {% set ac = p3.detail.acceptance %}
+    <div class="table-scroll" role="region" aria-label="{{ t.pcb3.acc_title }}" tabindex="0">
+      <table class="grid-table acc-table">
+        <thead><tr>{% for c in t.pcb3.acc_cols %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for k in ("recall", "fpr_test", "fpr_holdout", "auroc", "latency", "robustness") %}
+          <tr><th scope="row">{{ t.pcb3.acc_rows[k] }}</th>
+            {% for v in ("base", "cand") %}
+            {% set a = ac[v] %}
+            <td class="{{ 'ok' if a[k] else 'fail' }}"><strong>{{ t.pcb3.met if a[k] else t.pcb3.not_met }}</strong>
+              {% if k == "robustness" %}: {{ t.pcb3.cond_names[a.worst_pid] }} {{ a.worst_rise }} {{ t.pcb3.pts_unit }}{% else %} · {{ a[k ~ "_v"] }}{% endif %}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+          <tr class="verdict-row"><th scope="row">{{ t.pcb3.verdict }}</th><td><strong>{{ ac.base.verdict }}</strong></td><td><strong>{{ ac.cand.verdict }}</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">{{ t.pcb3.acc_note }}</p>
+    <h3 class="sub-h">{{ t.pcb3.interp_title }}</h3>
+    <dl class="interp">
+      {% for it in t.pcb3.interp %}
+      <div><dt><span class="letter">{{ it.letter }}</span>{{ it.q }}</dt><dd>{{ it.a }}</dd></div>
+      {% endfor %}
+    </dl>
+    <figure class="wide-fig">
+      <img src="{{ root }}assets/img/pcb3_roi.jpg" width="{{ f.assets.pcb3_roi.w }}" height="{{ f.assets.pcb3_roi.h }}" alt="{{ t.pcb3.fig_roi_alt }}">
+      <figcaption>{{ t.pcb3.fig_roi_caption }}</figcaption>
+    </figure>
+    <p class="fine">{{ t.pcb3.deviation }}</p>
+
+    <div id="pcb3-repair" class="disclosure" role="region" aria-labelledby="repair-title">
+      <h3 id="repair-title">{{ t.repair.title }}</h3>
+      <p>{{ t.repair.intro }}</p>
+      <table class="metrics compact repair-table">
+        <thead><tr><th scope="col">{{ t.repair.col_time }}</th><th scope="col">{{ t.repair.col_event }}</th></tr></thead>
+        <tbody>{% for e in t.repair.events %}<tr><td class="when">{{ e.time }}</td><td>{{ e.what }}</td></tr>{% endfor %}</tbody>
+      </table>
+      <dl class="repair-facts">
+        <div><dt>{{ t.repair.changed_title }}</dt><dd>{{ t.repair.changed }}</dd></div>
+        <div><dt>{{ t.repair.unchanged_title }}</dt><dd>{{ t.repair.unchanged }}</dd></div>
+        <div><dt>{{ t.repair.verify_title }}</dt><dd>{{ t.repair.verify }}</dd></div>
+      </dl>
+      <p class="fine">{{ t.repair.where }}</p>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ model selection #}
+<section id="model" class="section" aria-labelledby="model-title">
+  <div class="wrap">
+    <h2 id="model-title">{{ t.model.title }}</h2>
+    <p class="section-intro">{{ t.model.intro }}</p>
+    <div class="table-scroll" role="region" aria-labelledby="model-title" tabindex="0">
+      <table class="grid-table">
+        <thead><tr>{% for c in t.model.cols %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for r in t.model.rows %}
+          <tr{% if loop.first %} class="chosen"{% endif %}><th scope="row">{{ r.name }}</th><td>{{ r.labels }}</td><td>{{ r.output }}</td><td>{{ r.fits }}</td><td>{{ r.risk }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">{{ t.model.note }}</p>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ two ROIs #}
+<section id="roi" class="band band-plain" aria-labelledby="roi-title">
+  <div class="wrap">
+    <h2 id="roi-title">{{ t.roi.title }}</h2>
+    <p class="section-intro">{{ t.roi.intro }}</p>
+    <div class="two-col">
+      <div class="roi-box">
+        <h3>{{ t.roi.image_title }}</h3>
+        <p>{{ t.roi.image_body }}</p>
+      </div>
+      <div class="roi-box">
+        <h3>{{ t.roi.business_title }}</h3>
+        <p>{{ t.roi.business_body }}</p>
+        <table class="metrics compact">
+          <thead><tr><th scope="col">{{ t.roi.col_policy }}</th><th scope="col">{{ t.roi.col_when }}</th></tr></thead>
+          <tbody>
+            {% for r in t.roi.policies %}<tr><th scope="row">{{ r.policy }}</th><td>{{ r.when }}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+        <p class="fine">{{ t.roi.caution }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ workflow mock-up #}
+<section id="workflow" class="section" aria-labelledby="workflow-title">
+  <div class="wrap">
+    <h2 id="workflow-title">{{ t.workflow.title }} <span class="badge badge-proposed">{{ t.status.proposed }}</span></h2>
+    <p class="section-intro">{{ t.workflow.intro }}</p>
+    <p class="mock-banner">{{ t.workflow.banner }}</p>
+    <div class="mock-grid">
+      {% for c in f.workflow.cases %}
+      {% set tc = t.workflow.cases[c.key] %}
+      <article class="mock-card mock-{{ c.key }}">
+        <header class="mock-head">
+          <span class="mock-id">{{ c.image_name }}</span>
+          <span class="mock-decision mock-{{ c.decision | lower }}">{{ t.workflow.decision[c.decision] }}</span>
+        </header>
+        <img src="{{ root }}assets/img/{{ c.file }}" width="{{ c.w }}" height="{{ c.h }}" alt="{{ tc.alt }}">
+        <dl class="mock-fields">
+          <div><dt>{{ t.workflow.fields.score }}</dt><dd>{{ c.score }}</dd></div>
+          <div><dt>{{ t.workflow.fields.threshold }}</dt><dd>{{ c.threshold }}</dd></div>
+          <div><dt>{{ t.workflow.fields.coverage }}</dt><dd>{{ c.coverage }}</dd></div>
+          <div><dt>{{ t.workflow.fields.truth }}</dt><dd>{{ t.workflow.truth[c.label] }}</dd></div>
+        </dl>
+        <h3>{{ tc.title }}</h3>
+        <p>{{ tc.body }}</p>
+        <p class="mock-action"><strong>{{ t.workflow.action_label }}</strong> {{ tc.action }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="fine">{{ t.workflow.footnote }}</p>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ cross-site readiness #}
+<section id="sites" class="band" aria-labelledby="sites-title">
+  <div class="wrap">
+    <h2 id="sites-title">{{ t.sites.title }}</h2>
+    <p class="section-intro">{{ t.sites.intro }}</p>
+    <div class="table-scroll" role="region" aria-labelledby="sites-title" tabindex="0">
+      <table class="grid-table">
+        <thead><tr>{% for c in t.sites.cols %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for r in t.sites.rows %}<tr><th scope="row">{{ r.risk }}</th><td>{{ r.seen }}</td><td>{{ r.need }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ handoff #}
+<section id="handoff" class="section" aria-labelledby="handoff-title">
+  <div class="wrap">
+    <h2 id="handoff-title">{{ t.handoff.title }}</h2>
+    <p class="section-intro">{{ t.handoff.intro }}</p>
+    <dl class="handoff-grid">
+      {% for h in t.handoff["items"] %}<div><dt>{{ h.title }}</dt><dd>{{ h.body }}</dd></div>{% endfor %}
+    </dl>
+    <details class="terms">
+      <summary>{{ t.terms.title }}</summary>
+      <dl>
+        {% for it in t.terms["items"] %}<dt>{{ it.term }}</dt><dd>{{ it.def }}</dd>{% endfor %}
+      </dl>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>{{ t.footer.provenance }}</p>
+    <p>{{ t.footer.images }}</p>
+    <p>{{ t.footer.ai }}</p>
+    <p>{{ t.footer.owner }}</p>
+  </div>
+</footer>
+</body>
+</html>
