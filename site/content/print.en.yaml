@@ -1,0 +1,85 @@
+# Extended brief (English, two A4 pages, print/PDF; the one-page summary is print_one_page.en.yaml). Same rules as the site content: numbers only via {{ f.* }}.
+
+title: "Industrial Visual Inspection: From Prototype to Operational Decision"
+subtitle: "Extended brief (two pages) · independent project on public benchmark images (VisA), not factory data"
+status: "Results recomputed from the raw score files by a separate engineering review. Owner review and acceptance pending. The one-page summary is the default executive version."
+
+problem_h: "The problem"
+problem: "On a line, defects are rare and varied, so labelled examples are scarce; the model is fitted on normal images only, by design (VisA's defect labels and masks serve only evaluation). The question: can a model that has only seen good boards send the right images to a human reviewer without burying the reviewer in false alarms?"
+built_h: "What was built"
+built: "A working prototype: frozen pretrained CNN features, a per-position Gaussian (Mahalanobis) model of normal appearance, board registration and — in v2 — a score taken over the board region only. Thresholds are frozen on separate normal images before testing; each controlled change was pre-registered and evaluated once on a board type not used in its development, with deviations disclosed."
+
+result_h: "Measured result — held-back board type PCB2"
+result_sub: "{{ f.pcb2.v2.recall.n }} defective + {{ f.pcb2.v2.fpr.n }} normal test images; {{ f.ci_level }} confidence intervals"
+rows:
+  - label: "Defect recall"
+    v1: "{{ f.pcb2.v1.recall.pct }}"
+    v2: "{{ f.pcb2.v2.recall.pct }}"
+    change: "unchanged"
+  - label: "False alarms, test normals"
+    v1: "{{ f.pcb2.v1.fpr.pct }}"
+    v2: "{{ f.pcb2.v2.fpr.pct }}"
+    change: "{{ f.pcb2.paired.fpr_test.delta }} pts (CI {{ f.pcb2.paired.fpr_test.ci_low }} to {{ f.pcb2.paired.fpr_test.ci_high }})"
+  - label: "False alarms, holdout"
+    v1: "{{ f.pcb2.v1.fpr_holdout.pct }}"
+    v2: "{{ f.pcb2.v2.fpr_holdout.pct }}"
+    change: "{{ f.pcb2.paired.fpr_holdout.delta }} pts (CI {{ f.pcb2.paired.fpr_holdout.ci_low }} to {{ f.pcb2.paired.fpr_holdout.ci_high }})"
+  - label: "AUROC"
+    v1: "{{ f.pcb2.v1.auroc.fmt }}"
+    v2: "{{ f.pcb2.v2.auroc.fmt }}"
+    change: "{{ f.pcb2.paired.auroc.delta }} (CI {{ f.pcb2.paired.auroc.ci_low }} to {{ f.pcb2.paired.auroc.ci_high }})"
+latency: "Median end-to-end latency per image (GPU, one image at a time): v1 {{ f.pcb2.v1.latency_ms.fmt }} ms, v2 {{ f.pcb2.v2.latency_ms.fmt }} ms."
+result_note: "Although v2 improved false-positive performance, it did not meet the proposed detection-sensitivity and robustness requirements. It is therefore not recommended for a manufacturing pilot without further work. Recall stays below the proposed {{ f.criteria.recall_min }} target; rule-based verdict against the unchanged criteria: {{ f.pcb2.verdict.v2 }}."
+
+risks_h: "Remaining technical risks"
+risks:
+  - "<strong>Detection.</strong> Recall {{ f.pcb2.v2.recall.pct }} against a proposed {{ f.criteria.recall_min }}; the smallest third of defects only {{ f.pcb2.small.recall }}."
+  - "<strong>Lighting.</strong> A {{ f.pcb2.dark_pct }} darker image raised PCB2 false alarms from {{ f.pcb2.dark.v2.clean }} to {{ f.pcb2.dark.v2.dark }}."
+  - "<strong>Portability.</strong> On PCB3's green background the original board-finding rule marked {{ f.pcb3_mask.original }} of the frame as board, silently."
+  - "<strong>Board region.</strong> About {{ f.pcb3.diag.roi_cloth }} of the PCB3 scoring region is background cloth; lint near the board can still raise a false alarm."
+
+decision_h: "Recommendation"
+decision: "<strong>No manufacturing pilot recommended yet.</strong> Go for one bounded validation step: agree requirements and costs with a quality engineer, then run the tool in shadow mode on real line images, with the site checks on the next page as entry gates. Decide again on that evidence."
+
+pcb3_h: "Follow-up experiment: lighting correction on a new board type (PCB3)"
+pcb3_lead: "One pre-registered change — standardise each image's global brightness and contrast before registration — compared with the unchanged pipeline on {{ f.pcb3.result.n_pooled }} unseen normal and {{ f.pcb3.result.n_anom }} defective images, evaluated once."
+pcb3_cols: ["Condition", "False alarms, baseline", "False alarms, corrected", "Role"]
+pcb3_rows:
+  - cond: "Clean"
+    base: "{{ f.pcb3.result.cond.G1.fpr.base_clean }}"
+    cand: "{{ f.pcb3.result.cond.G1.fpr.cand_clean }}"
+    role: "reference; recall baseline {{ f.pcb3.detail.cond.P0.base.tp }}, corrected {{ f.pcb3.detail.cond.P0.cand.tp }}"
+  - cond: "Global darkening (G1)"
+    base: "{{ f.pcb3.result.cond.G1.fpr.base_pert }}"
+    cand: "{{ f.pcb3.result.cond.G1.fpr.cand_pert }}"
+    role: "primary endpoint"
+  - cond: "Brightening (B1)"
+    base: "{{ f.pcb3.result.cond.B1.fpr.base_pert }}"
+    cand: "{{ f.pcb3.result.cond.B1.fpr.cand_pert }}"
+    role: "secondary"
+  - cond: "Non-uniform lighting (N1)"
+    base: "{{ f.pcb3.result.cond.N1.fpr.base_pert }}"
+    cand: "{{ f.pcb3.result.cond.N1.fpr.cand_pert }}"
+    role: "secondary, out of class"
+  - cond: "Mild blur"
+    base: "{{ f.pcb3.result.blur.base.fpr }}"
+    cand: "{{ f.pcb3.result.blur.cand.fpr }}"
+    role: "acceptance check only"
+pcb3_read:
+  - "<strong>A. Pre-registered outcome:</strong> “{{ f.pcb3.result.outcome }}” (darkening difference {{ f.pcb3.result.cond.G1.fpr.did }} pts, CI {{ f.pcb3.result.cond.G1.fpr.ci_low }} to {{ f.pcb3.result.cond.G1.fpr.ci_high }}) — <strong>weakly informative</strong>: the uncorrected pipeline barely failed on PCB3, and a global darkening is exactly what a global correction undoes."
+  - "<strong>B. Engineering decision: do not adopt the correction.</strong> It made a mild blur raise false alarms by {{ f.pcb3.result.blur.cand.rise }} pts (uncorrected {{ f.pcb3.result.blur.base.rise }}), beyond the original {{ f.criteria.rob_pts }}-pt limit. Non-uniform lighting was not improved; part of the effect is likely more stable registration."
+  - "<strong>The baseline is not production-ready either:</strong> brightening raised its false alarms by {{ f.pcb3.detail.cond.B1.base.rise }} pts; both variants are {{ f.pcb3.result.verdict.cand }} against the unchanged criteria."
+  - "<strong>Not a progression:</strong> PCB1, PCB2 and PCB3 are separate board types with their own models and thresholds. The PCB3 baseline's {{ f.pcb3.result.recall.base }} recall is not comparable with PCB2's {{ f.pcb2.v2.recall.pct }} and does not predict recall on a real line."
+  - "<strong>Disclosure:</strong> after PCB3 test scoring, one input check in the analysis program was repaired ({{ f.repair.fix_sha }}); no score, threshold or decision changed, and an independent recomputation agrees on {{ f.repair.checks_ok }}/{{ f.repair.checks_total }} checks (repository: {{ f.repair.doc }})."
+
+next_h: "What a pilot site must prove first"
+next:
+  - "Board segmentation and registration on the site's own normal images (background, fixture, orientation)."
+  - "A lighting specification plus a per-image brightness/contrast check, and a perturbation test at the site's frozen threshold."
+  - "A labelled sample of the site's real defects, with recall reported by defect size."
+  - "Agreed cost of a miss versus a review, review capacity, and versioned model + threshold releases with rollback."
+
+roi_note: "“ROI” here means the image region of interest. No financial return on investment or labour saving is claimed: only a classification-cost break-even range was computed (PCB2 v2 beats reviewing nothing or everything when k = defect odds × miss cost ÷ review cost lies between {{ f.cost.v2.k_low_fmt }} and {{ f.cost.v2.k_high_fmt }})."
+footer:
+  - "Data: VisA dataset, Zou et al., ECCV 2022, CC BY 4.0. Benchmark board types PCB1–PCB3 are not manufacturing sites. Not affiliated with or endorsed by the dataset authors or any company."
+  - "Built with AI coding assistance (Claude Code) under the project owner's direction; owner review pending. Project owner: Leon Lai."

@@ -25,7 +25,13 @@ from .config import REPO_ROOT, load_config, resolve_path
 RUNS = {"PCB1 v1": "config/default.yaml", "PCB2 v1": "config/pcb2_v1.yaml", "PCB2 v2": "config/pcb2_v2.yaml"}
 BASE, NEW = "PCB2 v1", "PCB2 v2"
 README_START, README_END = "<!-- RESULTS:START -->", "<!-- RESULTS:END -->"
-PDF_PATH = REPO_ROOT / "reports" / "executive_summary.pdf"
+# Executive PDFs, printed from the website (`python site/render.py pdf`): the one-page summary is the default,
+# the two-page extended brief adds the PCB3 experiment table. Both are checked by `ivad check` C5/C8.
+PDF_ONE_PAGE = REPO_ROOT / "reports" / "executive_summary_one_page.pdf"
+PDF_EXTENDED = REPO_ROOT / "reports" / "executive_summary_extended.pdf"
+EXECUTIVE_PDFS = {PDF_ONE_PAGE: 1, PDF_EXTENDED: 2}  # path -> exact page count
+# The earlier ReportLab one-page PCB2 PDF (`build_summary(legacy_pdf=True)`), for comparison only.
+PDF_PATH = REPO_ROOT / "reports" / "executive_summary_legacy_pcb2.pdf"
 
 # The one conclusion every summary document states verbatim (`ivad check` C8 verifies it).
 RECOMMENDATION = ("Although v2 improved false-positive performance, it did not meet the proposed "
@@ -363,9 +369,13 @@ def build_pdf(f: dict | None = None) -> Path:
     return PDF_PATH
 
 
-def build_summary() -> None:
+def build_summary(legacy_pdf: bool = False) -> None:
+    """README results block. Since the PCB3 experiment the executive PDF is printed from the website
+    (`python site/build.py` then `python site/render.py pdf`, which writes the one-page and extended PDFs);
+    `legacy_pdf=True` rebuilds the earlier one-page PCB2 PDF instead, for comparison only."""
     f = facts()
     sync_readme(f)
-    build_pdf(f)
+    if legacy_pdf:
+        build_pdf(f)
 
 

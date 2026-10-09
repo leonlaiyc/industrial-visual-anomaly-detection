@@ -39,6 +39,8 @@ python -m pytest
 | PCB2 v1 baseline | `config/pcb2_v1.yaml` | `reports/pcb2_v1/` |
 | PCB2 v2 (board ROI) | `config/pcb2_v2.yaml` | `reports/pcb2_v2/`, `reports/pcb2_comparison/` |
 | PCB1 v2, retrospective | `config/pcb1_v2_retrospective.yaml` | `reports/pcb1_v2_retrospective/`, `reports/pcb1_comparison/` |
+| PCB3 baseline (v2 pipeline) | `config/pcb3_baseline.yaml` | `reports/pcb3_baseline/` |
+| PCB3 candidate (v2 + global luminance correction) | `config/pcb3_illum.yaml` | `reports/pcb3_illum/`, `reports/pcb3_illum_comparison/` |
 
 The frozen operating points are committed. Re-fit and evaluate against them; **do not re-run
 `calibrate`**, which writes a new freeze (and, for PCB2, blocks `evaluate` until it is committed).
@@ -53,11 +55,20 @@ python -m ivad --config config/pcb2_v2.yaml evaluate
 python -m ivad --config config/pcb2_v1.yaml robustness
 python -m ivad --config config/pcb2_v2.yaml robustness
 python -m ivad compare                                  # paired PCB2 v1 vs v2
-python -m ivad summary                                  # README results block + executive PDF
+python -m ivad summary                                  # README results block (executive PDFs: README → Website and PDF)
 python -m ivad check                                    # consistency gates; exit code 1 on any failure
 ```
 
-PCB1 works the same way with `config/default.yaml`. Afterwards `git diff reports/` should show only
+PCB1 works the same way with `config/default.yaml`. PCB3 (illumination experiment,
+`docs/illumination_experiment_protocol.md`): `fit` and `evaluate`/`robustness` both PCB3 configs against the
+committed freeze, then `python -m ivad illum-compare`; the FIT-only diagnostics of Addendum B2 are
+`python -m ivad fit-diagnostics`. **Do not re-run PCB3 `calibrate`, `evaluate` or `robustness`: its test data
+is spent.** To verify the recorded PCB3 numbers without the project code, run
+`python verification/recompute_pcb3.py --check` (reads only the committed score files; with the dataset
+present it also recomputes the subgroup table from the masks). The analysis program `illum.py` was repaired
+once after PCB3 test scoring (`docs/pcb3_post_evaluation_repair.md`). The illumination correction is **not
+adopted**: keep `preprocess.photometric` disabled (`config/pcb3_baseline.yaml` is the reference). Website and PDF: README → *Website and PDF* (run `site/build.py` before
+`ivad check`, whose PDF gates check both executive PDFs and trace their numbers through `site/data/facts.json`). Afterwards `git diff reports/` should show only
 timestamps, git HEAD and latency. Seeds and cuDNN determinism are fixed; another GPU or driver may change
 late decimals. `ivad check` checks internal consistency, so also compare the regenerated `metrics.json`
 with the committed one.
@@ -90,11 +101,16 @@ No real user has been assigned to any of these roles.
 ## 6. Alignment and board-region assumptions
 
 - **Registration** (`align.py`) assumes one rigid blue board on a grey cloth, fixed camera scale, and colour
-  contrast between board and background. It corrects shift (about ±70–100 px), tilt (about ±3°) and 180°
+  contrast between board and background. On a saturated background (PCB3: green cloth) the original colour
+  rule silently marks almost the whole frame as board; PCB3 needs `preprocess.board_mask.exclude_hue`, a
+  background hue band measured on training images (Addendum B1). The mask uses absolute S/V thresholds, so a
+  10% darkening moved the estimated PCB3 pose by about 11 px (median) and triggered the ROI fail-safe on
+  8/600 training images (Addendum B2). It corrects shift (about ±70–100 px), tilt (about ±3°) and 180°
   rotation; 0° vs 180° is decided by correlation with a template, and the margin is logged per image.
 - **Board ROI** (`roi.py`, v2) is built once from 600 training normals: majority-vote board mask, plus
   board-attached structure such as header pins (amendment A1), plus a 16 px margin. It is stored inside
-  `model.pt`, so it is covered by the model hash.
+  `model.pt`, so it is covered by the model hash. It is **not** a tight board mask: on PCB3 about 31% of ROI
+  pixels are background cloth (margin, shadow, and a cloth band the A1 std rule picks up).
 - **Fail-safe:** if less than 95% of an image's own board mask lies inside the ROI, the image gets the v1
   full-frame score, which can only make REVIEW more likely. Fallbacks on PCB2: 0 of 200 test images and
   0 of 151 holdout images. Calibration stops if more than 5% of calibration normals fall back.
@@ -120,7 +136,9 @@ No real user has been assigned to any of these roles.
    (training range 83–95 grey levels).
 3. **Background dust (v1).** v2 removes most of these false alarms; dust inside the 16 px margin can still
    trigger.
-4. **Blur** raised false alarms on PCB1 (+4 points) but not on PCB2.
+4. **Blur** raised false alarms on PCB1 (+4 points) but not on PCB2. With the PCB3 global luminance
+   correction, a mild blur raised false alarms by +14.5 points (uncorrected +0.4): the correction trades
+   brightness sensitivity for blur sensitivity (`docs/pcb3_illumination_results.md`).
 5. **Registration** can be biased when a defect changes the board outline; watch the orientation margin.
 
 ## 9. Support considerations
@@ -142,8 +160,10 @@ Each item needs a new freeze and an evaluation on data that did not motivate it.
 1. **Requirements confirmed by a real user:** cost ratio and prevalence, tolerable review workload,
    must-catch defect types and minimum size, takt time, acquisition stability, who owns the threshold,
    and the go/no-go criteria themselves (`docs/requirements.md` §4). None is confirmed.
-2. **Lighting robustness:** photometric normalisation before feature extraction, or a brightness-range
-   guard that routes out-of-range images to review.
+2. **Lighting robustness:** a global photometric normalisation was tested on PCB3; it removed the
+   darkening/brightening rises there but added blur sensitivity and did not help non-uniform lighting, so it
+   is not adopted. The uncorrected baseline is not production-ready either (brightening +15.2 points).
+   Prefer controlled lighting plus a brightness-range guard that routes out-of-range images to review.
 3. **Small-defect sensitivity:** higher-resolution features, more training normals, per-region covariance
    shrinkage, colour-aware features.
 4. **Input quality guards:** focus (e.g. Laplacian variance) and brightness checks against the

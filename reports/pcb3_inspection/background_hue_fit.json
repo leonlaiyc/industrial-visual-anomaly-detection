@@ -1,0 +1,12 @@
+{
+  "n_fit_images": 600,
+  "pixels": 6047431,
+  "hue_median": 95,
+  "hue_p005": 92,
+  "hue_p995": 98,
+  "rule": "saturated (S>90) pixels of the 8-px border of the 1/4-scale FIT images; band = [P0.5 - 8, P99.5 + 8] (PIL hue units, 0-255)",
+  "exclude_hue": [
+    84,
+    106
+  ]
+}

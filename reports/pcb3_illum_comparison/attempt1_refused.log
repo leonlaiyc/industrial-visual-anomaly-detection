@@ -1,0 +1,15 @@
+# ivad illum-compare, attempt 1 (2026-10-09 17:10:20 +0800), at commit eb4e7a9 — refused, no output produced
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "src\ivad\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "src\ivad\cli.py", line 125, in main
+    illum_compare(load_config(args.base), load_config(args.new))
+  File "src\ivad\illum.py", line 362, in illum_compare
+    desc = defect_descriptors(cfg_cand, [r["image"] for r in an_rows])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src\ivad\illum.py", line 140, in defect_descriptors
+    raise ValueError(f"invalid mask metadata for {rel}: no anomaly row with a mask path in {anno_path.name}")
+ValueError: invalid mask metadata for pcb3/Data/Images/Anomaly/000.JPG: no anomaly row with a mask path in image_anno.csv

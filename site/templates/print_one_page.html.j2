@@ -1,0 +1,96 @@
+{% set v1 = f.pcb2.v1 %}{% set v2 = f.pcb2.v2 %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ p.title }} — executive summary (one page)</title>
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<style>
+  @page { size: A4; margin: 12mm 14mm 11mm; }
+  :root { --ink: #15181c; --ink2: #3d444c; --muted: #66707a; --line: #d9dde2; --accent: #1d4f73; --warn: #8a4b06;
+    --hit: #2a78d6; --fa: #eb6834; --ok: #d3d7dc; --miss: #3b4149; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: var(--ink); font: 9.2pt/1.38 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; background: #fff; }
+  .page { max-width: 182mm; margin: 0 auto; }
+  h1 { font-size: 15pt; line-height: 1.15; margin: 0 0 2pt; letter-spacing: -0.01em; }
+  h2 { font-size: 10.4pt; margin: 0 0 3pt; color: var(--ink); }
+  .sub { color: var(--ink2); font-size: 9.6pt; margin: 0 0 2pt; }
+  .status { color: var(--muted); font-size: 8.3pt; margin: 0 0 8pt; padding-bottom: 6pt; border-bottom: 1.5pt solid var(--ink); }
+  p { margin: 0 0 4pt; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12pt; }
+  .grid-r { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 12pt; }
+  .grid-t { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 12pt; }
+  ul.cols { columns: 2; column-gap: 16pt; } ul.cols li { break-inside: avoid; }
+  tbody th { white-space: nowrap; }
+  .box { border: 0.75pt solid var(--line); border-radius: 4pt; padding: 7pt 9pt; }
+  .decision { border-left: 3.5pt solid var(--warn); background: #fbf6ef; padding: 7pt 9pt; border-radius: 0 4pt 4pt 0; }
+  .decision h2 { color: var(--warn); font-size: 8.8pt; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3pt; }
+  .decision p { font-size: 9.2pt; }
+  table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  th, td { text-align: left; padding: 3pt 5pt 3pt 0; border-bottom: 0.75pt solid var(--line); vertical-align: top; }
+  thead th { font-size: 7.8pt; color: var(--muted); font-weight: 600; }
+  tbody th { font-weight: 600; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.n.s { font-weight: 700; }
+  td.c { font-size: 8.3pt; color: var(--ink2); }
+  .note { font-size: 8.4pt; color: var(--ink2); margin: 4pt 0 0; }
+  ul { margin: 0; padding-left: 11pt; }
+  li { margin: 0 0 2.5pt; }
+  .chart svg { width: 100%; height: auto; max-height: 82pt; }
+  .unit-chart .u-head { font-size: 11px; fill: var(--ink2); font-weight: 600; }
+  .unit-chart .u-row { font-size: 12px; fill: var(--ink2); font-weight: 650; }
+  .unit-chart .u-ok { fill: var(--ok); } .unit-chart .u-fa { fill: var(--fa); } .unit-chart .u-hit { fill: var(--hit); }
+  .unit-chart .u-miss { fill: #fff; stroke: var(--miss); stroke-width: 1.5; }
+  .legend { display: flex; gap: 8pt; font-size: 7.6pt; color: var(--ink2); margin: 3pt 0 0; flex-wrap: wrap; }
+  .k { display: inline-block; width: 7pt; height: 7pt; border-radius: 1.5pt; margin-right: 3pt; vertical-align: -0.5pt; }
+  .section { margin-top: 8pt; }
+  .disc { font-size: 8.2pt; color: var(--muted); margin-top: 4pt; }
+  .foot { margin-top: 8pt; padding-top: 5pt; border-top: 0.75pt solid var(--line); font-size: 7.6pt; color: var(--muted); }
+  .foot p { margin: 0 0 1.5pt; }
+</style>
+</head>
+<body>
+<main class="page">
+  <h1>{{ p.title }}</h1>
+  <p class="sub">{{ p.subtitle }}</p>
+  <p class="status">{{ p.status }}</p>
+
+  <div class="grid-r">
+    <div><h2>{{ p.problem_h }}</h2><p>{{ p.problem }}</p><p>{{ p.built }}</p></div>
+    <div class="decision"><h2>{{ p.decision_h }}</h2><p>{{ p.decision }}</p><p style="margin:0">{{ p.go }}</p></div>
+  </div>
+
+  <div class="section box">
+    <h2>{{ p.result_h }}</h2>
+    <p class="note" style="margin:0 0 4pt">{{ p.result_sub }}</p>
+    <div class="grid-t" style="align-items:start">
+      <table>
+        <thead><tr><th></th><th class="n">v1</th><th class="n">v2</th><th>Change, v2 − v1</th></tr></thead>
+        <tbody>
+          {% for r in p.rows %}<tr><th>{{ r.label }}</th><td class="n">{{ r.v1 }}</td><td class="n s">{{ r.v2 }}</td><td class="c">{{ r.change }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+      <div class="chart">
+        {{ unit_chart }}
+        <div class="legend"><span><span class="k" style="background:var(--ok)"></span>normal, not flagged</span><span><span class="k" style="background:var(--fa)"></span>false alarm</span><span><span class="k" style="background:var(--hit)"></span>defect caught</span><span><span class="k" style="border:1.2pt solid var(--miss)"></span>defect missed</span></div>
+      </div>
+    </div>
+    <p class="note">{{ p.result_note }}</p>
+  </div>
+
+  <div class="section grid2">
+    <div><h2>{{ p.pcb3_h }}</h2><p>{{ p.pcb3 }}</p><p class="disc">{{ p.disclosure }}</p></div>
+    <div><h2>{{ p.risks_h }}</h2><ul>{% for r in p.risks %}<li>{{ r }}</li>{% endfor %}</ul></div>
+  </div>
+
+  <div class="section box">
+    <h2>{{ p.next_h }}</h2>
+    <ul class="cols">{% for r in p.next %}<li>{{ r }}</li>{% endfor %}</ul>
+  </div>
+
+  <div class="foot">{% for x in p.footer %}<p>{{ x }}</p>{% endfor %}</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,102 @@
+{
+  "frozen_at_utc": "2026-10-09T08:57:06+00:00",
+  "statement": "Threshold chosen from calibration normals only, before any official-test scoring.",
+  "primary": "P95",
+  "thresholds": {
+    "P90": {
+      "target_fpr": 0.1,
+      "threshold": 41.232177734375,
+      "rank_k": 136,
+      "n_calib": 150,
+      "calib_fpr_observed": 0.09333333333333334,
+      "fpr_due_to_calibration_sampling": {
+        "expected": 0.09933774834437085,
+        "lower": 0.057057434836246965,
+        "upper": 0.15163853130364813,
+        "level": 0.95
+      }
+    },
+    "P95": {
+      "target_fpr": 0.05,
+      "threshold": 46.59650421142578,
+      "rank_k": 144,
+      "n_calib": 150,
+      "calib_fpr_observed": 0.04,
+      "fpr_due_to_calibration_sampling": {
+        "expected": 0.046357615894039736,
+        "lower": 0.018965569634577507,
+        "upper": 0.08502781471819879,
+        "level": 0.95
+      }
+    },
+    "P99": {
+      "target_fpr": 0.01,
+      "threshold": 96.99656677246094,
+      "rank_k": 150,
+      "n_calib": 150,
+      "calib_fpr_observed": 0.0,
+      "fpr_due_to_calibration_sampling": {
+        "expected": 0.006622516556291391,
+        "lower": 0.00016877114310994768,
+        "upper": 0.02429259716610854,
+        "level": 0.95
+      }
+    }
+  },
+  "calib_score_summary": {
+    "n": 150,
+    "min": 15.571374893188477,
+    "median": 24.796297073364258,
+    "max": 96.99656677246094
+  },
+  "config_hash": "9197db33ed9f834c5c83b377d2fc0535e2b97ab926b1ad06d6ec867e97c280a5",
+  "model_sha256": "e5e5c6d1f0495d8f711969c149302bad531681f855eadb32f3b8b8e5f4d7e598",
+  "split_manifest_sha256": "ab6b3cba88855d749d0a1f245b8ab5270f4a20c20638c916b7b3a62737136046",
+  "pretrained_weights": {
+    "enum": "Wide_ResNet50_2_Weights.IMAGENET1K_V1",
+    "url": "https://download.pytorch.org/models/wide_resnet50_2-95faca4d.pth",
+    "recipe": "https://github.com/pytorch/vision/pull/912#issue-445437439",
+    "torchvision": "0.29.1+cu126",
+    "file_sha256": "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8"
+  },
+  "git_head_at_freeze": "d8b5f1e802672b58d4b250cf418cb4a9da3441f8",
+  "aggregation": "roi_max",
+  "roi": {
+    "calib_fallback": {
+      "n": 150,
+      "n_fallback": 0,
+      "coverage_min": 1.0,
+      "coverage_median": 1.0
+    },
+    "fit_qc": {
+      "area_frac": 0.48004404703776044,
+      "n_regions": 1,
+      "n_fit": 600,
+      "fit_coverage_min": 1.0,
+      "fit_coverage_p01": 1.0,
+      "fit_coverage_median": 1.0,
+      "fit_pass_frac": 1.0,
+      "rules": {
+        "vote_fraction": 0.5,
+        "margin_px": 16,
+        "coverage_min": 0.95,
+        "fit_pass_frac_min": 0.99,
+        "min_area_frac": 0.15,
+        "max_area_frac": 0.9,
+        "structure_k": 10,
+        "structure_far_px": 48,
+        "closing_px": 8
+      },
+      "status": "PASS",
+      "construction": {
+        "cloth_std_median": 3.7122508511651566,
+        "cloth_std_robust_sd": 0.6677146048105301,
+        "std_threshold": 10.389396899270459,
+        "core_area_frac": 0.2563527425130208,
+        "object_area_frac": 0.40337371826171875,
+        "n_masks": 600
+      }
+    },
+    "mask_sha256": "46ac6d7d5ef0cf20a83810e19167baa4690782235eb5b22ffd1afb3174817f64"
+  }
+}

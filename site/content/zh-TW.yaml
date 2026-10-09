@@ -1,0 +1,507 @@
+# 繁體中文內容（與 en.yaml 鍵值完全相同）。所有數字一律以 {{ f.* }} 引用 site/data/facts.json，
+# 內文出現數字字面值時 `python site/build.py` 會直接失敗。
+# 用語：人工複檢、瑕疵檢出率、誤報率、影像對位、光照穩健性、產線試行；實驗的 baseline 一律稱「對照組」，
+# 以免與「基準資料集」（benchmark）混淆。工具只建議送人工複檢，不做判退，因此不使用「過殺」。
+
+meta:
+  title: "工業影像檢測：從原型到營運決策"
+  description: "以公開基準資料集進行的獨立專案：只用良品影像建立的異常偵測原型，挑出需要人工複檢的電路板影像；變更皆依事前登錄的實驗計畫測試，並說明證據所支持的營運決策。"
+  site_name: "工業影像檢測 · 案例研究"
+
+nav:
+  label: "章節"
+  skip: "跳到主要內容"
+  summary: "摘要"
+  lifecycle: "交付流程"
+  evidence: "證據"
+  pcb3: "光照實驗"
+  workflow: "複檢流程"
+  handoff: "交接"
+  lang_switch_label: "語言"
+
+status:
+  measured: "實測"
+  demonstrated: "已示範"
+  proposed: "提議"
+  pending: "待驗證"
+  not_validated: "尚未驗證"
+  post_hoc: "事後分析"
+
+hero:
+  eyebrow: "獨立專案 · 公開基準資料集（VisA）· 非工廠資料"
+  title: "工業影像檢測：從原型到營運決策"
+  lede: "這個原型只用無瑕疵的電路板影像建立模型，再判斷新影像是否需要送人工複檢。兩項受控變更都在事前登錄實驗計畫、凍結門檻值，並只在開發時未使用的板型上測試一次；與計畫不符之處均已揭露。"
+  q_decision: "建議"
+  decision_head: "目前不建議進入產線試行。"
+  decision_body: "下一步只做一件範圍明確的驗證：先與品保工程師確認需求，再以影子模式蒐集實際產線影像；在此之前不再投入模型開發。"
+  pcb3_label: "補充發現 · 另一個獨立板型（PCB3）"
+  pcb3_line: "v2 流程在另一個獨立評估的 PCB 類別上達到 {{ f.pcb3.result.recall.base }} 的瑕疵檢出率，但影像變亮時仍不穩定（誤報率上升 {{ f.pcb3.detail.cond.B1.base.rise }} 個百分點）。在該板型上測試的光照校正不予採用，因為它讓模型對影像模糊變得敏感。"
+  pcb3_link: "PCB3 實驗"
+  disclosure: "PCB3 測試計分完成後，分析程式曾修正一次；此修正沒有改變任何分數、門檻值或決策。"
+  disclosure_link: "技術揭露"
+  card_title: "在開發時未使用的板型上實測（PCB2）"
+  card_sub: "測試影像：瑕疵品 {{ f.pcb2.v2.recall.n }} 張＋良品 {{ f.pcb2.v2.fpr.n }} 張 · 門檻值於測試前凍結"
+  col_metric: "指標"
+  col_change: "變化"
+  recall_label: "瑕疵檢出率"
+  recall_hint: "瑕疵品被送人工複檢的比例"
+  recall_change: "不變"
+  recall_change_ci: "{{ f.ci_level }} 信賴區間 {{ f.pcb2.paired.recall.ci_low }} 至 {{ f.pcb2.paired.recall.ci_high }} 個百分點"
+  fpr_label: "誤報率"
+  fpr_hint: "良品被送人工複檢的比例"
+  fpr_change: "{{ f.pcb2.paired.fpr_test.delta }} 個百分點"
+  fpr_change_ci: "{{ f.ci_level }} 信賴區間 {{ f.pcb2.paired.fpr_test.ci_low }} 至 {{ f.pcb2.paired.fpr_test.ci_high }}"
+  auroc_label: "AUROC"
+  auroc_hint: "異常分數能否把瑕疵品排在良品之前"
+  auroc_change: "{{ f.pcb2.paired.auroc.delta }}"
+  auroc_change_ci: "{{ f.ci_level }} 信賴區間 {{ f.pcb2.paired.auroc.ci_low }} 至 {{ f.pcb2.paired.auroc.ci_high }}"
+  card_note: "改善在於誤報減少、排序變好；瑕疵檢出率沒有提升，仍低於提議的 {{ f.criteria.recall_min }} 目標。"
+  cta_case: "閱讀案例研究"
+  cta_pdf: "英文決策摘要（PDF，單頁 A4）"
+
+brief:
+  title: "重點摘要"
+  q_problem: "檢測問題"
+  a_problem: "在實際產線上，瑕疵少見且型態多變，已標註的瑕疵樣本通常很少。因此本專案刻意只用良品影像建立模型——雖然公開的 VisA 資料集其實附有瑕疵標籤與遮罩，但在這裡只用於評估與圖示說明。要回答的問題是：只看過良品的模型，能否把該看的影像送到複檢人員面前，又不會讓誤報多到淹沒複檢人員？"
+  q_built: "實際做了什麼"
+  a_built: "一個可運作的原型：凍結的預訓練 CNN 特徵、針對每個影像位置建立的良品外觀高斯模型（以馬氏距離計分）、影像對位；v2 再改為只在電路板區域內計分。門檻值以另一批良品影像設定，並在任何測試影像計分前凍結。"
+  q_risks: "仍存在的風險"
+  risks:
+    - "檢出能力：PCB2 瑕疵檢出率 {{ f.pcb2.v2.recall.pct }}，未達提議的 {{ f.criteria.recall_min }}；面積最小的三分之一瑕疵只有 {{ f.pcb2.small.recall }}。"
+    - "光照穩健性：影像變暗 {{ f.pcb2.dark_pct }} 時，PCB2 誤報率上升 {{ f.pcb2.dark.v2.rise }} 個百分點；影像變亮時，PCB3 誤報率上升 {{ f.pcb3.detail.cond.B1.base.rise }} 個百分點。"
+    - "可移植性：背景換成綠色布面後，原本的電路板分割規則把畫面的 {{ f.pcb3_mask.original }} 都當成電路板。"
+  q_status: "尚未確立的事"
+  status: "沒有訪談任何製造端使用者、沒有使用工廠影像、沒有進行試行，也沒有量測任何人力節省或財務報酬。驗收目標是開發者的提議，不是使用者提出的需求。另一位審查者已從原始分數檔重算報告中的結果，確認一致；專案負責人的審閱與驗收尚未完成。"
+
+chart:
+  title: "PCB2 測試影像中被標記送人工複檢者：v1 與 v2"
+  desc: "單位圖。良品：v1 在 {{ f.pcb2.v1.fpr.n }} 張中標記 {{ f.pcb2.v1.confusion.FP }} 張，v2 標記 {{ f.pcb2.v2.confusion.FP }} 張。瑕疵品：v1 與 v2 都在 {{ f.pcb2.v2.recall.n }} 張中抓到 {{ f.pcb2.v2.confusion.TP }} 張。"
+  normal_head: "良品"
+  defect_head: "瑕疵品"
+  legend_ok: "良品，未標記"
+  legend_fa: "誤報"
+  legend_hit: "抓到瑕疵"
+  legend_miss: "漏檢"
+  caption: "每個方格代表一張測試影像，使用測試前凍結的門檻值。"
+
+phases:
+  title: "已實測、提議中、尚未驗證"
+  intro: "A 階段是以公開資料完成的技術可行性驗證；B 階段是專案負責人接下來會提出的營運驗證，目前尚未與任何製造端使用者進行。"
+  cols:
+    - kind: demonstrated
+      title: "A 階段 · 以公開基準影像驗證技術可行性"
+      items:
+        - "只用良品的偵測器、影像對位、電路板區域計分：已實作，並有單元測試。"
+        - "PCB2 確認性測試：誤報率 {{ f.pcb2.v1.fpr.pct }} → {{ f.pcb2.v2.fpr.pct }}，兩個版本的瑕疵檢出率都是 {{ f.pcb2.v2.recall.pct }}。"
+        - "在凍結門檻值下，量測對合成光照、模糊與位移的穩健性。"
+        - "PCB3 事前登錄的光照校正實驗，只執行一次；該校正不予採用。"
+    - kind: proposed
+      title: "B 階段 · 提議的營運驗證"
+      items:
+        - "與品保工程師訪談需求，並實地觀察一個檢驗班次。"
+        - "以實際產線影像進行影子模式，並事先議定成本比例與複檢人力。"
+        - "在工具影響任何判定之前，先通過該廠區的驗收檢查。"
+        - "依營運證據再做一次 Go / No-Go 判斷。"
+    - kind: not_validated
+      title: "超出本專案能證明的範圍"
+      items:
+        - "任何工廠影像、相機、光源、產線節拍或實際瑕疵組成。"
+        - "複檢介面的易用性，以及複檢人員之間的判定一致性。"
+        - "人力節省或財務報酬。"
+        - "對真實（非合成）光照變化的穩健性。"
+
+dates:
+  title: "可查證的里程碑"
+  events:
+    poc: "PCB1 概念驗證：可運作的原型、凍結的資料切分、測試、v1 評估"
+    pcb2: "v2 於取用 PCB2 資料前事前登錄；凍結門檻值；只做一次確認性評估"
+    pcb3: "PCB3 光照實驗事前登錄、凍結、只評估一次；成對分析"
+    audit: "工程審查：檢視程式碼與原始分數檔，重算報告中的結果，確認一致"
+    owner_review: "專案負責人的技術審閱"
+  pending: "待完成"
+  note: "日期為開發用儲存庫的 commit 日期（台灣時間）；工程審查的日期為審查結論提出的日期。第一個 commit 已包含可運作的原型；更早的本機作業沒有獨立的時間紀錄，因此不主張任何總交付時間。精確的 commit 時間與雜湊值保留在儲存庫的稽核紀錄中。"
+
+lifecycle:
+  title: "交付流程：七個決策"
+  intro: "每個階段都寫明：做了什麼決策、依據哪些證據、付出什麼代價、下一步是什麼。狀態分三種：本專案已示範、真實專案中的提議，以及只有實際營運才能提供證據的待驗證。"
+  labels:
+    decision: "決策"
+    evidence: "證據"
+    tradeoff: "取捨"
+    next: "下一步"
+  stages:
+    - name: "初步價值評估與 Go / No-Go"
+      status: demonstrated
+      decision: "把工具定位為人工複檢的輔助——它只建議是否複檢，從不直接判定板子不良——並在任何測試之前，先寫好提議的目標與 No-Go 規則。"
+      evidence: "目標（瑕疵檢出率 ≥ {{ f.criteria.recall_min }}、誤報率 ≤ {{ f.criteria.fpr_max }}、AUROC ≥ {{ f.criteria.auroc_min }}、延遲 ≤ {{ f.criteria.latency_max }}）自 v1 起未曾修改；每次執行都由程式依這些目標自動判定。"
+      tradeoff: "這些目標是開發者的提議，不是使用者的需求。它們能讓結論保持誠實，但不保證結論正確。"
+      next: "改用與品質負責人共同議定的目標。"
+    - name: "以證據理解使用者需求"
+      status: proposed
+      decision: "不去猜測複檢人員的工作方式，而是列出只有使用者能回答的問題：漏檢與誤報各自的成本、複檢人力、哪些瑕疵最重要。"
+      evidence: "需求文件中的每個目標都標示為「提議」；成本分析只呈現損益兩平區間，不是節省金額。"
+      tradeoff: "本專案沒有訪談任何製造端使用者。"
+      next: "訪談品保工程師並觀察一個檢驗班次；記錄雙方議定的成本比例與複檢人力。"
+    - name: "First-Time-Right 需求對齊"
+      status: proposed
+      decision: "在開發任何介面或系統整合之前，先用真實模型輸出做成的模擬畫面與使用者確認。"
+      evidence: "下方的複檢流程模擬畫面使用真實影像、真實熱圖與實際紀錄的分數——包含一次誤報與一次漏檢。"
+      tradeoff: "模擬畫面能傳達概念，但在有人實際使用之前，無法說明它是否好用。"
+      next: "請檢驗人員實際操作一遍；每個欄位不是轉成驗收條件，就是刪除。"
+    - name: "模型選擇與實作"
+      status: demonstrated
+      decision: "採用凍結的預訓練 CNN 特徵，加上逐位置的高斯模型（馬氏距離）：只需要良品影像、不需要訓練迴圈、熱圖可以解釋。"
+      evidence: "已實作，並有單元測試、凍結檢查與一致性檢查；一次只改一件事（v2 ＝ 電路板區域計分）。"
+      tradeoff: "對小型、低對比的瑕疵較弱；本專案並未測試監督式偵測模型。"
+      next: "等 B 階段取得真實瑕疵標註後，再以這些標註與監督式偵測模型比較。"
+    - name: "受控驗證"
+      status: demonstrated
+      decision: "每項受控變更都事前登錄，以另一批良品影像凍結門檻值，並在開發時未使用的板型上只評估一次。"
+      evidence: "PCB2：誤報率 {{ f.pcb2.v1.fpr.pct }} → {{ f.pcb2.v2.fpr.pct }}，瑕疵檢出率不變。PCB3 光照實驗：事前登錄的規則判定為「支持改善」（但屬弱證據）；然而校正讓模糊影像的誤報率上升 {{ f.pcb3.result.blur.cand.rise }} 個百分點，因此不予採用。"
+      tradeoff: "使用的是基準資料集影像與合成擾動，不是產線上真實的條件變化。揭露兩項偏差：PCB3 附錄 B1 在模型擬合後才提交；PCB3 測試計分後，分析程式修正過一次，未改變任何分數或決策。"
+      next: "以影子模式，在廠區影像上執行同一套實驗計畫。"
+    - name: "價值實現與 Go / No-Go"
+      status: pending
+      decision: "產線試行：No-Go；範圍明確的驗證步驟：Go。"
+      evidence: "PCB2 v2 依規則的判定結果：{{ f.pcb2.verdict.v2 }}（瑕疵檢出率低於目標，剛好落在 No-Go 下限）。損益兩平分析說明在什麼條件下，複檢輔助會比全部複檢或完全不複檢划算。"
+      tradeoff: "沒有營運資料，就不能主張任何人力節省或財務報酬。"
+      next: "取得影子模式結果與使用者自己的成本後，再做一次 Go / No-Go 判斷。"
+    - name: "跨廠區準備、維運與交接"
+      status: proposed
+      decision: "每一種新板型、背景、相機或光源，都視為一個新廠區，必須通過自己的檢查。"
+      evidence: "設定檔與門檻值都有版本管理；模型有變更或凍結紀錄未提交時，評估會拒絕執行；PCB3 證明電路板分割無法直接移植。"
+      tradeoff: "監控、回滾與上報流程目前只有文件，尚未實際運作。"
+      next: "把下方的廠區檢查表轉成產線試行的進場門檻。"
+
+evidence:
+  title: "資料實際顯示了什麼"
+  intro: "本專案的發現，依其影響決策的先後排列。每一項都標明板型、屬於實測／已示範／事後分析，以及它改變了什麼。"
+  so: "因此："
+  items:
+    - tag: "PCB1"
+      status: demonstrated
+      title: "電路板擺放方向不一致"
+      body: "{{ f.pcb1.n_fit }} 張訓練影像中，有 {{ f.pcb1.rotated_180 }} 張（{{ f.pcb1.rotated_180_pct }}）旋轉了半圈；位置與傾斜角度也各不相同。"
+      so: "建模之前，一律先做影像對位（重心、傾角，再以模板判斷是否旋轉半圈）。"
+    - tag: "PCB1"
+      status: post_hoc
+      title: "誤報來自背景"
+      body: "v1 在 PCB1 良品上的 {{ f.pcb1.fa_offboard }} 次誤報，異常最高點全都落在布面（灰塵、棉絮）上，而不在電路板上。"
+      so: "v2 只在電路板區域內取分數。這項假設無法在 PCB1 上確認，因此改在 PCB2 上測試。"
+    - tag: "PCB2"
+      status: measured
+      title: "電路板區域計分降低了誤報"
+      body: "在開發時未使用的板型上，測試誤報率從 {{ f.pcb2.v1.fpr.pct }} 降到 {{ f.pcb2.v2.fpr.pct }}（{{ f.pcb2.paired.fpr_test.delta }} 個百分點，信賴區間 {{ f.pcb2.paired.fpr_test.ci_low }} 至 {{ f.pcb2.paired.fpr_test.ci_high }}）；AUROC 從 {{ f.pcb2.v1.auroc.fmt }} 提高到 {{ f.pcb2.v2.auroc.fmt }}。"
+      so: "這項變更確實解決了它鎖定的問題。"
+    - tag: "PCB2"
+      status: measured
+      title: "瑕疵檢出率沒有提升"
+      body: "兩個版本都抓到 {{ f.pcb2.v2.recall.pct }} 的瑕疵，未達提議的 {{ f.criteria.recall_min }}；事前登錄的檢出率假設未獲支持。面積最小的三分之一瑕疵：{{ f.pcb2.small.recall }}（{{ f.pcb2.small.frac }}）。"
+      so: "目前的瓶頸是檢出能力，而不是誤報。"
+    - tag: "PCB2"
+      status: measured
+      title: "影像變暗會讓操作點失準"
+      body: "將每張影像調暗 {{ f.pcb2.dark_pct }} 並降低對比後，v2 的誤報率從 {{ f.pcb2.dark.v2.clean }} 升到 {{ f.pcb2.dark.v2.dark }}；調亮則沒有這個問題。"
+      so: "進入產線試行之前，必須先控制或校正光照，而且校正本身也要經過驗證。"
+    - tag: "PCB3"
+      status: demonstrated
+      title: "電路板分割預設背景是灰色"
+      body: "PCB3 的背景是高飽和度的綠色布面，原本的顏色規則把每張影像的 {{ f.pcb3_mask.original }} 都判為電路板，影像對位因此失效，卻沒有發出任何錯誤訊息。改用從訓練影像量測出的色相範圍排除背景後，電路板遮罩恢復為 {{ f.pcb3_mask.adapted }}。"
+      so: "依賴背景的前處理，必須在每個廠區重新驗證；這次它是在毫無警示的情況下失效。"
+    - tag: "PCB3"
+      status: demonstrated
+      title: "影像對位與電路板區域只能大致移植"
+      body: "未校正時，影像變暗 {{ f.pcb2.dark_pct }} 會讓訓練影像上估計的電路板位置偏移 {{ f.pcb3.diag.base_G1.warp_median }} 像素（中位數）。電路板區域佔畫面的 {{ f.pcb3.diag.roi_area }}，其中約 {{ f.pcb3.diag.roi_cloth }} 的像素其實是布面。"
+      so: "靠近板邊的棉絮仍可能引發誤報（見複檢流程範例）；位置估計也會受亮度影響。"
+    - tag: "PCB3"
+      status: measured
+      title: "光照校正實驗"
+      body: "事前登錄的規則判定為「支持改善」：整體變暗時，候選組的誤報率上升 {{ f.pcb3.result.cond.G1.fpr.d_cand }} 個百分點，對照組為 {{ f.pcb3.result.cond.G1.fpr.d_base }}（差異 {{ f.pcb3.result.cond.G1.fpr.did }}，信賴區間 {{ f.pcb3.result.cond.G1.fpr.ci_low }} 至 {{ f.pcb3.result.cond.G1.fpr.ci_high }}）。但對照組在 PCB3 上幾乎沒有受影響，所以這個指標只是弱證據；而且校正讓輕微模糊影像的誤報率上升 {{ f.pcb3.result.blur.cand.rise }} 個百分點（對照組 {{ f.pcb3.result.blur.base.rise }}）。"
+      so: "不予採用。一項校正可能只是把一種敏感度換成另一種；任何修正都必須以完整的擾動組合檢查，而不只檢查它鎖定的那一種。"
+  fig_mask_alt: "同一張 PCB3 訓練影像的三個畫面：原始照片；原本的電路板遮罩以洋紅色幾乎蓋滿整個畫面；調整後的遮罩只覆蓋電路板。"
+  fig_mask_caption: "PCB3 訓練影像：原圖 · 原本的顏色規則（洋紅色＝判為電路板，佔畫面 {{ f.pcb3_mask.original }}）· 加入色相範圍排除後（{{ f.pcb3_mask.adapted }}）。數值為 {{ f.pcb3_mask.n_fit }} 張訓練影像的中位數。VisA 影像，CC BY 4.0，經縮放並加上疊圖。"
+
+boards:
+  title: "各板型結果——彼此獨立的資料集"
+  intro: "PCB1、PCB2、PCB3 是不同的板型，各有自己擬合的模型、電路板區域與凍結門檻值。不同板型之間的數字不是對照比較，也不代表隨時間進步；只有同一板型內的列才是成對比較。"
+  cols: ["板型", "版本／組別", "證據性質", "瑕疵檢出率（官方測試集）", "{{ f.ci_level }} 信賴區間", "誤報率（測試良品）", "誤報率（保留良品）", "AUROC"]
+  rows:
+    pcb1_v1:
+      version: "v1（原始流程）"
+      evidence: "開發用板型；v2 的構想來源"
+    pcb1_v2_retro:
+      version: "v2，回溯分析"
+      evidence: "事後分析，使用啟發 v2 的同一批資料——不是獨立證據"
+    pcb2_v1:
+      version: "v1"
+      evidence: "確認性測試，開發時未使用的板型"
+    pcb2_v2:
+      version: "v2"
+      evidence: "確認性測試，開發時未使用的板型——受控的 v1／v2 比較"
+    pcb3_base:
+      version: "v2 流程——光照實驗的對照組"
+      evidence: "確認性測試，新板型；不是新的模型版本"
+    pcb3_cand:
+      version: "v2＋光照校正——候選組"
+      evidence: "確認性測試，新板型；不予採用"
+  note: "每個瑕疵檢出率都只量測了 {{ f.pcb3.result.n_anom }} 張基準資料集的瑕疵影像，因此有數個百分點的不確定性（見信賴區間）。PCB3 對照組的 {{ f.pcb3.result.recall.base }} 是單一板型上的基準量測值，不代表實際產線上可預期的檢出率。"
+
+pcb3:
+  title: "PCB3：事前登錄的光照校正實驗"
+  intro: "PCB2 顯示，影像變暗 {{ f.pcb2.dark_pct }} 會讓誤報率上升 {{ f.pcb2.dark.v2.rise }} 個百分點。這項實驗在從未使用過的板型上測試一個候選修正：實驗計畫在開啟資料前就已提交，而且只評估一次。一句話總結：修正做到了設計上要做的事，但它要解決的問題在 PCB3 上幾乎沒有出現，同時還帶來了新的弱點。"
+  design_title: "實驗設計（開啟 PCB3 資料前就已固定）"
+  design:
+    - "只改一件事：在影像對位前，把每張影像的整體亮度與對比標準化到訓練影像的中位數，三個色彩通道使用同一個增益。"
+    - "對照組＝v2 流程；候選組＝v2 加上校正。兩組使用同一批影像、各自的門檻值，各以 {{ f.pcb3.split.calib }} 張另外的良品影像凍結。"
+    - "主要指標：整體變暗（G1）造成的誤報率上升幅度，在兩組之間的差異中的差異（DiD）；以 {{ f.pcb3.split.test_normal }} 張測試良品＋{{ f.pcb3.split.holdout }} 張保留良品計算，採成對 bootstrap。"
+    - "把關條件：未加擾動時的瑕疵檢出率與誤報率，不得惡化超過事先訂定的容許範圍。非均勻光照（N1）用來測試校正模型能處理的範圍以外的情況。"
+    - "事先已知：G1 是整體性的變化，校正幾乎「依定義」就能還原它。G1 結果好，並不代表對真實光照變化具有穩健性。"
+  result_title: "結果（唯一一次計畫內執行）"
+  decisions_title: "兩個決策，分開陳述"
+  decision_a_label: "A · 事前登錄的實驗結果"
+  decision_a: "<strong>{{ f.pcb3.result.outcome }}</strong>——完全依凍結的規則計算，在 PCB3 上屬於<strong>弱證據</strong>。它只表示：在合成的整體變暗下，候選組的誤報率上升幅度小於對照組（{{ f.pcb3.result.cond.G1.fpr.d_cand }} 對 {{ f.pcb3.result.cond.G1.fpr.d_base }} 個百分點；差異 {{ f.pcb3.result.cond.G1.fpr.did }}，信賴區間 {{ f.pcb3.result.cond.G1.fpr.ci_low }} 至 {{ f.pcb3.result.cond.G1.fpr.ci_high }}）。對照組本身的上升幅度，低於實驗計畫事先訂定、足以構成有效檢驗的門檻。"
+  decision_b_label: "B · 工程採用決策"
+  decision_b: "<strong>不採用光照校正作為首選流程。</strong>它降低了影像變亮時的誤報率上升（{{ f.pcb3.detail.cond.B1.base.rise }} → {{ f.pcb3.detail.cond.B1.cand.rise }} 個百分點），卻讓輕微模糊時的誤報率上升 {{ f.pcb3.detail.cond.blur.cand.rise }} 個百分點（誤報良品 {{ f.pcb3.detail.cond.P0.cand.fp }} → {{ f.pcb3.detail.cond.blur.cand.fp }} 張；對照組 {{ f.pcb3.detail.cond.blur.base.rise }}），超過原本 {{ f.criteria.rob_pts }} 個百分點的上限。"
+  baseline_note: "否決候選組，不等於核准對照組。對照組同樣未通過穩健性標準（影像變亮時上升 {{ f.pcb3.detail.cond.B1.base.rise }} 個百分點），而且兩組都沒有經過真實使用者驗證、工廠試行，也沒有實際量測的營運效益。"
+  col_cond: "條件"
+  col_abs: "誤報率（誤報數／未見過的良品數）"
+  col_change: "相對未擾動的變化（百分點）"
+  col_base: "對照組"
+  col_cand: "候選組"
+  cond_names:
+    P0: "未擾動（P0）"
+    G1: "整體變暗（G1）"
+    B1: "調亮（B1）"
+    N1: "非均勻光照（N1）"
+    blur: "輕微模糊"
+    shift: "位移"
+  table:
+    - pid: "P0"
+      hint: "無擾動"
+    - pid: "G1"
+      hint: "主要指標"
+    - pid: "B1"
+      hint: "次要指標；反方向"
+    - pid: "N1"
+      hint: "次要指標；校正範圍以外的限制測試"
+    - pid: "blur"
+      hint: "僅用於驗收檢查，不是比較指標"
+    - pid: "shift"
+      hint: "僅用於驗收檢查，不是比較指標"
+  recall_label: "未擾動時的瑕疵檢出率"
+  recall_hint: "抓到的瑕疵／官方測試集瑕疵品"
+  table_note: "{{ f.pcb3.result.n_pooled }} 張未見過的良品影像（官方測試集 {{ f.pcb3.result.n_test_normal }} 張＋補充保留集 {{ f.pcb3.result.n_holdout }} 張），兩組各用自己凍結的門檻值。絕對誤報率與變化量分欄呈現：變化量是同一批影像上兩個絕對誤報率的差。完整分析與獨立重算見儲存庫。"
+  acc_title: "原始驗收標準（未修改）——兩組"
+  acc_cols: ["標準", "對照組", "候選組"]
+  acc_rows:
+    recall: "瑕疵檢出率 ≥ {{ f.criteria.recall_min }}（官方測試集）"
+    fpr_test: "誤報率 ≤ {{ f.criteria.fpr_max }}，官方測試集良品"
+    fpr_holdout: "誤報率 ≤ {{ f.criteria.fpr_max }}，保留良品"
+    auroc: "AUROC ≥ {{ f.criteria.auroc_min }}"
+    latency: "延遲中位數 ≤ {{ f.criteria.latency_max }}"
+    robustness: "穩健性：任何擾動造成的誤報率上升都不超過 {{ f.criteria.rob_pts }} 個百分點（G1、B1、模糊、位移）"
+  met: "達成"
+  not_met: "未達成"
+  verdict: "判定"
+  pts_unit: "個百分點"
+  acc_note: "INCONCLUSIVE 表示沒有觸發任何 No-Go 規則，但並非所有標準都已達成；這不是核准。瑕疵檢出率僅以 {{ f.pcb3.result.n_anom }} 張影像的點估計值達標。"
+  interp_title: "如何解讀"
+  interp:
+    - letter: "A"
+      q: "校正是否解決了整體變暗的問題？"
+      a: "就它能處理的範圍而言，是的：變暗時候選組上升 {{ f.pcb3.result.cond.G1.fpr.d_cand }} 個百分點，對照組 {{ f.pcb3.result.cond.G1.fpr.d_base }}（差異 {{ f.pcb3.result.cond.G1.fpr.did }} 個百分點，信賴區間 {{ f.pcb3.result.cond.G1.fpr.ci_low }} 至 {{ f.pcb3.result.cond.G1.fpr.ci_high }}）。但對照組的上升幅度低於事先訂定、足以構成有效檢驗的門檻；而整體變暗正好是整體校正能還原的情況。這不能證明對真實光照具有穩健性。"
+    - letter: "B"
+      q: "影像對位與電路板分割是否變得更穩定？"
+      a: "很可能是效果的一部分。在訓練影像上，變暗讓對照組估計的電路板位置偏移 {{ f.pcb3.diag.base_G1.warp_median }} 像素（中位數），候選組只有 {{ f.pcb3.diag.cand_G1.warp_median }} 像素；改用全畫面計分的備援次數為 {{ f.pcb3.diag.base_G1.fallback }} 次對 {{ f.pcb3.diag.cand_G1.fallback }} 次。本實驗無法區分影像對位與特徵本身的效果，因此不主張兩者各佔多少。"
+    - letter: "C"
+      q: "異常分數的表現是否改善？"
+      a: "未擾動時沒有變化（AUROC {{ f.pcb3.result.auroc.base }} → {{ f.pcb3.result.auroc.cand }}；瑕疵檢出率 {{ f.pcb3.result.recall.base }} → {{ f.pcb3.result.recall.cand }}）。影像變亮時，上升幅度 {{ f.pcb3.result.cond.B1.fpr.d_base }} → {{ f.pcb3.result.cond.B1.fpr.d_cand }} 個百分點。但在輕微模糊下，候選組的誤報率上升 {{ f.pcb3.result.blur.cand.rise }} 個百分點（{{ f.pcb3.result.blur.cand.clean_frac }} → {{ f.pcb3.result.blur.cand.frac }}），對照組只有 {{ f.pcb3.result.blur.base.rise }}——這是計畫外的觀察；可能的原因是模糊降低了整體對比，校正又把它拉高。"
+    - letter: "D"
+      q: "非均勻光照下還有什麼問題？"
+      a: "沒有改善：差異 {{ f.pcb3.result.cond.N1.fpr.did }} 個百分點（信賴區間 {{ f.pcb3.result.cond.N1.fpr.ci_low }} 至 {{ f.pcb3.result.cond.N1.fpr.ci_high }}）。兩組在 PCB3 上的上升幅度都很小，因此沒有觸發限制規則；但正如測試前所述，整體校正無法處理光照的空間梯度。"
+    - letter: "E"
+      q: "可以進入產線試行了嗎？"
+      a: "還不行。依未修改的驗收標準，兩組都是 {{ f.pcb3.result.verdict.cand }}：PCB3 未擾動時的目標都已達成，但兩組都未通過穩健性標準（對照組在影像變亮時、候選組在模糊時）。校正也增加了延遲（中位數 {{ f.pcb3.result.latency.base }} → {{ f.pcb3.result.latency.cand }} 毫秒）。所有擾動都是合成的。候選組不予採用，對照組也還不具備上線條件。"
+  fig_roi_alt: "PCB3 訓練影像對位後的平均影像，標出電路板區域各建構階段的輪廓；另有三張個別影像，以洋紅色標出電路板區域內的布面。"
+  fig_roi_caption: "僅使用訓練影像。電路板區域（佔畫面 {{ f.pcb3.diag.roi_area }}）涵蓋電路板、排針與 LED，但其中約 {{ f.pcb3.diag.roi_cloth }} 的像素是布面（洋紅色）。顏色分類屬經驗法則。VisA 影像，CC BY 4.0，經對位、裁切並加上疊圖。"
+  deviation: "已揭露的偏差：實驗計畫要求 PCB3 電路板遮罩的調整（附錄 B1）必須在模型擬合前提交；它在擬合前就已決定，但實際上是兩個模型擬合完成約五分鐘後才提交。當時沒有任何校準或測試影像被計分。相關診斷與這項揭露（附錄 B2）在校準前就已提交。"
+
+repair:
+  title: "技術揭露：PCB3 測試後的分析程式修正"
+  intro: "PCB3 測試影像與保留影像各計分一次之後，事前登錄的成對分析程式拒絕執行，其中一項輸入檢查因此被修正。所以產生 PCB3 結果的分析程式，與凍結時的版本並不完全相同。此處沒有任何回溯補填的日期。"
+  col_time: "時間"
+  col_event: "事件"
+  events:
+    - time: "{{ f.repair.freeze_time }}"
+      what: "提交凍結紀錄（{{ f.repair.freeze_sha }}）：門檻值、設定檔、資料切分與原始碼"
+    - time: "{{ f.repair.eval_start }}–{{ f.repair.eval_end }}"
+      what: "兩組唯一一次計畫內評估。此後沒有任何 PCB3 測試或保留影像再被計分。"
+    - time: "{{ f.repair.refusal1 }}、{{ f.repair.refusal2 }}"
+      what: "在程式未變更的情況下，成對分析兩度拒絕執行：輸入檢查要求標籤為「anomaly」，但 VisA 記錄的是瑕疵類型（bent、melt、scratch、missing）。"
+    - time: "{{ f.repair.fix_time }}"
+      what: "修正該檢查（{{ f.repair.fix_sha }}）。當時已在評估主控台上看過測試的摘要指標。"
+    - time: "{{ f.repair.analysis_time }}"
+      what: "成對分析完成並提交（{{ f.repair.analysis_sha }}）。"
+  changed_title: "改了什麼"
+  changed: "讀取瑕疵標註遮罩的函式中的一個條件；這個函式只用於描述性的小型／低對比瑕疵統計表。修正前這張表無法產生；它的計算方式沒有改變。"
+  unchanged_title: "沒有改變的部分"
+  unchanged: "模型擬合、前處理、門檻值、測試分數、預測結果、主要統計量與判定規則。沒有任何影像被重新計分，測試也沒有重做。"
+  verify_title: "獨立檢查"
+  verify: "另一支完全不引用專案程式碼的腳本，從原始分數檔與原始遮罩重新計算 PCB3 的每個數字：{{ f.repair.checks_total }} 項檢查中有 {{ f.repair.checks_ok }} 項與紀錄的輸出一致。"
+  where: "完整事件紀錄（時序、確切修改內容、檔案雜湊值、偏差）見儲存庫 <code>{{ f.repair.doc }}</code>；所有測試後事件見 <code>{{ f.repair.deviations }}</code>；重算結果見 <code>{{ f.repair.recompute_doc }}</code>。時間為 {{ f.repair.date }}，台灣時間。"
+
+model:
+  title: "為什麼選擇凍結 CNN＋馬氏距離模型"
+  intro: "當時需要的是一個只用良品的基準方法：幾分鐘內就能以無瑕疵影像完成擬合、能向工程師解釋，而且可以凍結。下表是定性比較：YOLO 類偵測模型與微調方法都沒有在本專案中訓練或測試。"
+  cols: ["方法", "需要的標註", "輸出", "適用情境", "主要風險"]
+  rows:
+    - name: "凍結 CNN 特徵＋逐位置高斯模型（本專案採用）"
+      labels: "只需要良品影像"
+      output: "異常分數與熱圖"
+      fits: "瑕疵少見且無法事先列舉；有人員參與複檢"
+      risk: "特徵看起來正常的細微瑕疵會漏檢；對擺放位置與光照敏感"
+    - name: "物件偵測模型（例如 YOLO 系列）"
+      labels: "每種瑕疵都要框選標註，且每種都需要大量樣本"
+      output: "瑕疵位置與類別"
+      fits: "瑕疵種類已知、穩定且樣本充足，而且需要分類"
+      risk: "無法標出沒看過的瑕疵類型；標註與維護成本高"
+    - name: "微調分類模型或骨幹網路"
+      labels: "已標註的良品與不良品影像"
+      output: "整張影像的類別或分數"
+      fits: "已有足夠的瑕疵標註，製程穩定"
+      risk: "瑕疵樣本少時容易過擬合；需要訓練、驗證與再訓練流程"
+    - name: "黃金樣本比對或規則式方法"
+      labels: "不需要，但每項產品都要調參"
+      output: "與參考影像的差異"
+      fits: "治具、光源與產品都受到嚴格控制"
+      risk: "擺放、光照或正常的個體差異一有變化就會失效"
+  note: "選擇只用良品的模型，是針對這個階段（沒有瑕疵標註、有人員複檢）的判斷，並不是主張它勝過監督式模型。B 階段取得的資料才能支持公平的比較。"
+
+roi:
+  title: "「ROI」的兩種意思"
+  intro: "在這個專案裡，同一個縮寫代表兩件不同的事，必須分開來看。"
+  image_title: "影像 ROI——感興趣區域（Region of Interest）"
+  image_body: "取分數的影像範圍。v2 在電路板區域內取異常值的最大值；這個區域由無瑕疵的訓練影像建立，再向外擴 {{ f.pcb2.v2.roi_margin_px }} 個像素。若某張影像本身的電路板遮罩只有不到 {{ f.pcb2.v2.coverage_min }} 落在區域內，系統就不信任這個區域，改用整張畫面計分——這只會提高送人工複檢的機率。"
+  business_title: "商業 ROI——投資報酬率（Return on Investment）"
+  business_body: "沒有量測。目前資料能支持的，只是簡化的分類成本敏感度分析。令 k ＝ 瑕疵勝算 ×（漏掉一件瑕疵的成本 ÷ 複檢一張影像的成本）。以 PCB2 v2 實測的漏檢率 {{ f.cost.v2.miss }} 與誤報率 {{ f.cost.v2.fpr }} 計算，成本最低的做法是："
+  col_policy: "做法"
+  col_when: "成本最低的條件"
+  policies:
+    - policy: "全部不複檢"
+      when: "k 小於 {{ f.cost.v2.k_low_fmt }}"
+    - policy: "只複檢 v2 標記的影像"
+      when: "k 介於 {{ f.cost.v2.k_low_fmt }} 與 {{ f.cost.v2.k_high_fmt }} 之間"
+    - policy: "全部複檢"
+      when: "k 大於 {{ f.cost.v2.k_high_fmt }}"
+  caution: "這裡只比較分類錯誤的成本，沒有計入複檢時間、產線節拍、流到下游的漏檢、人力配置與導入成本；k 也必須來自使用者自己的不良率與成本。這不是財務上的投資報酬率，也不主張任何人力節省。"
+
+workflow:
+  title: "人工複檢流程：模擬畫面"
+  intro: "模型輸出可能以什麼方式送到複檢人員手上：每張影像一張卡片，包含熱圖、與凍結門檻值比較的分數，以及電路板是否定位成功的檢查。影像、熱圖與數字都是 PCB2 v2 的真實測試輸出。"
+  banner: "提議中的決策輔助介面——不是已上線的系統。工具只建議是否送複檢，最後由人判定。"
+  fields:
+    score: "異常分數"
+    threshold: "凍結門檻值（P95）"
+    coverage: "電路板定位（ROI 覆蓋率）"
+    truth: "基準資料集標籤"
+  decision:
+    REVIEW: "送複檢"
+    NO_REVIEW: "不送複檢"
+  truth:
+    anomaly: "瑕疵品"
+    normal: "良品"
+  action_label: "複檢人員動作："
+  cases:
+    caught:
+      title: "抓到瑕疵"
+      body: "熱圖集中在彎曲的排針上，分數遠高於門檻值。"
+      action: "檢查排針，並記錄瑕疵類型。"
+      alt: "排針彎曲的 PCB2 電路板，熱圖標示出排針位置。"
+    false_alarm:
+      title: "誤報"
+      body: "這是良品。異常最高點落在電路板區域外擴邊界內、布面上的一個痕跡——正是診斷中發現的區域限制。"
+      action: "確認沒有瑕疵，並把原因標記為「背景」，以便追蹤誤報來源。"
+      alt: "PCB2 良品電路板，唯一被標示的點位於電路板左下角附近的背景布面上。"
+    missed:
+      title: "已知限制：漏檢"
+      body: "排針旁的一個小瑕疵分數低於門檻值，所以系統沒有建議複檢。青色輪廓是基準資料集的標準答案，這裡只用來說明漏檢原因。"
+      action: "系統不會提示。小型瑕疵需要其他防線，例如抽樣稽核。"
+      alt: "PCB2 電路板，排針旁的小瑕疵以青色輪廓標出，沒有出現熱圖。"
+  footnote: "綠色虛線：計分區域。熱圖：平滑後的異常分數，只顯示高於校準良品中位數的部分。分數是官方測試集的紀錄值；門檻值是測試前凍結的那一個。VisA 影像（CC BY 4.0），經對位、裁切、縮放並加上疊圖。"
+
+sites:
+  title: "跨廠區準備：新廠區必須證明什麼"
+  intro: "PCB1、PCB2、PCB3 是公開資料集中的板型，不是製造廠區。但它們具體顯示出：條件一改變，哪些假設就會失效。"
+  cols: ["風險", "本專案觀察到的現象", "新廠區必須提供或通過的項目"]
+  rows:
+    - risk: "依賴背景的電路板分割"
+      seen: "灰色布面沒有問題；PCB3 的綠色布面讓原本的規則把畫面的 {{ f.pcb3_mask.original }} 當成電路板，而且沒有任何錯誤訊息。"
+      need: "以該廠區自己的良品影像做分割檢查：電路板遮罩面積落在預期範圍內，並由人員目視確認縮圖總表。"
+    - risk: "光照穩健性"
+      seen: "影像變暗 {{ f.pcb2.dark_pct }} 時，PCB2 誤報率上升 {{ f.pcb2.dark.v2.rise }} 個百分點；在 PCB3 上，亮度變化也會讓估計的電路板位置偏移。"
+      need: "光源規格，以及每張影像的亮度／對比檢查；並在該廠區凍結的門檻值下做擾動測試。"
+    - risk: "方向與擺放"
+      seen: "PCB1 有 {{ f.pcb1.rotated_180_pct }} 的電路板旋轉了半圈；每種板型的擺放位置都有差異。"
+      need: "治具或影像對位驗收：該廠區良品的位置分布，以及在已標註樣本上沒有方向判斷錯誤。"
+    - risk: "ROI 相容性"
+      seen: "PCB3 的電路板區域佔畫面 {{ f.pcb3.diag.roi_area }}，其中約 {{ f.pcb3.diag.roi_cloth }} 是布面；誤報可能源自電路板附近的布面。"
+      need: "以該廠區自己的良品建立區域、覆蓋率檢查通過，且校準影像上改用全畫面計分的備援比例低於議定上限。"
+    - risk: "小型與低對比瑕疵"
+      seen: "PCB2 面積最小的三分之一瑕疵，檢出率只有 {{ f.pcb2.small.recall }}。"
+      need: "該廠區實際瑕疵組成的已標註樣本；依尺寸分級回報瑕疵檢出率，而不只是整體數字。"
+    - risk: "廠區專屬資料與校準"
+      seen: "每一種板型都需要自己擬合的模型、電路板區域與門檻值。"
+      need: "足夠擬合用的良品影像、另一組校準用影像，以及一組調整期間團隊從不查看的保留集。"
+    - risk: "門檻值與模型版本管理"
+      seen: "凍結後若模型、設定或資料切分有變更，或凍結紀錄未提交，評估就會拒絕執行。"
+      need: "模型、門檻值、設定檔一起版本化發布；任何變更都要重新校準並執行回歸測試。"
+
+handoff:
+  title: "維運與工程交接"
+  intro: "接手的工程師必須知道的事。內容記錄在儲存庫的交接文件中；都還沒有在產線上實際運作過。"
+  items:
+    - title: "輸入規格"
+      body: "每張影像一片電路板的 RGB 影像，固定的俯拍相機，板型與背景必須和建立模型時相同。其他輸入不在適用範圍內。"
+    - title: "影像對位失敗"
+      body: "找不到電路板時會直接報錯，絕不默默放行。這類影像一律送人工複檢並計數。"
+    - title: "ROI 備援機制"
+      body: "若電路板遮罩不在電路板區域內，就改用整張畫面的分數（較保守）。備援比例是監控項目；校準時超過上限就停止。"
+    - title: "光照警示"
+      body: "提議：把每張影像的整體亮度與對比和訓練範圍比較，超出範圍就標記送複檢——因為實測顯示影像變暗時誤報會急遽上升。"
+    - title: "測試與門檻值版本"
+      body: "凍結時對模型、門檻值、設定與資料切分計算雜湊值；不一致時評估會拒絕執行。每次發布都附上凍結紀錄。"
+    - title: "監控"
+      body: "每個班次追蹤送複檢比例、備援比例、亮度漂移，以及經人員確認的誤報；任何一項出現偏移都要啟動調查。"
+    - title: "回歸測試"
+      body: "單元測試與合成資料的端對端測試，加上一致性檢查，確保每個報告數字都能追溯到實際紀錄的輸出。每次變更都要重跑。"
+    - title: "回滾"
+      body: "保留上一版模型與門檻值，隨時可重新部署；送複檢比例或備援比例觸發警報時就回滾，再離線重新校準。"
+    - title: "人工上報"
+      body: "工具只提供建議，由複檢人員判定。不明確的案例，以及任何疑似系統性漏檢，都要上報品質負責人，絕不交由系統自動處置。"
+
+terms:
+  title: "本頁使用的名詞"
+  items:
+    - term: "瑕疵檢出率（Recall）"
+      def: "瑕疵品被工具送人工複檢的比例。"
+    - term: "誤報率（False-alarm rate）"
+      def: "良品被工具送人工複檢的比例。工具只建議複檢，所以誤報的代價是複檢人員的時間，而不是產品本身。"
+    - term: "AUROC"
+      def: "與門檻值無關的排序品質：隨機挑一張瑕疵品與一張良品，瑕疵品分數較高的機率。"
+    - term: "凍結門檻值（P95）"
+      def: "分數超過此值就標記送複檢；以另一批良品影像設定，目標誤報率約 {{ f.target_fpr }}，並在任何測試影像計分前固定。"
+    - term: "事前登錄（Pre-registration）"
+      def: "在開啟測試資料之前，就把假設、資料切分、指標與決策規則寫進儲存庫。"
+    - term: "差異中的差異（DiD）"
+      def: "在同一批影像上，候選組的誤報率上升幅度比對照組少（或多）多少。"
+    - term: "影子模式（Shadow mode）"
+      def: "讓工具與現有檢驗流程並行運作，但不影響任何判定，藉此在真實產線影像上量測表現。"
+
+footer:
+  provenance: "以公開的 VisA 資料集（Amazon Science）進行的獨立專案。與資料集作者或任何公司均無隸屬或背書關係。PCB1–PCB3 是基準資料集中的板型，不是製造廠區。本專案不主張任何正式上線、工廠資料、使用者簽核或財務報酬。"
+  images: "影像來源：VisA，Zou 等人，ECCV 2022，CC BY 4.0（github.com/amazon-science/spot-diff）。本專案將影像縮放、對位、裁切，並加上熱圖、輪廓與遮罩疊圖。"
+  ai: "程式碼與文件是在專案負責人指導下，藉助 AI 程式開發工具（Claude Code）產出的。專案負責人對本成果的審閱尚未完成。"
+  owner: "專案負責人：Leon Lai"
+  downloads: "下載（英文，A4）："
+  pdf_one: "決策摘要，單頁（PDF）"
+  pdf_ext: "延伸簡報，兩頁，含 PCB3 實驗表（PDF）"

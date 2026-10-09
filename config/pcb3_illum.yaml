@@ -1,0 +1,127 @@
+# PCB3 candidate: v2 pipeline + global luminance standardisation
+# PCB3 illumination-correction experiment (docs/illumination_experiment_protocol.md).
+# Generated from config/pcb2_v2.yaml: identical model, preprocessing, ROI, calibration and
+# acceptance settings; differs only in dataset paths/sizes, output directories, the predeclared
+# conditions (N1 added) and the `preprocess.photometric` step.
+
+seed: 20261008
+run_name: PCB3 candidate (v2 + global luminance standardisation)
+
+paths:
+  root: null                         # null = repository root
+  archive: data/raw/VisA_20220922.tar
+  data_dir: data/visa                # extracted pcb2/ lives here (gitignored)
+  official_manifest: manifests/visa_1cls_pcb3.csv
+  split_manifest: manifests/split_pcb3.csv
+  artifacts: artifacts/pcb3_illum      # fitted model state (gitignored)
+  reports: reports/pcb3_illum
+  inspection: reports/pcb3_inspection   # FIT-normal inspection (shared by both variants)
+  figures: reports/pcb3_illum/figures
+  illum_comparison: reports/pcb3_illum_comparison   # paired analysis (illum.py)
+
+dataset:
+  name: VisA
+  object: pcb3
+  archive_url: https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar
+  archive_bytes: 1929840640
+  manifest_url: https://raw.githubusercontent.com/amazon-science/spot-diff/main/split_csv/1cls.csv
+  n_fit: 600
+  n_calib: 150
+  n_holdout: 155
+  n_test_normal: 101
+  n_test_anomaly: 100
+
+preprocess:
+  # Decided from FIT normals only (reports/inspection/, docs/engineering_decisions.md D2-D3):
+  # boards vary in placement (~±70 px), tilt (~±3°) and 19% are rotated 180°.
+  register: true                     # mask-moment registration + 0/180° by template NCC
+  crop_wh: [1152, 768]               # centred crop of the registered frame (native px)
+  size_hw: [512, 768]                # model input; 1.5x downsample of the crop
+  # Addendum B1 (PCB3 FIT inspection, before any fit): the PCB3 background is saturated green cloth, so
+  # the original colour rule marked ~96% of every frame as board and registration did nothing. Saturated
+  # pixels in the background hue band are excluded. Band = FIT border hue P0.5..P99.5 widened by 8 units
+  # (reports/pcb3_inspection/background_hue_fit.json). Identical in both PCB3 variants.
+  board_mask:
+    exclude_hue: [84, 106]           # PIL hue units (0-255); ~118-150 degrees
+  # The single candidate change (protocol §3): per-image global luminance mean/std mapped to the
+  # medians over the 600 PCB3 FIT normals, one gain for R, G, B, before registration.
+  # Reference values are filled from `ivad photostats` (FIT only) before `fit`, then frozen.
+  photometric:
+    method: global_luma_affine
+    ref_mean: 91.9984                # median per-image luminance mean, 600 FIT normals (photostats)
+    ref_std: 33.1160                 # median per-image luminance std, 600 FIT normals (photostats)
+
+model:
+  backbone: wide_resnet50_2
+  pretrained: true                   # torchvision IMAGENET1K_V1
+  layers: [layer2, layer3]
+  n_features: 128                    # random channel subset (of 1536)
+  feature_seed: 0
+  pool_kernel: 3                     # 3x3 local neighbourhood average
+  cov_reg_rel: 0.01                  # ridge = rel * mean(diag Sigma) + eps
+  cov_reg_eps: 1.0e-6
+  map_sigma: 4.0                     # Gaussian smoothing of the upsampled map (pixels)
+
+calibration:
+  # name -> target FPR on calibration normals (conformal order statistic)
+  candidates:
+    P90: 0.10
+    P95: 0.05
+    P99: 0.01
+  primary: P95
+  level: 0.95
+
+evaluation:
+  level: 0.95
+  n_bootstrap: 2000
+  bootstrap_seed: 7
+  latency_warmup: 5
+  require_committed_freeze: true     # evaluate refuses unless the frozen state is committed
+
+robustness:
+  # Applied to the ORIGINAL full-resolution image before preprocessing.
+  # Severities fixed from FIT-normal inspection, before any test scoring.
+  # Natural mean-brightness spread of FIT normals is about ±4%.
+  perturbations:
+    # protocol_id: condition IDs of docs/illumination_experiment_protocol.md §7. The first four are the
+    # original P5 perturbations, unchanged; N1 is new for this experiment and is excluded from P5.
+    - {name: darker_lower_contrast, kind: photometric, brightness: 0.90, contrast: 0.90, protocol_id: G1}
+    - {name: brighter_higher_contrast, kind: photometric, brightness: 1.10, contrast: 1.10, protocol_id: B1}
+    - {name: gaussian_blur_s1.5, kind: blur, sigma_px: 1.5}
+    - {name: shift_40_25px, kind: shift, dx_px: 40, dy_px: 25}
+    - {name: illum_ramp_lr_1.0_0.8, kind: illum_ramp, gain_start: 1.0, gain_end: 0.8, protocol_id: N1, acceptance: false}
+  n_bootstrap: 2000
+  bootstrap_seed: 11
+
+cost:
+  k_min: 0.01
+  k_max: 100.0
+
+runtime:
+  device: cuda                       # falls back to cpu if CUDA is unavailable
+  batch_size: 8
+  num_workers: 8                     # threads for JPEG decode + registration
+
+scoring:
+  # v2 (the single pre-registered change): image score = max of the anomaly map over a fixed
+  # board ROI built from FIT normals only (src/ivad/roi.py; protocol section 4).
+  aggregation: roi_max
+  roi:
+    vote_fraction: 0.5               # consensus: pixel on the board in >= 50% of FIT masks
+    margin_px: 16                    # dilation in model px (= 24 native px)
+    # Addendum A1 (FIT inspection, before any PCB2 fit/calibration/test scoring): add parts fixed to
+    # the board that the colour mask misses (header pins/base, dark ICs at the edge).
+    structure_k: 10                  # FIT grey-level std > cloth median + 10 robust SD
+    structure_far_px: 48             # cloth level measured > 48 px from the board consensus
+    closing_px: 8                    # closing radius that merges the structure into one object
+    coverage_min: 0.95               # per-image fail-safe: else fall back to the full-frame max
+    fit_pass_frac_min: 0.99          # QC: >= 99% of FIT images must meet coverage_min
+    min_area_frac: 0.15              # QC: plausible ROI size (fraction of the model frame)
+    max_area_frac: 0.90
+    calib_fallback_frac_max: 0.05    # stop if > 5% of CALIB normals need the fail-safe
+
+illumination_study:
+  # Paired baseline-vs-candidate analysis (docs/illumination_experiment_protocol.md §8; src/ivad/illum.py).
+  n_bootstrap: 10000
+  seed: 2026
+  level: 0.95

@@ -1,0 +1,116 @@
+{% set v1 = f.pcb2.v1 %}{% set v2 = f.pcb2.v2 %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ p.title }} — extended brief (two pages)</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<style>
+  @page { size: A4; margin: 14mm 15mm 13mm; }
+  :root { --ink: #15181c; --ink2: #3d444c; --muted: #66707a; --line: #d9dde2; --accent: #1d4f73; --warn: #8a4b06;
+    --hit: #2a78d6; --fa: #eb6834; --ok: #d3d7dc; --miss: #3b4149; --bg2: #f4f6f8; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: var(--ink); font: 9.4pt/1.4 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; background: #fff; }
+  .page { break-after: page; }
+  .page:last-child { break-after: auto; }
+  h1 { font-size: 15.4pt; line-height: 1.15; margin: 0 0 3pt; letter-spacing: -0.01em; }
+  h2 { font-size: 11pt; margin: 0 0 4pt; color: var(--ink); }
+  .sub { color: var(--ink2); font-size: 10pt; margin: 0 0 2pt; }
+  .status { color: var(--muted); font-size: 8.2pt; margin: 0 0 10pt; padding-bottom: 8pt; border-bottom: 1.5pt solid var(--ink); }
+  p { margin: 0 0 6pt; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; }
+  .box { border: 0.75pt solid var(--line); border-radius: 4pt; padding: 8pt 10pt; }
+  .decision { border-left: 3.5pt solid var(--warn); background: #fbf6ef; padding: 8pt 10pt; border-radius: 0 4pt 4pt 0; margin: 8pt 0; font-size: 10pt; }
+  .decision h2 { color: var(--warn); font-size: 9pt; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2pt; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.2pt; }
+  th, td { text-align: left; padding: 4pt 6pt 4pt 0; border-bottom: 0.75pt solid var(--line); vertical-align: top; }
+  thead th { font-size: 8pt; color: var(--muted); font-weight: 600; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.n.s { font-weight: 700; }
+  tbody th { white-space: nowrap; }
+  .note { font-size: 8.6pt; color: var(--ink2); margin-top: 5pt; }
+  ul { margin: 0; padding-left: 12pt; }
+  li { margin: 0 0 3.5pt; }
+  .chart svg { width: 100%; height: auto; max-height: 92pt; }
+  .unit-chart .u-head { font-size: 11px; fill: var(--ink2); font-weight: 600; }
+  .unit-chart .u-row { font-size: 12px; fill: var(--ink2); font-weight: 650; }
+  .unit-chart .u-ok { fill: var(--ok); } .unit-chart .u-fa { fill: var(--fa); } .unit-chart .u-hit { fill: var(--hit); }
+  .unit-chart .u-miss { fill: #fff; stroke: var(--miss); stroke-width: 1.5; }
+  .legend { display: flex; gap: 10pt; font-size: 7.8pt; color: var(--ink2); margin: 3pt 0 0; flex-wrap: wrap; }
+  .k { display: inline-block; width: 7pt; height: 7pt; border-radius: 1.5pt; margin-right: 3pt; vertical-align: -0.5pt; }
+  .figs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6pt; margin-top: 6pt; }
+  .figs img { width: 100%; height: 84pt; object-fit: cover; border-radius: 3pt; border: 0.5pt solid var(--line); display: block; }
+  .figs figcaption { font-size: 7.6pt; color: var(--muted); margin-top: 2pt; }
+  figure { margin: 0; }
+  .foot { margin-top: 10pt; padding-top: 6pt; border-top: 0.75pt solid var(--line); font-size: 7.8pt; color: var(--muted); }
+  .foot p { margin: 0 0 2pt; }
+  .section { margin-top: 10pt; }
+</style>
+</head>
+<body>
+<section class="page">
+  <h1>{{ p.title }}</h1>
+  <p class="sub">{{ p.subtitle }}</p>
+  <p class="status">{{ p.status }}</p>
+
+  <div class="grid2">
+    <div><h2>{{ p.problem_h }}</h2><p>{{ p.problem }}</p></div>
+    <div><h2>{{ p.built_h }}</h2><p>{{ p.built }}</p></div>
+  </div>
+
+  <div class="section box">
+    <h2>{{ p.result_h }}</h2>
+    <p class="note" style="margin:0 0 4pt">{{ p.result_sub }}</p>
+    <div class="grid2" style="align-items:start;grid-template-columns:1.35fr 0.85fr">
+      <table>
+        <thead><tr><th></th><th class="n">v1</th><th class="n">v2</th><th>Change</th></tr></thead>
+        <tbody>
+          {% for r in p.rows %}<tr><th>{{ r.label }}</th><td class="n">{{ r.v1 }}</td><td class="n s">{{ r.v2 }}</td><td style="font-size:8.6pt">{{ r.change }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+      <div class="chart">
+        {{ unit_chart }}
+        <div class="legend"><span><span class="k" style="background:var(--ok)"></span>normal, not flagged</span><span><span class="k" style="background:var(--fa)"></span>false alarm</span><span><span class="k" style="background:var(--hit)"></span>defect caught</span><span><span class="k" style="border:1.2pt solid var(--miss)"></span>defect missed</span></div>
+      </div>
+    </div>
+    <p class="note">{{ p.latency }} {{ p.result_note }}</p>
+  </div>
+
+  <div class="section"><h2>{{ p.risks_h }}</h2><ul>{% for r in p.risks %}<li>{{ r }}</li>{% endfor %}</ul></div>
+
+  <div class="decision"><h2>{{ p.decision_h }}</h2>{{ p.decision }}</div>
+
+  <div class="figs">
+    {% for c in f.workflow.cases %}
+    <figure><img src="../assets/img/{{ c.file }}" alt=""><figcaption>{{ {"caught": "Defect caught", "false_alarm": "False alarm (peak on cloth near board)", "missed": "Small defect missed (cyan = ground truth)"}[c.key] }}: score {{ c.score }} vs threshold {{ c.threshold }}</figcaption></figure>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="page">
+  <h2 style="font-size:12.5pt">{{ p.pcb3_h }}</h2>
+  <p>{{ p.pcb3_lead }}</p>
+  <table>
+    <thead><tr>{% for c in p.pcb3_cols %}<th{% if loop.index in (2, 3) %} class="n"{% endif %}>{{ c }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for r in p.pcb3_rows %}<tr><th>{{ r.cond }}</th><td class="n">{{ r.base }}</td><td class="n s">{{ r.cand }}</td><td>{{ r.role }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <ul style="margin-top:7pt">{% for r in p.pcb3_read %}<li>{{ r }}</li>{% endfor %}</ul>
+
+  <div class="section grid2">
+    <div class="box"><h2>{{ p.next_h }}</h2><ul>{% for r in p.next %}<li>{{ r }}</li>{% endfor %}</ul></div>
+    <div class="box"><h2>Delivery lifecycle — status</h2>
+      <table><tbody>
+        {% for s in t.lifecycle.stages %}<tr><td>{{ loop.index }}. {{ s.name }}</td><td style="white-space:nowrap;color:var(--muted)">{{ t.status[s.status] }}</td></tr>{% endfor %}
+      </tbody></table>
+    </div>
+  </div>
+
+  <p class="note section"><strong>{{ t.status.not_validated }}:</strong> {{ t.phases.cols[2]["items"] | join(" · ") }}</p>
+  <p class="note">{{ p.roi_note }}</p>
+
+  <div class="foot">{% for x in p.footer %}<p>{{ x }}</p>{% endfor %}</div>
+</section>
+</body>
+</html>

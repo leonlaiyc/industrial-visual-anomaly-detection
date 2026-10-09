@@ -2,21 +2,35 @@
 
 ## VisA dataset (CC BY 4.0)
 
-This project uses the **VisA (Visual Anomaly) dataset**, `pcb1` and `pcb2` subsets, released by Amazon Science
-under the Creative Commons Attribution 4.0 International license
-(<https://github.com/amazon-science/spot-diff/blob/main/LICENSE-DATASET>).
+This project uses the **VisA (Visual Anomaly) dataset**, `pcb1`, `pcb2` and `pcb3` subsets, released by
+Amazon Science under the Creative Commons Attribution 4.0 International license
+(<https://creativecommons.org/licenses/by/4.0/>; dataset licence file:
+<https://github.com/amazon-science/spot-diff/blob/main/LICENSE-DATASET>).
 
 > Zou, Y., Jeong, J., Pemula, L., Zhang, D., Dabeer, O. *SPot-the-Difference Self-Supervised
 > Pre-training for Anomaly Detection and Segmentation.* ECCV 2022. arXiv:2207.14315.
+> Source: <https://github.com/amazon-science/spot-diff>
 
-- The dataset itself is **not** redistributed; `ivad prepare` downloads it from the official URL.
-- `manifests/visa_1cls_pcb1.csv` and `manifests/visa_1cls_pcb2.csv` contain the `pcb1` / `pcb2` rows of the official split file
-  `split_csv/1cls.csv` from the spot-diff repository (Apache-2.0 code repository; upstream SHA-256
-  recorded in `manifests/visa_1cls_*.provenance.json`).
-- `manifests/split_pcb1.csv` and `manifests/split_pcb2.csv` add this project's fit/calib/holdout roles and per-image SHA-256.
-- Figures under `reports/` contain downscaled VisA images, crops and heat-map overlays. **Changes
-  made:** registration (rotation/translation), cropping, resizing and overlaid anomaly maps / defect
-  outlines. No endorsement by the dataset authors is implied.
+- **The dataset itself is not redistributed.** `ivad prepare` downloads the official archive from the
+  official URL.
+- **Derivative images are redistributed in small numbers:**
+  - figures under `reports/` (downscaled VisA images, crops, contact sheets, mean images and heat-map /
+    outline overlays);
+  - website images under `site/static/img/` (five JPEG files) and the extended executive brief
+    `reports/executive_summary_extended.pdf`, which embeds three of them (the one-page summary
+    `reports/executive_summary_one_page.pdf` embeds no images);
+  - when a built website (`site/dist/`) or visual-QA screenshots of it are included in a review snapshot,
+    they show the same derivative images.
+- **Changes made:** board registration (rotation/translation), cropping, resizing, averaging (mean images),
+  and overlaid anomaly heat maps, scoring-region outlines, board-mask tints and ground-truth defect outlines.
+  Scores and labels shown next to images are this project's outputs, not part of the dataset.
+- `manifests/visa_1cls_pcb{1,2,3}.csv` contain the corresponding rows of the official split file
+  `split_csv/1cls.csv` from the spot-diff repository (Apache-2.0 code repository; upstream SHA-256 recorded
+  in `manifests/visa_1cls_*.provenance.json`). `manifests/split_pcb{1,2,3}.csv` add this project's
+  fit/calib/holdout roles and per-image SHA-256.
+- **No endorsement** of this project by the dataset authors or by Amazon is implied.
+- The CC BY 4.0 licence covers the VisA images and their derivatives. It does not apply to this project's
+  own source code or documentation (see README → *Data, weights and licensing*).
 
 ## torchvision and pretrained weights
 
