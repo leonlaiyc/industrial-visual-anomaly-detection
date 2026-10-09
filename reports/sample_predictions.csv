@@ -1,0 +1,9 @@
+category,image,label,score,threshold,recommendation
+TP,pcb1/Data/Images/Anomaly/003.JPG,anomaly,100.9298,63.7074,REVIEW
+TP,pcb1/Data/Images/Anomaly/088.JPG,anomaly,101.6892,63.7074,REVIEW
+FN,pcb1/Data/Images/Anomaly/035.JPG,anomaly,32.6273,63.7074,NO_REVIEW
+FN,pcb1/Data/Images/Anomaly/026.JPG,anomaly,34.0355,63.7074,NO_REVIEW
+FP,pcb1/Data/Images/Normal/0306.JPG,normal,104.7651,63.7074,REVIEW
+FP,pcb1/Data/Images/Normal/0694.JPG,normal,108.5296,63.7074,REVIEW
+TN,pcb1/Data/Images/Normal/0569.JPG,normal,29.8335,63.7074,NO_REVIEW
+TN,pcb1/Data/Images/Normal/0800.JPG,normal,29.9593,63.7074,NO_REVIEW

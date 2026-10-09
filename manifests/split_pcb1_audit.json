@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "counts": {
+    "calib/normal": 150,
+    "fit/normal": 600,
+    "holdout/normal": 154,
+    "test/anomaly": 100,
+    "test/normal": 100
+  },
+  "unique_paths": 1104,
+  "content_hash_checked": true,
+  "identical_contents_total": 0,
+  "seed": 20261008
+}

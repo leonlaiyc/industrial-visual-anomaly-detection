@@ -1,0 +1,7 @@
+{
+  "source_url": "https://raw.githubusercontent.com/amazon-science/spot-diff/main/split_csv/1cls.csv",
+  "read_from": "VisA_20220922.tar:split_csv/1cls.csv",
+  "upstream_sha256": "a48557e6033318cb90556f706196bc9d247a776a23ea51aecee5a80dd0332995",
+  "object": "pcb2",
+  "rows_kept": 1101
+}

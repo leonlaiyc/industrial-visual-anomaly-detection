@@ -1,0 +1,17 @@
+# PROPOSED acceptance criteria (docs/requirements.md §E2, §H) — pending real-user confirmation.
+# Kept separate from default.yaml on purpose: these are requirement targets, not
+# model settings, and they must not alter the frozen configuration hash.
+# Status in reports is computed from these values against point estimates.
+
+performance:
+  auroc_min: 0.90            # P3
+  recall_min: 0.90           # P1, at the primary threshold
+  fpr_max: 0.10              # P2, official-test normals AND supplementary holdout
+  latency_ms_max: 1000       # P4, median, end-to-end
+  robustness_recall_drop_max: 0.10   # P5
+  robustness_fpr_rise_max: 0.10      # P5
+
+no_go:
+  recall_floor: 0.80         # recall below this (point) at the primary threshold -> NO-GO
+  fpr_ceiling: 0.20          # FPR above this on either normal set -> NO-GO
+  robustness_recall_collapse: 0.20   # recall drop above this under P5 perturbations -> NO-GO

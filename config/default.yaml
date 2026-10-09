@@ -1,0 +1,82 @@
+# Industrial Visual Anomaly Detection — PCB1 PoC configuration.
+# Every setting that affects results lives here. Its canonical hash is
+# recorded in reports/frozen_operating_point.json; `ivad evaluate` refuses to
+# run if this file changed after the threshold was frozen.
+
+seed: 20261008
+
+paths:
+  root: null                         # null = repository root
+  archive: data/raw/VisA_20220922.tar
+  data_dir: data/visa                # extracted pcb1/ lives here (gitignored)
+  official_manifest: manifests/visa_1cls_pcb1.csv
+  split_manifest: manifests/split_pcb1.csv
+  artifacts: artifacts               # fitted model state (gitignored)
+  reports: reports
+  figures: reports/figures
+
+dataset:
+  name: VisA
+  object: pcb1
+  archive_url: https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar
+  archive_bytes: 1929840640
+  manifest_url: https://raw.githubusercontent.com/amazon-science/spot-diff/main/split_csv/1cls.csv
+  n_fit: 600
+  n_calib: 150
+  n_holdout: 154
+  n_test_normal: 100
+  n_test_anomaly: 100
+
+preprocess:
+  # Decided from FIT normals only (reports/inspection/, docs/engineering_decisions.md D2-D3):
+  # boards vary in placement (~±70 px), tilt (~±3°) and 19% are rotated 180°.
+  register: true                     # mask-moment registration + 0/180° by template NCC
+  crop_wh: [1152, 768]               # centred crop of the registered frame (native px)
+  size_hw: [512, 768]                # model input; 1.5x downsample of the crop
+
+model:
+  backbone: wide_resnet50_2
+  pretrained: true                   # torchvision IMAGENET1K_V1
+  layers: [layer2, layer3]
+  n_features: 128                    # random channel subset (of 1536)
+  feature_seed: 0
+  pool_kernel: 3                     # 3x3 local neighbourhood average
+  cov_reg_rel: 0.01                  # ridge = rel * mean(diag Sigma) + eps
+  cov_reg_eps: 1.0e-6
+  map_sigma: 4.0                     # Gaussian smoothing of the upsampled map (pixels)
+
+calibration:
+  # name -> target FPR on calibration normals (conformal order statistic)
+  candidates:
+    P90: 0.10
+    P95: 0.05
+    P99: 0.01
+  primary: P95
+  level: 0.95
+
+evaluation:
+  level: 0.95
+  n_bootstrap: 2000
+  bootstrap_seed: 7
+  latency_warmup: 5
+
+robustness:
+  # Applied to the ORIGINAL full-resolution image before preprocessing.
+  # Severities fixed from FIT-normal inspection, before any test scoring.
+  # Natural mean-brightness spread of FIT normals is about ±4%.
+  perturbations:
+    - {name: darker_lower_contrast, kind: photometric, brightness: 0.90, contrast: 0.90}
+    - {name: brighter_higher_contrast, kind: photometric, brightness: 1.10, contrast: 1.10}
+    - {name: gaussian_blur_s1.5, kind: blur, sigma_px: 1.5}
+    - {name: shift_40_25px, kind: shift, dx_px: 40, dy_px: 25}
+  n_bootstrap: 2000
+  bootstrap_seed: 11
+
+cost:
+  k_min: 0.01
+  k_max: 100.0
+
+runtime:
+  device: cuda                       # falls back to cpu if CUDA is unavailable
+  batch_size: 8
+  num_workers: 8                     # threads for JPEG decode + registration

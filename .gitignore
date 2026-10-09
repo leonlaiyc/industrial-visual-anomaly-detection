@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+build/
+dist/
+
+# Datasets are NEVER committed (VisA is downloaded by `ivad prepare`)
+data/
+
+# Fitted model state, feature caches, pretrained weights (regenerable)
+artifacts/
+*.pt
+*.pth
+*.npz
+*.npy
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets (none are used; guard anyway)
+.env
+*.key

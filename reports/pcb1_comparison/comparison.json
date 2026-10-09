@@ -1,0 +1,215 @@
+{
+  "evidence_status": "RETROSPECTIVE: discovery data that motivated v2; not evidence for the hypothesis",
+  "base_run": "PCB1 v1 (original)",
+  "new_run": "PCB1 v2 RETROSPECTIVE (board-ROI max; discovery data)",
+  "dataset": "pcb1",
+  "primary_threshold": {
+    "base": [
+      "P95",
+      63.7074089050293
+    ],
+    "new": [
+      "P95",
+      44.24031448364258
+    ]
+  },
+  "pairing_checks": {
+    "same_calib_images_and_labels": true,
+    "v2_full_frame_equals_v1_score_calib": true,
+    "same_test_images_and_labels": true,
+    "v2_full_frame_equals_v1_score_test": true,
+    "same_holdout_images_and_labels": true,
+    "v2_full_frame_equals_v1_score_holdout": true,
+    "same_split_manifest": true,
+    "same_pretrained_weights": true,
+    "identical_gaussian_state": true,
+    "identical_registration_template": true,
+    "identical_fit_images": true
+  },
+  "paired": {
+    "recall_test_anomalies": {
+      "base": 0.72,
+      "new": 0.88,
+      "delta": 0.16,
+      "ci_low": 0.09,
+      "ci_high": 0.23,
+      "n": 100,
+      "level": 0.95,
+      "ci_method": "paired percentile bootstrap over images, B=10000, seed=2026",
+      "flagged_by_new_only": 16,
+      "flagged_by_base_only": 0,
+      "n_discordant": 16,
+      "p_value": 3.0517578125e-05,
+      "test": "exact McNemar (two-sided binomial on discordant pairs)"
+    },
+    "fpr_test_normals": {
+      "base": 0.07,
+      "new": 0.06,
+      "delta": -0.01,
+      "ci_low": -0.06,
+      "ci_high": 0.04,
+      "n": 100,
+      "level": 0.95,
+      "ci_method": "paired percentile bootstrap over images, B=10000, seed=2027",
+      "flagged_by_new_only": 3,
+      "flagged_by_base_only": 4,
+      "n_discordant": 7,
+      "p_value": 1.0,
+      "test": "exact McNemar (two-sided binomial on discordant pairs)"
+    },
+    "fpr_holdout_normals": {
+      "base": 0.03896103896103896,
+      "new": 0.01948051948051948,
+      "delta": -0.01948051948051948,
+      "ci_low": -0.05194805194805195,
+      "ci_high": 0.012987012987012988,
+      "n": 154,
+      "level": 0.95,
+      "ci_method": "paired percentile bootstrap over images, B=10000, seed=2028",
+      "flagged_by_new_only": 2,
+      "flagged_by_base_only": 5,
+      "n_discordant": 7,
+      "p_value": 0.453125,
+      "test": "exact McNemar (two-sided binomial on discordant pairs)"
+    },
+    "auroc": {
+      "base": 0.9378,
+      "new": 0.9741,
+      "delta": 0.0363,
+      "ci_low": 0.01539999999999997,
+      "ci_high": 0.06110000000000004,
+      "level": 0.95,
+      "ci_method": "stratified paired percentile bootstrap, B=10000, seed=2029"
+    }
+  },
+  "decision": {
+    "outcome": "IMPROVEMENT SUPPORTED",
+    "recall_significant": true,
+    "fpr_noninferior": {
+      "official_test": true,
+      "holdout": true
+    },
+    "rule": "supported iff \u0394recall > 0 with McNemar p < 0.05 and v2 FPR <= v1 FPR + 0.05 on official-test and holdout normals; unfavourable iff FPR non-inferiority fails or \u0394recall < 0 with p < 0.05; otherwise no meaningful effect demonstrated"
+  },
+  "acceptance": {
+    "base": {
+      "auroc": true,
+      "recall": false,
+      "fpr_test": true,
+      "fpr_holdout": true,
+      "latency": true,
+      "robustness": true,
+      "robustness_max_recall_drop": 0.03,
+      "robustness_max_fpr_rise": 0.04330708661417323,
+      "no_go_triggers": [
+        "recall_below_floor"
+      ],
+      "verdict": "NO-GO"
+    },
+    "new": {
+      "auroc": true,
+      "recall": false,
+      "fpr_test": true,
+      "fpr_holdout": true,
+      "latency": true,
+      "robustness": null,
+      "no_go_triggers": [],
+      "verdict": "INCONCLUSIVE"
+    }
+  },
+  "latency_median_ms": {
+    "base": 139.34724999126047,
+    "new": 156.31595003651455
+  },
+  "roi_fallback": {
+    "test": {
+      "n": 200,
+      "n_fallback": 0,
+      "coverage_min": 0.9967749715356183,
+      "coverage_median": 1.0
+    },
+    "holdout": {
+      "n": 154,
+      "n_fallback": 0,
+      "coverage_min": 1.0,
+      "coverage_median": 1.0
+    }
+  },
+  "threshold_mechanism": {
+    "calib_normals_peak_off_roi": 91,
+    "n_calib": 150,
+    "top10_calib_full_frame_scores_off_roi": 10,
+    "threshold_base": 63.7074089050293,
+    "threshold_new": 44.24031448364258,
+    "threshold_drop": 19.46709442138672,
+    "test_anomalies_between_thresholds": 19,
+    "note": "The ROI can only raise recall at a calibrated threshold if background peaks set the upper tail of the calibration normals."
+  },
+  "premise_check": {
+    "test": {
+      "n_false_alarms": 7,
+      "peak_outside_roi": 7,
+      "images": [
+        {
+          "image": "pcb1/Data/Images/Normal/0261.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0306.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0684.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0694.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0730.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0779.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0920.JPG",
+          "peak_outside_roi": true
+        }
+      ]
+    },
+    "holdout": {
+      "n_false_alarms": 6,
+      "peak_outside_roi": 6,
+      "images": [
+        {
+          "image": "pcb1/Data/Images/Normal/0295.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0350.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0472.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0582.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0620.JPG",
+          "peak_outside_roi": true
+        },
+        {
+          "image": "pcb1/Data/Images/Normal/0793.JPG",
+          "peak_outside_roi": true
+        }
+      ]
+    },
+    "note": "v1 false alarms (normals above the v1 P95 threshold); peak = argmax of the full-frame anomaly map (identical for v1 and v2); outside = not in the v2 ROI. Descriptive only."
+  }
+}
