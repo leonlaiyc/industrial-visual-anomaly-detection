@@ -12,8 +12,9 @@ C5  executive PDFs (A4, built from site/ since the PCB3 experiment): the one-pag
     page and the extended brief two; in each, every numeric token traces to a recorded output and the
     headline numbers are present
 C6  README results block equals the generated block
-C7  repository hygiene: no dataset, weights, large files or secret-like strings tracked (the website's
-    resized, overlaid VisA derivatives under site/static/img/ are the one allowed image set, each < 500 kB)
+C7  repository hygiene: no dataset, weights, large files or secret-like strings tracked (allowed images: the
+    website's resized, overlaid VisA derivatives under site/static/img/, and the exploratory study's named
+    illustrative figures in EXPLORATORY_FIGS, each < 500 kB and each listed in NOTICE.md)
 C8  the pilot recommendation sentence is identical in both PDFs, README, decision record and handoff
 """
 from __future__ import annotations
@@ -38,6 +39,8 @@ PDF_LITERALS = {"1", "2", "3", "4", "5", "6", "7", "100", "200", "600", "150", "
                 "2022", "4.0"}  # dataset citation year and CC BY licence version
 # Website images derived from VisA (CC BY 4.0, resized + overlays): the only images allowed in git.
 SITE_IMG_DIR, SITE_IMG_MAX_BYTES = "site/static/img/", 500_000
+# Downscaled, overlaid PCB4 contact sheets of the exploratory study (VisA derivatives, CC BY 4.0, named in NOTICE.md).
+EXPLORATORY_FIGS = ("exploratory/yolo_pcb4/results/fig_failures.jpg", "exploratory/yolo_pcb4/audit/fig_annotation_check.jpg")
 
 
 def _numbers(obj: Any) -> Iterable[float]:
@@ -231,7 +234,8 @@ def run_checks() -> bool:
     # C7
     try:
         tracked = _git("ls-files").stdout.split()
-        site_img = [t for t in tracked if t.startswith(SITE_IMG_DIR)]
+        notice = (REPO_ROOT / "NOTICE.md").read_text(encoding="utf-8") if (REPO_ROOT / "NOTICE.md").exists() else ""
+        site_img = [t for t in tracked if t.startswith(SITE_IMG_DIR) or (t in EXPLORATORY_FIGS and t in notice)]
         bad_paths = [t for t in tracked if t.startswith(("data/", "artifacts/")) or
                      (t.lower().endswith((".pt", ".pth", ".jpg", ".tar", ".npz", ".npy", ".env")) and t not in site_img)]
         bad_paths += [t for t in site_img if (REPO_ROOT / t).stat().st_size > SITE_IMG_MAX_BYTES]
