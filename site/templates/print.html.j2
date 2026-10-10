@@ -100,14 +100,15 @@
 
   <div class="section grid2">
     <div class="box"><h2>{{ p.next_h }}</h2><ul>{% for r in p.next %}<li>{{ r }}</li>{% endfor %}</ul></div>
-    <div class="box"><h2>Delivery lifecycle — status</h2>
+    <div class="box"><h2>{{ p.eng_h }}</h2>
       <table><tbody>
-        {% for s in t.lifecycle.stages %}<tr><td>{{ loop.index }}. {{ s.name }}</td><td style="white-space:nowrap;color:var(--muted)">{{ t.status[s.status] }}</td></tr>{% endfor %}
+        {% for pr in t.engineering.principles %}{% set st = pr["items"] | map(attribute="status") | list %}{% set parts = [] %}{% for k in ("demonstrated", "proposed", "not_impl") if k in st %}{% set _ = parts.append((st | select("equalto", k) | list | length) ~ " " ~ (t.status[k] | lower)) %}{% endfor %}<tr><td>{{ pr.letter }}. {{ pr.title }}<br><span style="color:var(--muted)">{{ parts | join(" · ") }}</span></td></tr>{% endfor %}
       </tbody></table>
+      <p class="note" style="margin-top:4pt">{{ p.eng_note }}</p>
     </div>
   </div>
 
-  <p class="note section"><strong>{{ t.status.not_validated }}:</strong> {{ t.phases.cols[2]["items"] | join(" · ") }}</p>
+  <p class="note section"><strong>{{ t.status.not_validated }}:</strong> {{ t.readiness.cols[2]["items"] | join(" · ") }}</p>
   <p class="note">{{ p.roi_note }}</p>
 
   <div class="foot">{% for x in p.footer %}<p>{{ x }}</p>{% endfor %}</div>

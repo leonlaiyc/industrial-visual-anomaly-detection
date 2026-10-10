@@ -187,3 +187,66 @@ def test_visual_qa_evidence():
             if not path.exists():
                 pytest.skip("screenshots not present in this copy")
             assert ImageStat.Stat(Image.open(path).convert("L")).stddev[0] > 1, f"blank capture {png}"
+
+
+# Names and phrases that belong only to private, non-public material (outside this repository's public tree).
+# Built from pieces so this file does not itself contain them.
+_PRIVATE = ["Jes" + "sie", "Mic" + "ron", "Ed" + "die", "Che" + "ryl"]
+_WORKFLOW_PHRASES = ["First-Time" + "-Right", "First Time" + " Right", "Delivery " + "lifecycle", "Value " + "realization",
+                     "if " + "hired", "inter" + "view", "訪" + "談", "交付" + "流程"]
+
+
+def _public_tracked_files():
+    import subprocess
+    out = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split()
+    return [ROOT / p for p in out if not p.startswith("private_review/")
+            and Path(p).suffix in (".md", ".yaml", ".yml", ".j2", ".py", ".json", ".css", ".mjs", ".txt", ".csv")]
+
+
+def test_public_material_has_no_private_names_or_management_workflow(built):
+    dist, _, pages = built
+    texts = {lang: _text(html) for lang, html in pages.items()}
+    for p in ("print", "print/one-page"):
+        texts[p] = _text((dist / p / "index.html").read_text(encoding="utf-8"))
+    for name, t in texts.items():
+        for bad in _PRIVATE + _WORKFLOW_PHRASES:
+            assert bad.lower() not in t.lower(), (name, bad)
+        assert 'id="lifecycle"' not in pages.get(name, ""), name
+    for path in _public_tracked_files():
+        if path.name == "test_site.py" or not path.exists():
+            continue
+        t = path.read_text(encoding="utf-8", errors="ignore").lower()
+        for bad in _PRIVATE:
+            assert bad.lower() not in t, (str(path.relative_to(ROOT)), bad)
+
+
+def test_technical_case_structure_and_engineering_discipline(built):
+    _, f, pages = built
+    for lang, html in pages.items():
+        order = [html.index(f'id="{s}"') for s in ("summary", "problem", "data", "approach", "architecture", "results",
+                                                     "pcb3", "lessons", "engineering", "handoff")]
+        assert order == sorted(order), lang
+        eng = html.split('id="engineering"', 1)[1].split("</section>", 1)[0]
+        assert eng.count('class="gov-col"') == 4, lang
+        for k in ("demonstrated", "proposed", "not_impl"):
+            assert f'class="gov-{k}"' in eng, (lang, k)
+        for p in f["files"].values():  # every cited evidence path is shown and exists (facts.files fails otherwise)
+            assert (ROOT / p).exists(), p
+        assert eng.count("<code>") >= 15, lang
+    en = _text(pages["en"])
+    # honest status: no claim of human peer review, CI or line operation
+    assert "Human peer review has not taken place" in en and "no server runs them on every change yet" in en
+    assert "not measuring a return is not evidence of a negative one" in en
+
+
+def test_exploratory_study_is_separate_from_frozen_results(built):
+    _, f, pages = built
+    for lang, html in pages.items():
+        ex = html.split('id="explore"', 1)[1].split("</section>", 1)[0]
+        assert "badge-exploratory" in ex and "mock-banner" in ex, lang
+        boards = html.split('class="grid-table boards-table"', 1)[1].split("</table>", 1)[0]
+        assert "PCB4" not in boards and "YOLO" not in boards, lang
+        assert html.index('id="explore"') < html.index('id="results"'), lang
+    en = _text(pages["en"])
+    assert "separate from the frozen PCB1–PCB3 evaluations" in en and "changes no earlier result or decision" in en
+    assert f["explore"]["n_defects"] == 100 and f["explore"]["n_calib"] == 150

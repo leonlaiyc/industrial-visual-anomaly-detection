@@ -225,6 +225,34 @@ is uncertain by roughly ±8 points), synthetic perturbations, and a 50% defect r
 a real line. Each new product, camera, background or lighting setup needs re-fitting, re-calibration and
 fresh validation.
 
+## Exploratory: YOLOv8s / YOLO11s on PCB4 (separate from the frozen results)
+
+To test the main alternative rather than describe it, off-the-shelf YOLOv8s and YOLO11s were trained on the
+fourth VisA board type (PCB4, never used before) under a protocol committed before the data was opened
+([`exploratory/yolo_pcb4/PROTOCOL.md`](exploratory/yolo_pcb4/PROTOCOL.md)): fixed default settings, five-fold
+cross-validation over the 100 defects (80 box-labelled defects per fold), the project's own threshold rule
+(P95 of 150 separate normals). Results ([`results.md`](exploratory/yolo_pcb4/results/results.md)), all
+descriptive:
+
+- With labels for the same defect types, recall was 98% (YOLOv8s) and 95% (YOLO11s) against 60% for the
+  project's normal-only pipeline run on PCB4 without board-specific preprocessing, at similar overall
+  false-alarm rates (3.1–4.3% of test normals; the same 255 normals are scored by all five fold models).
+  This compares learning regimes with different label budgets, not architectures; YOLOv8s and YOLO11s
+  differed on only 5 of the 100 defects and cannot be ranked on this sample.
+- Post-hoc checks (added after the results were seen): the box that set the image score touched the
+  defect (mask grown by 16 px, no IoU requirement) in 92/98 (YOLOv8s) and 89/95 (YOLO11s) flagged images;
+  at IoU ≥ 0.5 with a ground-truth box, 79/98 and 74/95. Defect images are darker on average than normals,
+  and YOLO scores on defect-free images rise with darkness: on normals reweighted to the defect images'
+  brightness, YOLO false alarms were 9.0% and 6.9% (normal-only 2.1%). Recall stayed at 96% and 91% with
+  brightness-matched thresholds. See [`exploratory/yolo_pcb4/audit/`](exploratory/yolo_pcb4/audit/AUDIT.md).
+- On a defect type removed from training, YOLO11s fell to about the normal-only level (`missing`: 19/19 seen
+  vs 11/19 unseen; normal-only 10/19), on tiny samples; none of the 11 unseen-type flags had a box at
+  IoU ≥ 0.5 on the missing part.
+- Latency figures (YOLO 14–15 ms, normal-only 32 ms, with registration 135 ms) are per-pipeline
+  measurements at different input sizes and boundaries, not a speed ranking.
+- It changes no PCB1–PCB3 result, threshold or decision; PCB4 numbers are not comparable with them.
+  Deviations and the post-hoc check are logged in `exploratory/yolo_pcb4/results/deviations.md`.
+
 ## Next steps (not done)
 
 1. Lighting robustness: a global photometric correction was tested on PCB3 (see above) and traded darkening
@@ -252,6 +280,7 @@ Each needs a new freeze and an evaluation on data that did not motivate it.
 | [`docs/handoff.md`](docs/handoff.md) | setup, operation, failure modes, what a production version would need |
 | [`reports/pcb2_comparison/comparison.md`](reports/pcb2_comparison/comparison.md) | generated paired comparison |
 | [`reports/pcb3_illum_comparison/comparison.md`](reports/pcb3_illum_comparison/comparison.md) | generated PCB3 paired illumination analysis |
+| [`exploratory/yolo_pcb4/PROTOCOL.md`](exploratory/yolo_pcb4/PROTOCOL.md) | exploratory YOLOv8s/YOLO11s study on PCB4: protocol, split audit, scores, results, deviations |
 
 ## Development provenance
 
@@ -271,7 +300,8 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
 
 ## Data, weights and licensing
 
-- **Dataset:** VisA (Visual Anomaly), Amazon Science, `pcb1`, `pcb2` and `pcb3` subsets, **CC BY 4.0**
+- **Dataset:** VisA (Visual Anomaly), Amazon Science, `pcb1`, `pcb2` and `pcb3` subsets (`pcb4` only in the
+  exploratory study), **CC BY 4.0**
   (<https://creativecommons.org/licenses/by/4.0/>). Zou et al., *SPot-the-Difference Self-Supervised
   Pre-training for Anomaly Detection and Segmentation*, ECCV 2022, <https://github.com/amazon-science/spot-diff>.
   The dataset itself is not redistributed (`ivad prepare` downloads it). The repository and website **do**

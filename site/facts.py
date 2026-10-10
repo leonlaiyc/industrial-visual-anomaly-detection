@@ -333,6 +333,78 @@ def site_assets() -> dict[str, Any]:
                           "n_fit": m["n_fit"]}}
 
 
+# Repository files cited as evidence on the site (engineering-discipline section). The build fails if one is
+# missing, so the site cannot cite a file that does not exist.
+EVIDENCE_FILES = {
+    "requirements": "docs/requirements.md", "acceptance": "config/acceptance_criteria.yaml",
+    "decisions": "docs/engineering_decisions.md", "decision_record": "docs/v2_decision_record.md",
+    "prereg_scoring": "docs/v2_experiment_protocol.md", "prereg_lighting": "docs/illumination_experiment_protocol.md",
+    "milestones": "reports/project_milestones.json", "handoff": "docs/handoff.md",
+    "config_v2": "config/pcb2_v2.yaml", "freeze_v2": "reports/pcb2_v2/frozen_operating_point.json",
+    "pipeline": "src/ivad/pipeline.py", "deviations": "docs/illumination_experiment_deviations.md",
+    "repair": "docs/pcb3_post_evaluation_repair.md", "tests": "tests/", "split_audit": "manifests/split_pcb2_audit.json",
+    "data": "src/ivad/data.py", "consistency": "src/ivad/consistency.py", "recompute": "verification/recompute_pcb3.py",
+    "lock": "requirements.lock.txt", "align": "src/ivad/align.py", "roi": "src/ivad/roi.py",
+}
+
+
+def files() -> dict[str, str]:
+    missing = [p for p in EVIDENCE_FILES.values() if not (ROOT / p).exists()]
+    if missing:
+        raise SystemExit(f"site cites missing evidence files: {missing}")
+    return dict(EVIDENCE_FILES)
+
+
+def explore() -> dict[str, Any]:
+    """Exploratory E1 (exploratory/yolo_pcb4/): counts from the committed split audit; results only once the
+    protocol's analysis has written results.json (`ready`)."""
+    d = ROOT / "exploratory" / "yolo_pcb4" / "results"
+    a = _j(d / "split_audit.json")
+    c = a["counts"]
+    n_def = sum(v for k, v in c.items() if k.startswith("fold"))
+    out: dict[str, Any] = {"dir": "exploratory/yolo_pcb4/", "n_defects": n_def, "n_calib": c["calib"],
+                           "n_test_normal": c["test_n"], "train_defects": n_def - n_def // 5,
+                           "train_val": round(0.2 * (n_def - n_def // 5)),
+                           "train_fit": (n_def - n_def // 5) - round(0.2 * (n_def - n_def // 5)),
+                           "unseen_n_total": sum(v["test_single_label"] for v in a["unseen_type_runs"].values()),
+                           "ready": False}
+    rp = d / "results.json"
+    if rp.exists():
+        r = _j(rp)
+        out.update(r["site"])
+        out["ready"] = True
+        out["n_test_normal"] = r["n_test_normal"]
+    lp = d / "posthoc_localization.json"  # post-hoc check, reported as such
+    if lp.exists():
+        loc = _j(lp)
+        out["loc"] = {a: {"top": f"{loc[a]['top_box_on_defect']}/{loc[a]['n_flagged_defects']}",
+                          "any": f"{loc[a]['any_flagging_box_on_defect']}/{loc[a]['n_flagged_defects']}",
+                          "tol": loc["tolerance_px"]} for a in ("yolov8s", "yolo11s")}
+    au = ROOT / "exploratory" / "yolo_pcb4" / "audit"  # audit-time checks (after the experiment), reported as such
+    if (au / "localization_audit.json").exists() and (au / "acquisition_confound.json").exists():
+        la, ac = _j(au / "localization_audit.json"), _j(au / "acquisition_confound.json")
+        rm = _j(au / "recomputed_metrics.json")
+        um = la["runs"]["yolo11s_unseen_missing"]
+        bm = ac["brightness_matched_fpr_sensitivity"]["methods"]
+        mc = rm["mcnemar_defects"]["yolov8s_vs_yolo11s"]
+        tn = rm["methods"]["yolov8s"]["test_normal_evaluations_pooled"]
+        out["audit"] = {
+            "iou_min": "0.5",
+            "iou": {a: f"{la['pooled_cv'][a]['top_iou_ge_0.5']}/{la['pooled_cv'][a]['n_flagged']}" for a in ("yolov8s", "yolo11s")},
+            "unseen_missing_flagged": um["n_flagged"], "unseen_missing_top_touch": um["top_touch_dilated16 (original definition)"],
+            "unseen_missing_any_iou": um["any_above_iou_ge_0.5"],
+            "dark_auroc": f"{1 - ac['features']['grey_mean']['auroc']:.2f}",
+            "fpr_dark": {k: f"{100 * bm[k]['fpr_brightness_matched']:.1f}%" for k in bm},
+            "recall_matched_cal": {k: f"{100 * bm[k]['matched_calibration']['recall']:.0f}%" for k in bm},
+            "v8_only": mc["only_first"], "v11_only": mc["only_second"],
+            "evals": f"{tn['evaluations']:,}", "unique_normals": tn["unique_images"],
+            "yolo_imgsz": _j(d / "train_args_yolov8s_cv_fold1.json")["train_args"]["imgsz"],
+            "ref_size": "×".join(str(v) for v in reversed(a["reference_size_hw"])),  # width × height
+            "lat_n": _j(d / "latency_yolov8s.json")["n_images"],
+            "dir": "exploratory/yolo_pcb4/audit/"}
+    return out
+
+
 def collect() -> dict[str, Any]:
     v1, b, n = run("pcb1_v1"), run("pcb2_v1"), run("pcb2_v2")
     c2 = _j(REP / "pcb2_comparison" / "comparison.json")
@@ -368,6 +440,8 @@ def collect() -> dict[str, Any]:
         "milestones": milestones(),
         "boards": boards(),
         "repair": repair(),
+        "files": files(),
+        "explore": explore(),
         **site_assets(),
     }
     f["pcb2"]["v2"]["roi_margin_px"] = _yaml(ROOT / "config" / "pcb2_v2.yaml")["scoring"]["roi"]["margin_px"]

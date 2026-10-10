@@ -1,6 +1,6 @@
 # Extended brief (English, two A4 pages, print/PDF; the one-page summary is print_one_page.en.yaml). Same rules as the site content: numbers only via {{ f.* }}.
 
-title: "Industrial Visual Inspection: From Prototype to Operational Decision"
+title: "Industrial Visual Anomaly Detection: A Technical Case Study"
 subtitle: "Extended brief (two pages) · independent project on public benchmark images (VisA), not factory data"
 status: "Programmatic metric verification completed: a separate implementation recomputed the reported results from the recorded per-image scores. AI-assisted technical review performed; human owner review and acceptance pending. The one-page summary is the default executive version."
 
@@ -39,7 +39,7 @@ risks:
   - "<strong>Board region.</strong> About {{ f.pcb3.diag.roi_cloth }} of the PCB3 scoring region is background cloth; lint near the board can still raise a false alarm."
 
 decision_h: "Recommendation"
-decision: "<strong>No manufacturing pilot recommended yet.</strong> Go for one bounded validation step: agree requirements and costs with a quality engineer, then run the tool in shadow mode on real line images, with the site checks on the next page as entry gates. Decide again on that evidence."
+decision: "<strong>No manufacturing pilot recommended yet.</strong> Go for one bounded validation step: confirm requirements and costs with the site's quality owner, then run the tool in shadow mode on real line images, with the site checks on the next page as entry gates. Decide again on that evidence."
 
 pcb3_h: "Follow-up experiment: lighting correction on a new board type (PCB3)"
 pcb3_lead: "One pre-registered change — standardise each image's global brightness and contrast before registration — compared with the unchanged pipeline on {{ f.pcb3.result.n_pooled }} unseen normal and {{ f.pcb3.result.n_anom }} defective images, evaluated once."
@@ -79,6 +79,8 @@ next:
   - "A labelled sample of the site's real defects, with recall reported by defect size."
   - "Agreed cost of a miss versus a review, review capacity, and versioned model + threshold releases with rollback."
 
+eng_h: "Engineering discipline — practices by status"
+eng_note: "Counts of practices per principle on the website: demonstrated in the repository, proposed for a team, or not yet implemented (no human peer review, no continuous integration, nothing operated on a line)."
 roi_note: "“ROI” here means the image region of interest. No financial return on investment or labour saving is claimed: only a classification-cost break-even range was computed (PCB2 v2 beats reviewing nothing or everything when k = defect odds × miss cost ÷ review cost lies between {{ f.cost.v2.k_low_fmt }} and {{ f.cost.v2.k_high_fmt }})."
 footer:
   - "Data: VisA dataset, Zou et al., ECCV 2022, CC BY 4.0. Benchmark board types PCB1–PCB3 are not manufacturing sites. Not affiliated with or endorsed by the dataset authors or any company."

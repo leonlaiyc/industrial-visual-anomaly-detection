@@ -1,0 +1,182 @@
+{
+ "note": "built after the experiment for audit; reads inputs only",
+ "n_images": 1105,
+ "labels": {
+  "normal": 1005,
+  "anomaly": 100
+ },
+ "roles": {
+  "fit": 600,
+  "calib": 150,
+  "test_n": 255,
+  "fold1": 20,
+  "fold2": 20,
+  "fold3": 20,
+  "fold4": 20,
+  "fold5": 20
+ },
+ "image_geometry": {
+  "1358x1104": 1105
+ },
+ "mask_geometry_mismatches": [],
+ "sha256_recorded_vs_now_mismatches": [],
+ "exact_duplicate_sha256_groups": [],
+ "near_duplicate_rule": "dHash 16x16 (256 bits) of the grey image; pairs in DIFFERENT roles within Hamming <= 10",
+ "near_duplicate_cross_role_pairs": [],
+ "nearest_cross_role_hamming": {
+  "min": 19.0,
+  "p01": 31.0,
+  "median": 41.0
+ },
+ "multi_type_defect_images": 56,
+ "type_label_counts": {
+  "burnt,dirt": 4,
+  "burnt": 2,
+  "burnt,scratch,dirt": 1,
+  "burnt,extra": 1,
+  "damage,dirt": 6,
+  "damage": 7,
+  "damage,extra": 1,
+  "extra": 12,
+  "extra,dirt": 10,
+  "missing": 19,
+  "missing,damage": 3,
+  "missing,damage,extra": 1,
+  "missing,dirt": 5,
+  "missing,wrong place": 1,
+  "scratch,extra,wrong place": 1,
+  "scratch,missing,dirt": 2,
+  "scratch,extra": 2,
+  "scratch,damage,dirt": 1,
+  "scratch": 2,
+  "scratch,missing": 2,
+  "scratch,dirt": 3,
+  "scratch,extra,dirt": 1,
+  "scratch,damage,extra": 1,
+  "scratch,damage": 1,
+  "wrong place,dirt": 9,
+  "wrong place": 2
+ },
+ "boxes_per_defect_image": {
+  "1": 26,
+  "2": 25,
+  "3": 19,
+  "4": 5,
+  "5": 5,
+  "6": 3,
+  "7": 2,
+  "8": 2,
+  "9": 2,
+  "10": 1,
+  "12": 2,
+  "13": 1,
+  "14": 1,
+  "16": 1,
+  "21": 1,
+  "22": 1,
+  "27": 1,
+  "34": 1,
+  "63": 1
+ },
+ "label_files_rederived_from_masks_mismatches": [],
+ "n_label_boxes_total": 488,
+ "official_visa_splits_pcb4": {
+  "1cls": {
+   "upstream_sha256": "a48557e6033318cb90556f706196bc9d247a776a23ea51aecee5a80dd0332995",
+   "pcb4_counts": {
+    "test/anomaly": 100,
+    "test/normal": 101,
+    "train/normal": 904
+   },
+   "official_partition_to_e1_role": {
+    "test/anomaly": {
+     "fold3": 20,
+     "fold1": 20,
+     "fold5": 20,
+     "fold2": 20,
+     "fold4": 20
+    },
+    "test/normal": {
+     "fit": 53,
+     "test_n": 32,
+     "calib": 16
+    },
+    "train/normal": {
+     "test_n": 223,
+     "fit": 547,
+     "calib": 134
+    }
+   }
+  },
+  "2cls_highshot": {
+   "upstream_sha256": "c3331eede15f2da8a75b380d4fbfb24f75ee036ec9a25147eca898da6e972f09",
+   "pcb4_counts": {
+    "test/anomaly": 40,
+    "test/normal": 402,
+    "train/anomaly": 60,
+    "train/normal": 603
+   },
+   "official_partition_to_e1_role": {
+    "test/anomaly": {
+     "fold4": 8,
+     "fold5": 6,
+     "fold2": 10,
+     "fold3": 8,
+     "fold1": 8
+    },
+    "test/normal": {
+     "fit": 233,
+     "test_n": 106,
+     "calib": 63
+    },
+    "train/anomaly": {
+     "fold3": 12,
+     "fold1": 12,
+     "fold2": 10,
+     "fold5": 14,
+     "fold4": 12
+    },
+    "train/normal": {
+     "calib": 87,
+     "fit": 367,
+     "test_n": 149
+    }
+   }
+  },
+  "2cls_fewshot": {
+   "upstream_sha256": "5ca490e84cd7664f9d93ba3d82399d991edb5a6cbcc41359452ad7ec24be354d",
+   "pcb4_counts": {
+    "test/anomaly": 80,
+    "test/normal": 804,
+    "train/anomaly": 20,
+    "train/normal": 201
+   },
+   "official_partition_to_e1_role": {
+    "test/anomaly": {
+     "fold1": 18,
+     "fold5": 15,
+     "fold4": 18,
+     "fold2": 17,
+     "fold3": 12
+    },
+    "test/normal": {
+     "fit": 471,
+     "test_n": 207,
+     "calib": 126
+    },
+    "train/anomaly": {
+     "fold3": 8,
+     "fold1": 2,
+     "fold2": 3,
+     "fold5": 5,
+     "fold4": 2
+    },
+    "train/normal": {
+     "calib": 24,
+     "fit": 129,
+     "test_n": 48
+    }
+   }
+  }
+ }
+}

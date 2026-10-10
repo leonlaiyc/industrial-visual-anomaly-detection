@@ -1,19 +1,22 @@
 # English content (default language). Prose only: every number is a {{ f.* }} reference to
 # site/data/facts.json. `python site/build.py` fails on literal numbers and on keys missing in zh-TW.
+# Structure (technical case study): 1 problem · 2 data · 3 approaches · 4 architecture · 5 experiments ·
+# 6 failures and lessons · 7 engineering discipline · 8 readiness and handoff.
 
 meta:
-  title: "Industrial Visual Inspection: From Prototype to Operational Decision"
-  description: "An independent project on public benchmark images: a normal-only anomaly detector that flags circuit-board images for human review, tested under pre-registered protocols, with the operational decision it supports."
-  site_name: "Industrial Visual Inspection · Case Study"
+  title: "Industrial Visual Anomaly Detection: A Technical Case Study"
+  description: "An independent project on public benchmark images: how a normal-only anomaly detector for circuit-board images was investigated, tested under pre-registered protocols and kept reproducible, reviewable and maintainable."
+  site_name: "Industrial Visual Anomaly Detection · Case Study"
 
 nav:
   label: "Sections"
   skip: "Skip to content"
   summary: "Summary"
-  lifecycle: "Lifecycle"
-  evidence: "Evidence"
+  approach: "Approach"
+  results: "Results"
   pcb3: "Lighting test"
-  workflow: "Workflow"
+  lessons: "Lessons"
+  engineering: "Engineering"
   handoff: "Handoff"
   lang_switch_label: "Language"
 
@@ -24,14 +27,16 @@ status:
   pending: "Pending"
   not_validated: "Not yet validated"
   post_hoc: "Post hoc"
+  not_impl: "Not yet implemented"
+  exploratory: "Exploratory"
 
 hero:
   eyebrow: "Independent project · Public benchmark images (VisA) · Not factory data"
-  title: "Industrial Visual Inspection: From Prototype to Operational Decision"
-  lede: "A prototype that is fitted on defect-free circuit-board images only and flags new images for a human reviewer. Each of its two controlled changes was pre-registered, frozen and tested once on a board type not used in its development; deviations from those plans are disclosed."
+  title: "Industrial Visual Anomaly Detection: A Technical Case Study"
+  lede: "How an unfamiliar computer-vision problem was investigated: a prototype fitted on defect-free circuit-board images only, which flags new images for a human reviewer. Each controlled change was pre-registered, frozen and tested once on a board type not used in its development; deviations are disclosed. The work is kept reproducible, reviewable and testable for whoever maintains it next."
   q_decision: "Recommendation"
   decision_head: "No manufacturing pilot recommended yet."
-  decision_body: "Next: one bounded validation step — agree requirements with a quality engineer and collect real line images in shadow mode — before any further model work."
+  decision_body: "Next: one bounded validation step — real line images in shadow mode, against requirements confirmed by the site's quality owner — before any further model work."
   pcb3_label: "Additional finding · separate board type (PCB3)"
   pcb3_line: "The v2 baseline achieved {{ f.pcb3.result.recall.base }} recall on a separately evaluated PCB category, but remained sensitive to brighter images (false alarms {{ f.pcb3.detail.cond.B1.base.rise }} pts). A lighting correction tested there is not adopted: it introduced a blur sensitivity."
   pcb3_link: "PCB3 experiment"
@@ -57,19 +62,18 @@ hero:
   cta_case: "Read the case study"
   cta_pdf: "Executive summary (PDF, one A4 page)"
 
-brief:
-  title: "At a glance"
+problem:
+  title: "Problem and assumptions"
   q_problem: "Inspection problem"
   a_problem: "On a production line, defects are rare and varied, so labelled defect examples are usually scarce. This project therefore fits its model on normal images only — deliberately, even though the public VisA dataset does provide defect labels and masks; here they are used only to evaluate and to illustrate. Question: can a model that has only seen good boards send the right images to a reviewer, without burying the reviewer in false alarms?"
-  q_built: "What was built"
-  a_built: "A working prototype: frozen pretrained CNN features, a per-position Gaussian (Mahalanobis) model of normal appearance, board registration, and — in v2 — a score taken over the board region only. Thresholds are set on separate normal images and frozen before any test image is scored."
-  q_risks: "Remaining risks"
-  risks:
-    - "Detection: PCB2 recall {{ f.pcb2.v2.recall.pct }} against a proposed {{ f.criteria.recall_min }}; smallest third of defects {{ f.pcb2.small.recall }}."
-    - "Lighting: a {{ f.pcb2.dark_pct }} darker image raised PCB2 false alarms by {{ f.pcb2.dark.v2.rise }} pts; brighter images raised PCB3 false alarms by {{ f.pcb3.detail.cond.B1.base.rise }} pts."
-    - "Portability: on a green background the original board-finding rule marked {{ f.pcb3_mask.original }} of the frame as board."
+  q_assume: "Working assumptions"
+  assumptions:
+    - "Review support, not disposition: the tool recommends a human review and never rejects a board, so a false alarm costs reviewer time, not product."
+    - "One fixed overhead camera, one board type per model; each new board type gets its own fit, board region and threshold."
+    - "Acceptance targets (recall ≥ {{ f.criteria.recall_min }}, false alarms ≤ {{ f.criteria.fpr_max }}, AUROC ≥ {{ f.criteria.auroc_min }}, latency ≤ {{ f.criteria.latency_max }}) are the developer's proposal, written before any test and never edited after a result."
+    - "Public benchmark images and synthetic perturbations stand in for a line; they cannot show real lighting drift or a real defect mix."
   q_status: "What is not established"
-  status: "No manufacturing user was interviewed, no factory image was used, no pilot was run, and no labour saving or financial return was measured. The requirements are the developer's proposal, not a user's. Reported metrics were cross-checked against the recorded per-image scores using a separate verification implementation. AI-assisted technical review was performed; final project-owner review remains pending."
+  status: "No manufacturing user was involved, no factory image was used, no pilot was run, and no labour saving or financial return was measured. Reported metrics were cross-checked against the recorded per-image scores using a separate verification implementation. AI-assisted technical review was performed; final project-owner review remains pending."
 
 chart:
   title: "PCB2 test images flagged for review, v1 and v2"
@@ -82,100 +86,19 @@ chart:
   legend_miss: "defect missed"
   caption: "Each square is one test image, at the threshold fixed before testing."
 
-phases:
-  title: "Measured, proposed, not yet validated"
-  intro: "Phase A is finished technical feasibility on public data. Phase B is the operational validation a project owner would propose next; none of it has been done with a manufacturing user."
-  cols:
-    - kind: demonstrated
-      title: "Phase A · technical feasibility on public benchmark images"
-      items:
-        - "Normal-only detector, registration and board-region scoring, implemented and unit-tested."
-        - "PCB2 confirmatory run: false alarms {{ f.pcb2.v1.fpr.pct }} → {{ f.pcb2.v2.fpr.pct }}, recall {{ f.pcb2.v2.recall.pct }} in both versions."
-        - "Robustness to synthetic lighting, blur and shift measured at frozen thresholds."
-        - "PCB3 pre-registered illumination-correction experiment, run once; the correction is not adopted."
-    - kind: proposed
-      title: "Phase B · proposed operational validation"
-      items:
-        - "Requirements interview and shift observation with a quality engineer."
-        - "Shadow mode on real line images, with agreed cost ratio and review capacity."
-        - "Site acceptance checks before any decision is influenced by the tool."
-        - "A second Go/No-Go on operational evidence."
-    - kind: not_validated
-      title: "Beyond what this project can show"
-      items:
-        - "Any factory image, camera, lamp, line speed or real defect mix."
-        - "Usability of the review interface; reviewer agreement."
-        - "Labour saving or financial return."
-        - "Robustness to real (not synthetic) lighting changes."
-
-dates:
-  title: "Verified milestones"
-  events:
-    poc: "PCB1 proof of concept: working prototype, frozen split, tests, v1 evaluation"
-    pcb2: "v2 pre-registered before PCB2 data access; thresholds frozen; one confirmatory evaluation"
-    pcb3: "PCB3 lighting experiment pre-registered, frozen, evaluated once; paired analysis"
-    audit: "AI-assisted technical cross-check and independent numerical recomputation"
-    owner_review: "Project owner's technical review and acceptance"
-  pending: "Pending"
-  note: "Dates are commit dates in the development repository (Taiwan time); the AI-assisted cross-check is dated from its recorded verdict and is not a human sign-off. The first commit already contains a working prototype; earlier local work is not separately timestamped, and no total delivery time is claimed. Exact commit times and hashes are kept in the repository's audit history."
-
-lifecycle:
-  title: "Delivery lifecycle: seven decisions"
-  intro: "Each stage states the decision taken, the evidence behind it, what it costs, and what should happen next. Status: demonstrated in this project, proposed for a real engagement, or pending evidence that only operations can provide."
-  labels:
-    decision: "Decision"
-    evidence: "Evidence"
-    tradeoff: "Trade-off"
-    next: "Next action"
-  stages:
-    - name: "Preliminary value and Go/No-Go"
-      status: demonstrated
-      decision: "Frame the tool as review support — it never rejects a board — and write proposed targets and No-Go rules before any test."
-      evidence: "Targets (recall ≥ {{ f.criteria.recall_min }}, false alarms ≤ {{ f.criteria.fpr_max }}, AUROC ≥ {{ f.criteria.auroc_min }}, latency ≤ {{ f.criteria.latency_max }}) unchanged since v1; every run is scored against them by code."
-      tradeoff: "The targets are the developer's proposal, not a user's requirement. They keep the verdict honest; they do not make it right."
-      next: "Replace them with targets agreed with a quality owner."
-    - name: "Evidence-based understanding of user needs"
-      status: proposed
-      decision: "Do not guess the reviewer's workflow. List the questions only a user can answer: cost of a miss versus a false alarm, review capacity, which defects matter."
-      evidence: "Requirements document marks every target as proposed; the cost analysis is a break-even range, not a saving."
-      tradeoff: "No manufacturing user was interviewed in this project."
-      next: "Interview a quality engineer and observe one inspection shift; record the agreed cost ratio and capacity."
-    - name: "First-Time-Right alignment"
-      status: proposed
-      decision: "Show a mock-up built from real model output before building any interface or integration."
-      evidence: "The workflow mock-up below uses real images, real heat maps and recorded scores — including a false alarm and a missed defect."
-      tradeoff: "A mock-up communicates the idea; it says nothing about usability until someone uses it."
-      next: "Walk an inspector through it; turn each field into an acceptance criterion or remove it."
-    - name: "Model selection and implementation"
-      status: demonstrated
-      decision: "Frozen pretrained CNN features with a per-position Gaussian (Mahalanobis) model: learns from good boards only, no training loop, explainable heat map."
-      evidence: "Implemented with unit tests, freeze checks and consistency gates; one change at a time (v2 = board-region scoring)."
-      tradeoff: "Weak on small and low-contrast defects; supervised detectors were not tested here."
-      next: "Only once Phase B yields real defect labels, compare against a supervised detector on those labels."
-    - name: "Controlled validation"
-      status: demonstrated
-      decision: "Pre-register each controlled change, freeze thresholds on separate normal images, evaluate once on a board type not used in development."
-      evidence: "PCB2: false alarms {{ f.pcb2.v1.fpr.pct }} → {{ f.pcb2.v2.fpr.pct }} with recall unchanged. PCB3 lighting experiment: the pre-registered rule says “improvement supported” (weakly informative), but the correction is not adopted because it made blur false alarms rise by {{ f.pcb3.result.blur.cand.rise }} pts."
-      tradeoff: "Benchmark images and synthetic perturbations, not a production domain shift. Two deviations are disclosed: PCB3 Addendum B1 committed after fitting, and one analysis-code repair after PCB3 test scoring that changed no score or decision."
-      next: "Run the same protocol on site images in shadow mode."
-    - name: "Value realization and Go/No-Go"
-      status: pending
-      decision: "No-Go for a pilot; Go for a bounded validation step."
-      evidence: "Rule-based verdict for PCB2 v2: {{ f.pcb2.verdict.v2 }} (recall below target, at the No-Go floor). Break-even analysis shows when review support beats reviewing everything or nothing."
-      tradeoff: "Without operational data no labour saving or financial return can be claimed."
-      next: "Repeat the Go/No-Go with shadow-mode results and the user's own costs."
-    - name: "Cross-site readiness, maintenance and handoff"
-      status: proposed
-      decision: "Treat each new board, background, camera or lamp as a new site that must pass its own checks."
-      evidence: "Versioned configs and thresholds; evaluation refuses a changed model or uncommitted freeze; PCB3 proved that board segmentation does not transfer automatically."
-      tradeoff: "Monitoring, rollback and escalation are documented, not operated."
-      next: "Turn the site checklist below into pilot entry gates."
-
-evidence:
-  title: "What the data actually showed"
-  intro: "Findings from this project, in the order they shaped decisions. Each states the board type, whether it was measured, demonstrated or found after the fact, and what it changes."
+data:
+  title: "Dataset and observations"
+  intro: "VisA (Amazon Science, CC BY 4.0) provides, per circuit-board type, about a thousand normal images and a hundred defective ones with pixel masks. PCB1 was the development board; PCB2 and PCB3 were each opened only after their protocol was committed."
+  split_title: "How every board type is split"
+  split:
+    - "<strong>Fit</strong> — normal images the model learns from ({{ f.pcb3.split.fit }})."
+    - "<strong>Calibration</strong> — separate normal images that set the threshold, frozen before testing ({{ f.pcb3.split.calib }})."
+    - "<strong>Holdout</strong> — extra normal images never used for any choice; a second false-alarm estimate."
+    - "<strong>Official test</strong> — the dataset's own test normals and all defects, scored once."
+  split_note: "The split is written by a seeded script, audited with file hashes for overlap and duplicates, and committed before modelling. Counts shown are PCB3's."
+  observations_title: "What inspecting the training images showed"
   so: "So:"
-  items:
+  observations:
     - tag: "PCB1"
       status: demonstrated
       title: "Boards arrive in different orientations"
@@ -186,6 +109,97 @@ evidence:
       title: "False alarms came from the background"
       body: "All {{ f.pcb1.fa_offboard }} false alarms of v1 on PCB1 normals peaked on the cloth (dust, lint), not on the board."
       so: "v2 takes the score over the board region only. PCB1 could not confirm this, so it was tested on PCB2."
+    - tag: "PCB1"
+      status: demonstrated
+      title: "A benchmark confound"
+      body: "Most PCB1 test defects are photographed turned half a round, while most normal boards are not."
+      so: "A model without registration could score well by detecting orientation instead of defects; registration removes that shortcut."
+
+model:
+  title: "Candidate approaches and selection rationale"
+  intro: "The need at this stage was a normal-only baseline that can be fitted from defect-free images in minutes, explained to an engineer, and frozen. The table is the selection rationale; the frozen evaluations used only the chosen approach."
+  cols: ["Approach", "Labels needed", "Output", "Fits when", "Main risk"]
+  rows:
+    - name: "Frozen CNN features + per-position Gaussian (chosen)"
+      labels: "Defect-free images only"
+      output: "Anomaly score and heat map"
+      fits: "Defects are rare and not known in advance; a reviewer stays in the loop"
+      risk: "Misses subtle defects whose features look normal; sensitive to pose and lighting"
+    - name: "Object detector (YOLOv8, YOLO11)"
+      labels: "Boxes for every defect type, many examples of each"
+      output: "Located and classified defects"
+      fits: "Defect types are known, stable and plentiful, and a defect class is needed"
+      risk: "Recall falls on defect types absent from training (see the experiment below); labelling cost and upkeep"
+    - name: "Fine-tuned classifier or backbone"
+      labels: "Labelled good and bad images"
+      output: "Image-level class or score"
+      fits: "Enough labelled defects exist and the process is stable"
+      risk: "Overfits small defect sets; needs a training, validation and retraining process"
+    - name: "Golden-image or rule-based comparison"
+      labels: "None, but tuning per product"
+      output: "Differences from a reference"
+      fits: "Fixture, lighting and product are tightly controlled"
+      risk: "Breaks under pose, lighting and normal part-to-part variation"
+  note: "Choosing the normal-only model is a statement about this stage — no defect labels, a reviewer in the loop — not a claim that it beats supervised models."
+
+explore:
+  title: "Testing the alternative: YOLOv8 and YOLO11 on an unused board type"
+  banner: "Exploratory study — separate from the frozen PCB1–PCB3 evaluations, with its own protocol, data and code. It changes no earlier result or decision."
+  intro: "Instead of relying on descriptions, the main alternative was trained and measured. The protocol was committed before the fourth VisA board type (PCB4) was opened: off-the-shelf YOLOv8s and YOLO11s, fixed default settings, five-fold cross-validation over the {{ f.explore.n_defects }} defects ({{ f.explore.train_defects }} box-labelled defects per training fold: {{ f.explore.train_fit }} trained on, {{ f.explore.train_val }} for checkpoint selection), and the same task and threshold rule as the project — flag an image for review at a threshold set on {{ f.explore.n_calib }} separate normal images."
+  pending: "Training runs are in progress; results will appear here when the protocol's analysis has been run."
+  cols: ["Method", "Supervision", "Recall, defects (out of fold)", "False alarms, test normals", "AUROC", "Latency, median"]
+  sup_normal: "Normal images only"
+  sup_boxes: "Box-labelled defects + normals"
+  ref_m: "Normal-only (project pipeline, no registration)"
+  ref_m_reg: "Normal-only (project pipeline, with registration)"
+  size_title: "Recall by defect size (thirds of mask area)"
+  size_cols: ["Method", "Smallest third", "Middle third", "Largest third"]
+  unseen_title: "A defect type the detector never saw"
+  unseen_cols: ["Held-out type", "Images", "Seen in training", "Not in training", "Normal-only"]
+  unseen_note: "Recall of YOLO11s on single-label images of the type, with and without that type in its training data; normal-only on the same images."
+  fold_range: "folds"
+  read_title: "How to read it"
+  read:
+    - "<strong>With labels for the same defect types, both detectors flagged almost every defect:</strong> YOLOv8s {{ f.explore.by.yolov8s.recall }}, YOLO11s {{ f.explore.by.yolo11s.recall }}, against {{ f.explore.by.m.recall }} for the normal-only pipeline, at similar overall false-alarm rates on the test normals (but see the next point). Paired difference YOLO11s − normal-only: {{ f.explore.by.yolo11s.d_recall }} pts recall (CI {{ f.explore.by.yolo11s.d_recall_lo }} to {{ f.explore.by.yolo11s.d_recall_hi }}), {{ f.explore.by.yolo11s.d_fpr }} pts false alarms (CI {{ f.explore.by.yolo11s.d_fpr_lo }} to {{ f.explore.by.yolo11s.d_fpr_hi }}). The smallest third of defects: {{ f.explore.by.yolo11s.small }} versus {{ f.explore.by.m.small }}. The two detectors cannot be ranked on this sample: they disagreed on only a handful of defects ({{ f.explore.audit.v8_only }} caught only by YOLOv8s, {{ f.explore.audit.v11_only }} only by YOLO11s)."
+    - "<strong>Post-hoc checks: most flags sit on the defect, but an acquisition cue exists.</strong> For {{ f.explore.loc.yolo11s.top }} flagged defect images, the box that set YOLO11s's score touched the ground-truth defect grown by {{ f.explore.loc.yolo11s.tol }} px (YOLOv8s {{ f.explore.loc.yolov8s.top }}). That definition needs a touching box, not a matching one; at IoU ≥ {{ f.explore.audit.iou_min }} with a ground-truth box the counts are {{ f.explore.audit.iou.yolo11s }} and {{ f.explore.audit.iou.yolov8s }}. An audit found that PCB4 defect images are darker on average than the normal images (brightness alone ranks them with AUROC {{ f.explore.audit.dark_auroc }}), and that YOLO scores on defect-free images rise as images get darker. On test normals reweighted to the defect images' brightness, YOLO false alarms were {{ f.explore.audit.fpr_dark.yolov8s }} (YOLOv8s) and {{ f.explore.audit.fpr_dark.yolo11s }} (YOLO11s), against {{ f.explore.audit.fpr_dark.m }} for normal-only. With thresholds calibrated on brightness-matched normals, recall stayed at {{ f.explore.audit.recall_matched_cal.yolov8s }} and {{ f.explore.audit.recall_matched_cal.yolo11s }} (normal-only {{ f.explore.audit.recall_matched_cal.m }}): brightness does not appear to explain the recall gap, but the overall false-alarm rates above understate the rate on dark images. Box-level mAP50 was low ({{ f.explore.by.yolo11s.map50 }}); this study did not analyse why."
+    - "<strong>On a defect type absent from training, most of the advantage disappeared.</strong> For “missing”, YOLO11s caught {{ f.explore.unseen.missing.seen }} when the type was in training and {{ f.explore.unseen.missing.unseen }} when it was not — about the normal-only level ({{ f.explore.unseen.missing.normal_only }}). For “extra”: {{ f.explore.unseen.extra.seen }}, {{ f.explore.unseen.extra.unseen }} and {{ f.explore.unseen.extra.normal_only }}. Tiny samples, and the held-out runs also trained on slightly fewer defects. The “missing” hits without that type in training are not detections of the missing part: of {{ f.explore.audit.unseen_missing_flagged }} flagged images, {{ f.explore.audit.unseen_missing_top_touch }} had a top box touching the defect and {{ f.explore.audit.unseen_missing_any_iou }} had any box at IoU ≥ {{ f.explore.audit.iou_min }}."
+    - "<strong>The normal-only number is not a verdict on normal-only methods.</strong> On PCB4 the pipeline ran without board-specific preprocessing — the protocol ruled out new PCB4 development — and with the original registration rule it did worse ({{ f.explore.by.m_reg.recall }}). It shows how much the per-board adaptation done for PCB2 and PCB3 matters."
+    - "<strong>Engineering reading.</strong> Once representative labelled defects exist, a supervised detector is the stronger candidate for this review task on this evidence, for the defect types its labels cover. This compares two learning regimes with different label budgets, not two architectures, and it does not show that detection is better in general. Because its recall dropped to roughly the normal-only level on an unseen type, a plan for new defect types — a labelling loop, or a complementary check — is needed either way. Neither approach was tested on factory images."
+  limits: "Different supervision: the detectors were trained on boxes for the same board and the same defect types they were tested on; the normal-only model saw no defects. Small samples ({{ f.explore.n_defects }} defects, {{ f.explore.n_test_normal }} test normals); the unseen-type rows rest on {{ f.explore.unseen_n_total }} images and show only gross effects. The same {{ f.explore.audit.unique_normals }} test normals are scored by all five fold models, so pooled YOLO false alarms rest on {{ f.explore.audit.evals }} evaluations of {{ f.explore.audit.unique_normals }} images, not on independent images. Latency is indicative and is not a speed ranking: median per image on one GPU, one image at a time, from file to score, but at different input sizes (YOLO {{ f.explore.audit.yolo_imgsz }} px letterboxed; normal-only {{ f.explore.audit.ref_size }}), with registration only in the registered variant, measured once on {{ f.explore.audit.lat_n }} images and, for YOLO, with one fold model. The post-hoc and audit checks were added after the results were seen; files: <code>{{ f.explore.audit.dir }}</code>. PCB4 numbers are not comparable with PCB1–PCB3 and are not an improvement over v2. Ultralytics is AGPL-3.0; it was used locally in a separate environment and is not part of the project's dependencies."
+  where: "Protocol, split audit, per-image scores and analysis: <code>{{ f.explore.dir }}</code>."
+
+arch:
+  title: "Architecture and implementation"
+  intro: "One image in, one recommendation out. Each stage is a small module with its own unit tests; the same code serves every board type, driven by a versioned configuration file."
+  steps:
+    - name: "Register"
+      body: "Find the board by colour, correct shift and tilt, decide a half-turn by template correlation."
+      code: "align.py"
+    - name: "Crop and resize"
+      body: "Centred crop of the registered frame, resized to the model input."
+      code: "features.py"
+    - name: "Extract features"
+      body: "Frozen ImageNet Wide-ResNet-50-2, layer2 + layer3, a fixed random subset of channels, local averaging."
+      code: "features.py"
+    - name: "Model normal appearance"
+      body: "Per-position Gaussian of normal features; a patch's anomaly is its Mahalanobis distance."
+      code: "gaussian.py"
+    - name: "Score the image"
+      body: "Maximum of the smoothed anomaly map: v1 over the whole frame, v2 over the board region."
+      code: "roi.py"
+    - name: "Decide"
+      body: "Compare with the threshold frozen on calibration normals: REVIEW or NO REVIEW."
+      code: "calibration.py"
+  roi_title: "Image ROI — region of interest"
+  roi_body: "The part of the image where the score is taken. v2 uses the maximum anomaly over a board region built from defect-free training images plus a {{ f.pcb2.v2.roi_margin_px }}-pixel margin. If less than {{ f.pcb2.v2.coverage_min }} of an image's own board mask lies inside the region, the system does not trust it and scores the whole frame instead, which can only make a review more likely."
+  harness_title: "Evaluation harness"
+  harness_body: "A single command-line tool runs every step in order — prepare, split, fit, calibrate (writes the freeze), evaluate, robustness, compare, check. <code>evaluate</code> refuses to run if the model, configuration or split differs from the committed freeze; <code>check</code> fails if any reported number does not trace to a recorded output."
+
+results:
+  title: "Controlled experiments and results"
+  intro: "Each controlled change was pre-registered: hypothesis, split, endpoints and decision rule committed before the test data was opened, thresholds frozen on separate normal images, one evaluation. v2 changed one thing — scoring over the board region — and was confirmed on PCB2, a board type not used in its development."
+  so: "So:"
+  findings:
     - tag: "PCB2"
       status: measured
       title: "Board-region scoring cut false alarms"
@@ -200,24 +214,7 @@ evidence:
       status: measured
       title: "Darkening breaks the operating point"
       body: "A {{ f.pcb2.dark_pct }} darker, lower-contrast copy of each image raised v2 false alarms from {{ f.pcb2.dark.v2.clean }} to {{ f.pcb2.dark.v2.dark }}; brightening did not."
-      so: "Lighting must be controlled or corrected — and that must be validated — before a line trial."
-    - tag: "PCB3"
-      status: demonstrated
-      title: "Board-finding assumed a grey background"
-      body: "On PCB3's saturated green cloth the original colour rule marked {{ f.pcb3_mask.original }} of every frame as board, so registration silently did nothing. A hue band measured on training images restored a board mask of {{ f.pcb3_mask.adapted }}."
-      so: "Background-dependent preprocessing must be re-validated at every site; it failed silently here."
-    - tag: "PCB3"
-      status: demonstrated
-      title: "Registration and the board region are only approximately portable"
-      body: "Without correction, a {{ f.pcb2.dark_pct }} darkening moved the estimated board pose by {{ f.pcb3.diag.base_G1.warp_median }} px (median) on training images. The board region covers {{ f.pcb3.diag.roi_area }} of the frame; about {{ f.pcb3.diag.roi_cloth }} of its pixels are cloth."
-      so: "Lint close to the board can still trigger a false alarm (see the workflow example); pose estimation depends on brightness."
-    - tag: "PCB3"
-      status: measured
-      title: "Illumination correction experiment"
-      body: "The pre-registered rule returned “improvement supported”: under global darkening the candidate's false-alarm rise was {{ f.pcb3.result.cond.G1.fpr.d_cand }} pts versus {{ f.pcb3.result.cond.G1.fpr.d_base }} pts (difference {{ f.pcb3.result.cond.G1.fpr.did }}, CI {{ f.pcb3.result.cond.G1.fpr.ci_low }} to {{ f.pcb3.result.cond.G1.fpr.ci_high }}). But the baseline barely failed on PCB3, so the endpoint is weakly informative — and the correction made a mild blur raise false alarms by {{ f.pcb3.result.blur.cand.rise }} pts (baseline {{ f.pcb3.result.blur.base.rise }})."
-      so: "Not adopted. A correction can trade one sensitivity for another; every fix must be checked against the full set of perturbations, not only the one it targets."
-  fig_mask_alt: "Three panels of one PCB3 training image: the photo, the original board mask covering almost the whole frame in magenta, and the adapted mask covering only the board."
-  fig_mask_caption: "PCB3 training image: as captured · original colour rule (magenta = classed as board, {{ f.pcb3_mask.original }} of the frame) · after the hue-band adaptation ({{ f.pcb3_mask.adapted }}). Median over {{ f.pcb3_mask.n_fit }} training images. VisA image, CC BY 4.0, resized with overlay."
+      so: "Lighting must be controlled or corrected — and that must be validated — before a line trial. This motivated the PCB3 experiment."
 
 boards:
   title: "Results by board type — separate datasets"
@@ -348,56 +345,39 @@ repair:
   verify: "A separate script that imports none of the project code recomputed every PCB3 number from the raw score files and the original masks: {{ f.repair.checks_ok }} of {{ f.repair.checks_total }} checks agree with the recorded outputs."
   where: "Full incident record — chronology, exact patch, file hashes, deviations — in the repository at <code>{{ f.repair.doc }}</code>; every post-test event in <code>{{ f.repair.deviations }}</code>; the recomputation in <code>{{ f.repair.recompute_doc }}</code>. Times are {{ f.repair.date }}, Taiwan time."
 
-model:
-  title: "Why a frozen CNN + Mahalanobis model"
-  intro: "The need was a normal-only baseline that can be fitted from defect-free images in minutes, explained to an engineer, and frozen. The comparison is qualitative: YOLO-style detection and fine-tuning were not trained or tested in this project."
-  cols: ["Approach", "Labels needed", "Output", "Fits when", "Main risk"]
-  rows:
-    - name: "Frozen CNN features + per-position Gaussian (chosen)"
-      labels: "Defect-free images only"
-      output: "Anomaly score and heat map"
-      fits: "Defects are rare and not known in advance; a reviewer stays in the loop"
-      risk: "Misses subtle defects whose features look normal; sensitive to pose and lighting"
-    - name: "Object detector (e.g. YOLO family)"
-      labels: "Boxes for every defect type, many examples of each"
-      output: "Located and classified defects"
-      fits: "Defect types are known, stable and plentiful, and a defect class is needed"
-      risk: "Cannot flag a defect type it never saw; labelling cost and upkeep"
-    - name: "Fine-tuned classifier or backbone"
-      labels: "Labelled good and bad images"
-      output: "Image-level class or score"
-      fits: "Enough labelled defects exist and the process is stable"
-      risk: "Overfits small defect sets; needs a training, validation and retraining process"
-    - name: "Golden-image or rule-based comparison"
-      labels: "None, but tuning per product"
-      output: "Differences from a reference"
-      fits: "Fixture, lighting and product are tightly controlled"
-      risk: "Breaks under pose, lighting and normal part-to-part variation"
-  note: "Choosing the normal-only model is a statement about this stage — no defect labels, a reviewer in the loop — not a claim that it beats supervised models. Phase B data would allow a fair comparison."
-
-roi:
-  title: "Two meanings of “ROI”"
-  intro: "The same abbreviation means two different things in this project, and they are kept apart."
-  image_title: "Image ROI — region of interest"
-  image_body: "The part of the image where the score is taken. v2 uses the maximum anomaly over a board region built from defect-free training images plus a {{ f.pcb2.v2.roi_margin_px }}-pixel margin. If less than {{ f.pcb2.v2.coverage_min }} of an image's own board mask lies inside the region, the system does not trust it and scores the whole frame instead, which can only make a review more likely."
-  business_title: "Business ROI — return on investment"
-  business_body: "Not measured. What the data supports is a simplified classification-cost sensitivity. Let k = defect odds × (cost of a missed defect ÷ cost of one review). With PCB2 v2's measured miss rate {{ f.cost.v2.miss }} and false-alarm rate {{ f.cost.v2.fpr }}, the cheapest policy is:"
-  col_policy: "Policy"
-  col_when: "Cheapest when"
-  policies:
-    - policy: "Review nothing"
-      when: "k below {{ f.cost.v2.k_low_fmt }}"
-      # keys only; numbers come from facts
-    - policy: "Review only images flagged by v2"
-      when: "k between {{ f.cost.v2.k_low_fmt }} and {{ f.cost.v2.k_high_fmt }}"
-    - policy: "Review everything"
-      when: "k above {{ f.cost.v2.k_high_fmt }}"
-  caution: "This compares classification error costs only. It ignores review time, line speed, downstream escapes, staffing and implementation cost, and k must come from the user's own prevalence and costs. It is not a financial ROI, and no labour saving is claimed."
+lessons:
+  title: "Failure investigation and lessons"
+  intro: "What broke, how it was found, and what it changes. Two of the most useful findings were failures that raised no error."
+  so: "So:"
+  items:
+    - tag: "PCB3"
+      status: demonstrated
+      title: "Board-finding assumed a grey background"
+      body: "On PCB3's saturated green cloth the original colour rule marked {{ f.pcb3_mask.original }} of every frame as board, so registration silently did nothing. A hue band measured on training images restored a board mask of {{ f.pcb3_mask.adapted }}."
+      so: "Background-dependent preprocessing must be re-validated at every site; it failed silently here."
+    - tag: "PCB3"
+      status: demonstrated
+      title: "Registration and the board region are only approximately portable"
+      body: "Without correction, a {{ f.pcb2.dark_pct }} darkening moved the estimated board pose by {{ f.pcb3.diag.base_G1.warp_median }} px (median) on training images. The board region covers {{ f.pcb3.diag.roi_area }} of the frame; about {{ f.pcb3.diag.roi_cloth }} of its pixels are cloth."
+      so: "Lint close to the board can still trigger a false alarm (see the error examples); pose estimation depends on brightness."
+    - tag: "PCB3"
+      status: measured
+      title: "A fix traded one sensitivity for another"
+      body: "The lighting correction removed most of the brightening sensitivity but made a mild blur raise false alarms by {{ f.pcb3.result.blur.cand.rise }} pts (baseline {{ f.pcb3.result.blur.base.rise }})."
+      so: "Every fix is checked against the full perturbation set, not only the one it targets."
+  fig_mask_alt: "Three panels of one PCB3 training image: the photo, the original board mask covering almost the whole frame in magenta, and the adapted mask covering only the board."
+  fig_mask_caption: "PCB3 training image: as captured · original colour rule (magenta = classed as board, {{ f.pcb3_mask.original }} of the frame) · after the hue-band adaptation ({{ f.pcb3_mask.adapted }}). Median over {{ f.pcb3_mask.n_fit }} training images. VisA image, CC BY 4.0, resized with overlay."
+  takeaways_title: "Lessons carried forward"
+  takeaways:
+    - "Silent failures are the expensive kind: preprocessing needs output checks (mask area, coverage, fallback rate), not just successful execution."
+    - "Change one thing at a time and fix the analysis before the data is opened; when the plan breaks, disclose the change rather than rewrite history."
+    - "Keep the experimental verdict and the engineering decision separate: a rule can say “supported” while the change is still not adopted."
+    - "A recall measured on a hundred benchmark defects is uncertain by several points; report intervals and recall by defect size."
 
 workflow:
-  title: "Human review workflow — mock-up"
-  intro: "How the output could reach a reviewer: one card per image, with the heat map, the score against the frozen threshold, and a check that the board was located. Images, heat maps and numbers are real PCB2 v2 test outputs."
-  banner: "Proposed decision-support interface — not a deployed application. The tool recommends a review; a person decides."
+  title: "Error examples at the frozen threshold"
+  intro: "Three real PCB2 v2 test outputs — a caught defect, a false alarm and a missed defect — shown as the review card an operator could see: heat map, score against the frozen threshold, and a check that the board was located."
+  banner: "Illustrative review card built from recorded outputs — not a deployed application. The tool recommends a review; a person decides."
   fields:
     score: "Anomaly score"
     threshold: "Frozen threshold (P95)"
@@ -428,8 +408,126 @@ workflow:
       alt: "PCB2 board with a small defect at a header pin outlined in cyan; no heat map is visible."
   footnote: "Dashed green: scoring region. Heat map: smoothed anomaly score where it exceeds the median of calibration normals. Scores are the recorded official-test values; the threshold is the one frozen before testing. VisA images (CC BY 4.0), registered, cropped and resized, with overlays."
 
+engineering:
+  title: "Engineering discipline: built to be taken over"
+  intro: "How this project stays understandable, reproducible and safe to change if another engineer takes it over. Every practice is marked by what is actually true: demonstrated in this repository, proposed as a team practice, or not yet implemented. Paths refer to files in the project repository."
+  evidence_label: "Evidence"
+  principles:
+    - letter: "A"
+      title: "Clear ownership and traceability"
+      lead: "Anyone can find why something was decided and who owns it."
+      items:
+        - status: demonstrated
+          text: "Requirements and acceptance targets are versioned files; the targets were never edited after a result was seen."
+          files: [requirements, acceptance]
+        - status: demonstrated
+          text: "Technical decisions recorded with their rationale and the alternatives rejected."
+          files: [decisions, decision_record]
+        - status: demonstrated
+          text: "Every experiment has a protocol committed before its test data was opened; milestones trace to commits."
+          files: [prereg_scoring, prereg_lighting, milestones]
+        - status: proposed
+          text: "Named owners for the configuration, the acceptance targets and the operating threshold. The roles are defined; no person is assigned yet."
+          files: [handoff]
+    - letter: "B"
+      title: "Controlled changes"
+      lead: "Nothing that affects a result changes silently."
+      items:
+        - status: demonstrated
+          text: "One controlled change per version or experiment, compared against the unchanged pipeline on the same images."
+          files: [decision_record, prereg_lighting]
+        - status: demonstrated
+          text: "Configurations and thresholds versioned and hashed at freeze; evaluation refuses a changed model, configuration or split, or an uncommitted freeze."
+          files: [config_v2, freeze_v2, pipeline]
+        - status: demonstrated
+          text: "Deviations from a protocol recorded with timestamps and disclosed, never backdated."
+          files: [deviations, repair]
+        - status: proposed
+          text: "Human peer review of every change, with a blocking finding tied to the exact commit it was raised on and cleared only by a review of the new commit."
+          files: []
+        - status: not_impl
+          text: "Human peer review has not taken place: review so far is programmatic and AI-assisted, and the owner's review is pending."
+          files: []
+    - letter: "C"
+      title: "Automated quality gates"
+      lead: "Claims are checked by code, not by reading."
+      items:
+        - status: demonstrated
+          text: "Unit, integration and synthetic end-to-end tests, including the website and PDF builds."
+          files: [tests]
+        - status: demonstrated
+          text: "Data-leakage safeguards: split audited with file hashes; thresholds set only on calibration normals; test images scored once."
+          files: [split_audit, data]
+        - status: demonstrated
+          text: "Numerical consistency: every reported number traces to a recorded output; a separate script recomputes PCB3 without the project code."
+          files: [consistency, recompute]
+        - status: demonstrated
+          text: "Reproducible environment: locked dependencies; a clean-environment rerun of PCB1 v1 was byte-identical."
+          files: [lock, handoff]
+        - status: not_impl
+          text: "Continuous integration: the gates are run locally; no server runs them on every change yet."
+          files: []
+    - letter: "D"
+      title: "Maintainability and handoff"
+      lead: "The next engineer can run it, debug it and roll it back."
+      items:
+        - status: demonstrated
+          text: "Handoff guide: how to run and reproduce, configuration ownership, known failure modes, support considerations."
+          files: [handoff]
+        - status: demonstrated
+          text: "Fail-safe behaviour in code: a board that cannot be found raises an error; an untrusted board region falls back to the more conservative full-frame score."
+          files: [align, roi]
+        - status: proposed
+          text: "Monitoring of review rate, fallback rate and brightness drift; rollback to the previous model and threshold, which every freeze keeps."
+          files: [handoff]
+        - status: not_impl
+          text: "A runbook for a live line, factory monitoring and incident handling: none of this has been operated anywhere."
+          files: []
+
+dates:
+  title: "Verified milestones"
+  events:
+    poc: "PCB1 proof of concept: working prototype, frozen split, tests, v1 evaluation"
+    pcb2: "v2 pre-registered before PCB2 data access; thresholds frozen; one confirmatory evaluation"
+    pcb3: "PCB3 lighting experiment pre-registered, frozen, evaluated once; paired analysis"
+    audit: "AI-assisted technical cross-check and independent numerical recomputation"
+    owner_review: "Project owner's technical review and acceptance"
+  pending: "Pending"
+  note: "Dates are commit dates in the development repository (Taiwan time); the AI-assisted cross-check is dated from its recorded verdict and is not a human sign-off. The first commit already contains a working prototype; earlier local work is not separately timestamped, and no total delivery time is claimed. Exact commit times and hashes are kept in the repository's audit history."
+
+readiness:
+  title: "Technical readiness and AI Engineering handoff"
+  intro: "Technical feasibility is demonstrated on public data. Further real-world validation is proposed. Production-affecting use is not yet justified."
+  cols:
+    - kind: demonstrated
+      title: "Technical feasibility on public benchmark images"
+      items:
+        - "Normal-only detector, registration and board-region scoring, implemented and unit-tested."
+        - "PCB2 confirmatory run: false alarms {{ f.pcb2.v1.fpr.pct }} → {{ f.pcb2.v2.fpr.pct }}, recall {{ f.pcb2.v2.recall.pct }} in both versions."
+        - "Robustness to synthetic lighting, blur and shift measured at frozen thresholds."
+        - "PCB3 pre-registered illumination-correction experiment, run once; the correction is not adopted."
+    - kind: proposed
+      title: "Real-world validation"
+      items:
+        - "Site requirements confirmed by the quality owner: must-catch defect types and sizes, review capacity, cost of a miss versus a review."
+        - "Shadow mode on real line images, affecting no decision."
+        - "The site checks below as entry gates before any decision is influenced by the tool."
+        - "A second Go/No-Go on that evidence."
+    - kind: not_validated
+      title: "Beyond what this project can show"
+      items:
+        - "Any factory image, camera, lamp, line speed or real defect mix."
+        - "Usability of the review interface; reviewer agreement."
+        - "Labour saving or financial return."
+        - "Robustness to real (not synthetic) lighting changes."
+  risks_title: "Remaining technical risks"
+  risks:
+    - "Detection: PCB2 recall {{ f.pcb2.v2.recall.pct }} against a proposed {{ f.criteria.recall_min }}; smallest third of defects {{ f.pcb2.small.recall }}."
+    - "Lighting: a {{ f.pcb2.dark_pct }} darker image raised PCB2 false alarms by {{ f.pcb2.dark.v2.rise }} pts; brighter images raised PCB3 false alarms by {{ f.pcb3.detail.cond.B1.base.rise }} pts."
+    - "Portability: on a green background the original board-finding rule marked {{ f.pcb3_mask.original }} of the frame as board."
+
 sites:
-  title: "Cross-site readiness: what a new site must prove"
+  title: "What a new site or line must prove"
   intro: "PCB1, PCB2 and PCB3 are board types from a public dataset, not manufacturing sites. They still show, concretely, which assumptions break when anything changes."
   cols: ["Risk", "What this project observed", "What a new site must provide or pass"]
   rows:
@@ -456,27 +554,39 @@ sites:
       need: "Versioned model + threshold + config released together; any change triggers recalibration and a regression run."
 
 handoff:
-  title: "Operations and engineering handoff"
-  intro: "What an engineer taking this over must know. Documented in the repository's handoff guide; none of it has been operated on a line."
+  title: "What an AI Engineering team would need to implement it"
+  intro: "Documented in the repository's handoff guide; none of it has been operated on a line."
   items:
-    - title: "Input specification"
+    - title: "Camera and input specification"
       body: "One RGB image of one board, fixed overhead camera, the same board type and background as the fitted model. Other inputs are out of scope."
-    - title: "Registration failures"
-      body: "No board found raises an error, never a silent pass. Such images go to human review and are counted."
-    - title: "ROI fallbacks"
-      body: "If the board mask is not inside the board region, the whole-frame score is used (more conservative). Fallback rate is a monitored quantity; calibration stops if it exceeds its limit."
-    - title: "Lighting alerts"
-      body: "Proposed: compare each image's global brightness and contrast with the training range and flag outliers for review, because measured false alarms rise sharply under darkening."
-    - title: "Test and threshold versioning"
+    - title: "Input-quality checks"
+      body: "Proposed: compare each image's brightness, contrast and focus with the training range and route outliers to review, because measured false alarms rise sharply under darkening."
+    - title: "Registration and ROI reliability"
+      body: "No board found raises an error, never a silent pass. If the board mask is not inside the board region, the whole-frame score is used (more conservative). Fallback rate is a monitored quantity; calibration stops if it exceeds its limit."
+    - title: "Model and threshold versioning"
       body: "Model, threshold, config and split are hashed at freeze; evaluation refuses mismatches. Every release carries its freeze record."
-    - title: "Monitoring"
-      body: "Track review rate, fallback rate, brightness drift and reviewer-confirmed false alarms per shift; a shift in any of them triggers investigation."
-    - title: "Regression tests"
-      body: "Unit and synthetic end-to-end tests, plus consistency checks that every reported number traces to a recorded output. Re-run on every change."
-    - title: "Rollback"
-      body: "Keep the previous model and threshold set deployable; roll back on a review-rate or fallback-rate alarm, then recalibrate offline."
-    - title: "Human escalation"
-      body: "The tool only recommends; a reviewer decides. Unclear cases and any suspected systematic miss go to the quality owner, never to automatic disposition."
+    - title: "Site-specific evaluation"
+      body: "Each new board, background, camera or lamp is fitted, calibrated and evaluated on its own data, with a held-out set nobody tunes on."
+    - title: "Monitoring and regression tests"
+      body: "Track review rate, fallback rate, brightness drift and reviewer-confirmed false alarms per shift. Unit, end-to-end and consistency tests re-run on every change."
+    - title: "Rollback and incident handling"
+      body: "Keep the previous model and threshold set deployable; roll back on a review-rate or fallback-rate alarm, then recalibrate offline. The tool only recommends; unclear cases and any suspected systematic miss go to the quality owner."
+    - title: "Handoff documentation"
+      body: "How to run and reproduce, known failure modes, configuration ownership and licensing notes are in the repository's handoff guide."
+
+cost:
+  title: "Review-cost sensitivity — not a financial ROI"
+  body: "No return on investment was measured, and not measuring a return is not evidence of a negative one. What the data supports is a simplified classification-cost sensitivity. Let k = defect odds × (cost of a missed defect ÷ cost of one review). With PCB2 v2's measured miss rate {{ f.cost.v2.miss }} and false-alarm rate {{ f.cost.v2.fpr }}, the cheapest policy is:"
+  col_policy: "Policy"
+  col_when: "Cheapest when"
+  policies:
+    - policy: "Review nothing"
+      when: "k below {{ f.cost.v2.k_low_fmt }}"
+    - policy: "Review only images flagged by v2"
+      when: "k between {{ f.cost.v2.k_low_fmt }} and {{ f.cost.v2.k_high_fmt }}"
+    - policy: "Review everything"
+      when: "k above {{ f.cost.v2.k_high_fmt }}"
+  caution: "This compares classification error costs only. It ignores review time, line speed, downstream escapes, staffing and implementation cost, and k must come from the user's own prevalence and costs. No labour saving is claimed."
 
 terms:
   title: "Terms used on this page"
@@ -495,9 +605,11 @@ terms:
       def: "How much less (or more) the candidate's false alarms rise under a perturbation than the baseline's, on the same images."
     - term: "Shadow mode"
       def: "Running the tool alongside existing inspection without affecting any decision, to measure it on real production images."
+    - term: "Out-of-fold"
+      def: "In cross-validation, a score given to an image by the model that was not trained on it."
 
 footer:
-  provenance: "Independent project on the public VisA dataset (Amazon Science). Not affiliated with or endorsed by the dataset authors or any company. PCB1–PCB3 are benchmark board types, not manufacturing sites. No production deployment, factory data, end-user sign-off or financial return is claimed."
+  provenance: "Independent project on the public VisA dataset (Amazon Science). Not affiliated with or endorsed by the dataset authors or any company. PCB1–PCB4 are benchmark board types, not manufacturing sites. No production deployment, factory data, end-user sign-off or financial return is claimed."
   images: "Images: VisA, Zou et al., ECCV 2022, CC BY 4.0 (github.com/amazon-science/spot-diff). Shown resized, registered and cropped, with heat-map, outline and mask overlays added by this project."
   ai: "Code and documentation were produced with AI coding assistance (Claude Code) under the project owner's direction. Metrics were cross-checked programmatically and reviewed with AI assistance; the owner's review of this work is pending."
   owner: "Project owner: Yu-Chen (Leon) Lai"

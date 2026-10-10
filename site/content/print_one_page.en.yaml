@@ -1,7 +1,7 @@
 # One-page executive summary (English, one A4 page, print/PDF) — the default executive download.
 # Same rules as the site content: numbers only via {{ f.* }}. The two-page extended brief is print.en.yaml.
 
-title: "Industrial Visual Inspection: From Prototype to Operational Decision"
+title: "Industrial Visual Anomaly Detection: A Technical Case Study"
 subtitle: "Executive summary · independent project on public benchmark images (VisA), not factory data"
 status: "Technical feasibility on public data only. Programmatic metric verification completed. Human owner review pending."
 
@@ -47,7 +47,7 @@ go: "<strong>Go for one bounded validation step</strong> — no further model wo
 
 next_h: "Next recommended validation step"
 next:
-  - "Agree requirements with a quality engineer: cost of a missed defect versus one review, review capacity, defects that matter."
+  - "Confirm site requirements with the quality owner: cost of a missed defect versus one review, review capacity, defects that matter."
   - "Run the unchanged tool in shadow mode on real line images, affecting no decision."
   - "Entry gates: board segmentation and registration on the site's own normal images; a per-image lighting check; a labelled sample of real defects, with recall reported by defect size."
   - "Decide Go / No-Go again on that evidence."

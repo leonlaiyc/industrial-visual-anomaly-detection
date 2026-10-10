@@ -21,10 +21,11 @@
     <a class="brand" href="#summary">{{ t.meta.site_name }}</a>
     <nav class="site-nav" aria-label="{{ t.nav.label }}">
       <a href="#summary">{{ t.nav.summary }}</a>
-      <a href="#lifecycle">{{ t.nav.lifecycle }}</a>
-      <a href="#evidence">{{ t.nav.evidence }}</a>
+      <a href="#approach">{{ t.nav.approach }}</a>
+      <a href="#results">{{ t.nav.results }}</a>
       <a href="#pcb3">{{ t.nav.pcb3 }}</a>
-      <a href="#workflow">{{ t.nav.workflow }}</a>
+      <a href="#lessons">{{ t.nav.lessons }}</a>
+      <a href="#engineering">{{ t.nav.engineering }}</a>
       <a href="#handoff">{{ t.nav.handoff }}</a>
     </nav>
     <nav class="lang-switch" aria-label="{{ t.nav.lang_switch_label }}">
@@ -46,7 +47,7 @@
       <div class="verdict"><span class="verdict-label">{{ t.hero.q_decision }}</span><strong class="verdict-head">{{ t.hero.decision_head }}</strong> {{ t.hero.decision_body }}</div>
       <p class="secondary-finding"><span class="sf-label">{{ t.hero.pcb3_label }}</span>{{ t.hero.pcb3_line }} <a href="#pcb3">{{ t.hero.pcb3_link }} →</a></p>
       <p class="cta">
-        <a class="btn btn-primary" href="#lifecycle">{{ t.hero.cta_case }}</a>
+        <a class="btn btn-primary" href="#problem">{{ t.hero.cta_case }}</a>
         <a class="btn" href="{{ root }}executive-summary-one-page.pdf">{{ t.hero.cta_pdf }}</a>
       </p>
       <p class="disclosure-line">{{ t.hero.disclosure }} <a href="#pcb3-repair">{{ t.hero.disclosure_link }}</a></p>
@@ -94,92 +95,139 @@
   </div>
 </section>
 
-{# ------------------------------------------------------------------ at a glance (moved out of the first screen) #}
-<section id="brief" class="section section-tight" aria-labelledby="brief-title">
-  <div class="wrap">
-    <h2 id="brief-title">{{ t.brief.title }}</h2>
-    <dl class="brief">
-      <div><dt>{{ t.brief.q_problem }}</dt><dd>{{ t.brief.a_problem }}</dd></div>
-      <div><dt>{{ t.brief.q_built }}</dt><dd>{{ t.brief.a_built }}</dd></div>
-      <div><dt>{{ t.brief.q_risks }}</dt><dd><ul>{% for r in t.brief.risks %}<li>{{ r }}</li>{% endfor %}</ul></dd></div>
-      <div><dt>{{ t.brief.q_status }}</dt><dd>{{ t.brief.status }}</dd></div>
-    </dl>
-  </div>
-</section>
-
-{# ------------------------------------------------------------------ phases + dates #}
-<section class="band band-plain" aria-labelledby="phases-title">
-  <div class="wrap">
-    <h2 id="phases-title">{{ t.phases.title }}</h2>
-    <p class="section-intro">{{ t.phases.intro }}</p>
-    <div class="phase-grid">
-      {% for col in t.phases.cols %}
-      <div class="phase-col phase-{{ col.kind }}">
-        <h3><span class="badge badge-{{ col.kind }}">{{ t.status[col.kind] }}</span> {{ col.title }}</h3>
-        <ul>{% for it in col["items"] %}<li>{{ it }}</li>{% endfor %}</ul>
-      </div>
-      {% endfor %}
-    </div>
-    <div class="dates">
-      <h3>{{ t.dates.title }}</h3>
-      <ol class="timeline">
-        {% for m in f.milestones %}
-        {% if m.pending %}
-        <li class="pending"><span class="when"><span class="badge badge-pending">{{ t.dates.pending }}</span></span><span>{{ t.dates.events[m.key] }}</span></li>
-        {% else %}
-        <li><time datetime="{{ m.iso }}">{{ m.date }}</time><span>{{ t.dates.events[m.key] }}</span></li>
-        {% endif %}
-        {% endfor %}
-      </ol>
-      <p class="fine">{{ t.dates.note }}</p>
-    </div>
-  </div>
-</section>
-
-{# ------------------------------------------------------------------ lifecycle #}
-<section id="lifecycle" class="band" aria-labelledby="lifecycle-title">
-  <div class="wrap">
-    <h2 id="lifecycle-title">{{ t.lifecycle.title }}</h2>
-    <p class="section-intro">{{ t.lifecycle.intro }}</p>
-    <ol class="stages">
-      {% for s in t.lifecycle.stages %}
-      <li class="stage-card stage-{{ s.status }}">
-        <header>
-          <span class="step-n" aria-hidden="true">{{ loop.index }}</span>
-          <h3>{{ s.name }}</h3>
-          <span class="badge badge-{{ s.status }}">{{ t.status[s.status] }}</span>
-        </header>
-        <dl>
-          <dt>{{ t.lifecycle.labels.decision }}</dt><dd>{{ s.decision }}</dd>
-          <dt>{{ t.lifecycle.labels.evidence }}</dt><dd>{{ s.evidence }}</dd>
-          <dt>{{ t.lifecycle.labels.tradeoff }}</dt><dd>{{ s.tradeoff }}</dd>
-          <dt>{{ t.lifecycle.labels.next }}</dt><dd>{{ s.next }}</dd>
-        </dl>
-      </li>
-      {% endfor %}
-    </ol>
-  </div>
-</section>
-
-{# ------------------------------------------------------------------ evidence #}
-<section id="evidence" class="section" aria-labelledby="evidence-title">
-  <div class="wrap">
-    <h2 id="evidence-title">{{ t.evidence.title }}</h2>
-    <p class="section-intro">{{ t.evidence.intro }}</p>
+{% macro findings_list(items, so_label) %}
     <ol class="findings">
-      {% for e in t.evidence["items"] %}
+      {% for e in items %}
       <li class="finding">
         <p class="finding-tag">{{ e.tag }} <span class="badge badge-{{ e.status }}">{{ t.status[e.status] }}</span></p>
         <h3>{{ e.title }}</h3>
         <p>{{ e.body }}</p>
-        <p class="finding-so"><strong>{{ t.evidence.so }}</strong> {{ e.so }}</p>
+        <p class="finding-so"><strong>{{ so_label }}</strong> {{ e.so }}</p>
       </li>
       {% endfor %}
     </ol>
-    <figure class="wide-fig">
-      <img src="{{ root }}assets/img/pcb3_mask_rules.jpg" width="{{ f.assets.pcb3_mask_rules.w }}" height="{{ f.assets.pcb3_mask_rules.h }}" alt="{{ t.evidence.fig_mask_alt }}">
-      <figcaption>{{ t.evidence.fig_mask_caption }}</figcaption>
-    </figure>
+{% endmacro %}
+{# ------------------------------------------------------------------ 1 problem and assumptions #}
+<section id="problem" class="section section-tight" aria-labelledby="problem-title">
+  <div class="wrap">
+    <h2 id="problem-title"><span class="part-n" aria-hidden="true">1</span>{{ t.problem.title }}</h2>
+    <dl class="brief">
+      <div><dt>{{ t.problem.q_problem }}</dt><dd>{{ t.problem.a_problem }}</dd></div>
+      <div><dt>{{ t.problem.q_assume }}</dt><dd><ul>{% for r in t.problem.assumptions %}<li>{{ r }}</li>{% endfor %}</ul></dd></div>
+      <div><dt>{{ t.problem.q_status }}</dt><dd>{{ t.problem.status }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ 2 dataset and observations #}
+<section id="data" class="band" aria-labelledby="data-title">
+  <div class="wrap">
+    <h2 id="data-title"><span class="part-n" aria-hidden="true">2</span>{{ t.data.title }}</h2>
+    <p class="section-intro">{{ t.data.intro }}</p>
+    <div class="split-box">
+      <h3>{{ t.data.split_title }}</h3>
+      <ul class="plain">{% for s in t.data.split %}<li>{{ s }}</li>{% endfor %}</ul>
+      <p class="fine">{{ t.data.split_note }}</p>
+    </div>
+    <h3 class="sub-h">{{ t.data.observations_title }}</h3>
+    {{ findings_list(t.data.observations, t.data.so) }}
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ 3 candidate approaches #}
+<section id="approach" class="section" aria-labelledby="model-title">
+  <div class="wrap">
+    <h2 id="model-title"><span class="part-n" aria-hidden="true">3</span>{{ t.model.title }}</h2>
+    <p class="section-intro">{{ t.model.intro }}</p>
+    <div class="table-scroll" role="region" aria-labelledby="model-title" tabindex="0">
+      <table class="grid-table">
+        <thead><tr>{% for c in t.model.cols %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for r in t.model.rows %}
+          <tr{% if loop.first %} class="chosen"{% endif %}><th scope="row">{{ r.name }}</th><td>{{ r.labels }}</td><td>{{ r.output }}</td><td>{{ r.fits }}</td><td>{{ r.risk }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">{{ t.model.note }}</p>
+
+    {% set x = f.explore %}
+    <div id="explore" class="explore" role="region" aria-labelledby="explore-title">
+      <h3 id="explore-title">{{ t.explore.title }} <span class="badge badge-exploratory">{{ t.status.exploratory }}</span></h3>
+      <p class="mock-banner">{{ t.explore.banner }}</p>
+      <p>{{ t.explore.intro }}</p>
+      {% if x.ready %}
+      <div class="table-scroll" role="region" aria-label="{{ t.explore.title }}" tabindex="0">
+        <table class="grid-table explore-table">
+          <thead><tr>{% for c in t.explore.cols %}<th scope="col"{% if loop.index > 2 %} class="num"{% endif %}>{{ c }}</th>{% endfor %}</tr></thead>
+          <tbody>
+            {% for r in x.rows %}
+            <tr{% if r.kind == "normal" %} class="ref-row"{% endif %}><th scope="row">{{ t.explore[r.label_key] if r.label_key else r.name }}</th>
+              <td>{{ t.explore.sup_normal if r.kind == "normal" else t.explore.sup_boxes }}</td>
+              <td class="num strong">{{ r.recall }} <span class="frac">({{ r.recall_frac }})</span><span class="hint">CI {{ r.recall_ci }}</span></td>
+              <td class="num">{{ r.fpr }}{% if r.fpr_range %}<span class="hint">{{ t.explore.fold_range }} {{ r.fpr_range }}</span>{% endif %}</td>
+              <td class="num">{{ r.auroc }}</td><td class="num">{{ r.latency }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col">
+        <div>
+          <h4>{{ t.explore.size_title }}</h4>
+          <div class="compact-scroll" role="region" aria-label="{{ t.explore.size_title }}" tabindex="0"><table class="metrics compact">
+            <thead><tr>{% for c in t.explore.size_cols %}<th scope="col"{% if not loop.first %} class="num"{% endif %}>{{ c }}</th>{% endfor %}</tr></thead>
+            <tbody>{% for r in x.size_rows %}<tr><th scope="row">{{ t.explore[r.label_key] if r.label_key else r.name }}</th>{% for v in r.vals %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+          </table></div>
+        </div>
+        <div>
+          <h4>{{ t.explore.unseen_title }}</h4>
+          <div class="compact-scroll" role="region" aria-label="{{ t.explore.unseen_title }}" tabindex="0"><table class="metrics compact">
+            <thead><tr>{% for c in t.explore.unseen_cols %}<th scope="col"{% if loop.index > 2 %} class="num"{% endif %}>{{ c }}</th>{% endfor %}</tr></thead>
+            <tbody>{% for r in x.unseen_rows %}<tr><th scope="row">{{ r.type }}</th><td>{{ r.n }}</td><td class="num">{{ r.seen }}</td><td class="num strong">{{ r.unseen }}</td><td class="num">{{ r.normal_only }}</td></tr>{% endfor %}</tbody>
+          </table></div>
+          <p class="fine">{{ t.explore.unseen_note }}</p>
+        </div>
+      </div>
+      <h4 class="sub-h">{{ t.explore.read_title }}</h4>
+      <ul class="plain">{% for r in t.explore.read %}<li>{{ r }}</li>{% endfor %}</ul>
+      {% else %}
+      <p class="fine">{{ t.explore.pending }}</p>
+      {% endif %}
+      <p class="fine">{{ t.explore.limits }}</p>
+      <p class="fine">{{ t.explore.where }}</p>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ 4 architecture #}
+<section id="architecture" class="band" aria-labelledby="arch-title">
+  <div class="wrap">
+    <h2 id="arch-title"><span class="part-n" aria-hidden="true">4</span>{{ t.arch.title }}</h2>
+    <p class="section-intro">{{ t.arch.intro }}</p>
+    <ol class="pipeline">
+      {% for s in t.arch.steps %}
+      <li><span class="pipe-n" aria-hidden="true">{{ loop.index }}</span><strong>{{ s.name }}</strong><span class="pipe-body">{{ s.body }}</span><code>{{ s.code }}</code></li>
+      {% endfor %}
+    </ol>
+    <div class="two-col">
+      <div class="roi-box">
+        <h3>{{ t.arch.roi_title }}</h3>
+        <p>{{ t.arch.roi_body }}</p>
+      </div>
+      <div class="roi-box">
+        <h3>{{ t.arch.harness_title }}</h3>
+        <p>{{ t.arch.harness_body }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ 5 controlled experiments #}
+<section id="results" class="section" aria-labelledby="results-title">
+  <div class="wrap">
+    <h2 id="results-title"><span class="part-n" aria-hidden="true">5</span>{{ t.results.title }}</h2>
+    <p class="section-intro">{{ t.results.intro }}</p>
+    {{ findings_list(t.results.findings, t.results.so) }}
 
     <h3 id="boards" class="sub-h">{{ t.boards.title }}</h3>
     <p class="section-intro">{{ t.boards.intro }}</p>
@@ -299,54 +347,18 @@
   </div>
 </section>
 
-{# ------------------------------------------------------------------ model selection #}
-<section id="model" class="section" aria-labelledby="model-title">
+{# ------------------------------------------------------------------ 6 failure investigation and lessons #}
+<section id="lessons" class="section" aria-labelledby="lessons-title">
   <div class="wrap">
-    <h2 id="model-title">{{ t.model.title }}</h2>
-    <p class="section-intro">{{ t.model.intro }}</p>
-    <div class="table-scroll" role="region" aria-labelledby="model-title" tabindex="0">
-      <table class="grid-table">
-        <thead><tr>{% for c in t.model.cols %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
-        <tbody>
-          {% for r in t.model.rows %}
-          <tr{% if loop.first %} class="chosen"{% endif %}><th scope="row">{{ r.name }}</th><td>{{ r.labels }}</td><td>{{ r.output }}</td><td>{{ r.fits }}</td><td>{{ r.risk }}</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <p class="fine">{{ t.model.note }}</p>
-  </div>
-</section>
+    <h2 id="lessons-title"><span class="part-n" aria-hidden="true">6</span>{{ t.lessons.title }}</h2>
+    <p class="section-intro">{{ t.lessons.intro }}</p>
+    {{ findings_list(t.lessons["items"], t.lessons.so) }}
+    <figure class="wide-fig">
+      <img src="{{ root }}assets/img/pcb3_mask_rules.jpg" width="{{ f.assets.pcb3_mask_rules.w }}" height="{{ f.assets.pcb3_mask_rules.h }}" alt="{{ t.lessons.fig_mask_alt }}">
+      <figcaption>{{ t.lessons.fig_mask_caption }}</figcaption>
+    </figure>
 
-{# ------------------------------------------------------------------ two ROIs #}
-<section id="roi" class="band band-plain" aria-labelledby="roi-title">
-  <div class="wrap">
-    <h2 id="roi-title">{{ t.roi.title }}</h2>
-    <p class="section-intro">{{ t.roi.intro }}</p>
-    <div class="two-col">
-      <div class="roi-box">
-        <h3>{{ t.roi.image_title }}</h3>
-        <p>{{ t.roi.image_body }}</p>
-      </div>
-      <div class="roi-box">
-        <h3>{{ t.roi.business_title }}</h3>
-        <p>{{ t.roi.business_body }}</p>
-        <table class="metrics compact">
-          <thead><tr><th scope="col">{{ t.roi.col_policy }}</th><th scope="col">{{ t.roi.col_when }}</th></tr></thead>
-          <tbody>
-            {% for r in t.roi.policies %}<tr><th scope="row">{{ r.policy }}</th><td>{{ r.when }}</td></tr>{% endfor %}
-          </tbody>
-        </table>
-        <p class="fine">{{ t.roi.caution }}</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-{# ------------------------------------------------------------------ workflow mock-up #}
-<section id="workflow" class="section" aria-labelledby="workflow-title">
-  <div class="wrap">
-    <h2 id="workflow-title">{{ t.workflow.title }} <span class="badge badge-proposed">{{ t.status.proposed }}</span></h2>
+    <h3 id="workflow" class="sub-h">{{ t.workflow.title }}</h3>
     <p class="section-intro">{{ t.workflow.intro }}</p>
     <p class="mock-banner">{{ t.workflow.banner }}</p>
     <div class="mock-grid">
@@ -364,22 +376,80 @@
           <div><dt>{{ t.workflow.fields.coverage }}</dt><dd>{{ c.coverage }}</dd></div>
           <div><dt>{{ t.workflow.fields.truth }}</dt><dd>{{ t.workflow.truth[c.label] }}</dd></div>
         </dl>
-        <h3>{{ tc.title }}</h3>
+        <h4>{{ tc.title }}</h4>
         <p>{{ tc.body }}</p>
         <p class="mock-action"><strong>{{ t.workflow.action_label }}</strong> {{ tc.action }}</p>
       </article>
       {% endfor %}
     </div>
     <p class="fine">{{ t.workflow.footnote }}</p>
+
+    <h3 class="sub-h">{{ t.lessons.takeaways_title }}</h3>
+    <ul class="takeaways">{% for r in t.lessons.takeaways %}<li>{{ r }}</li>{% endfor %}</ul>
   </div>
 </section>
 
-{# ------------------------------------------------------------------ cross-site readiness #}
-<section id="sites" class="band" aria-labelledby="sites-title">
+{# ------------------------------------------------------------------ 7 engineering discipline #}
+<section id="engineering" class="band" aria-labelledby="eng-title">
   <div class="wrap">
-    <h2 id="sites-title">{{ t.sites.title }}</h2>
+    <h2 id="eng-title"><span class="part-n" aria-hidden="true">7</span>{{ t.engineering.title }}</h2>
+    <p class="section-intro">{{ t.engineering.intro }}</p>
+    <p class="gov-key">
+      {% for k in ("demonstrated", "proposed", "not_impl") %}<span class="badge badge-{{ k }}">{{ t.status[k] }}</span>{% endfor %}
+    </p>
+    <div class="gov-grid">
+      {% for p in t.engineering.principles %}
+      <article class="gov-col">
+        <header><span class="letter" aria-hidden="true">{{ p.letter }}</span><h3>{{ p.title }}</h3></header>
+        <p class="gov-lead">{{ p.lead }}</p>
+        <ul class="gov-items">
+          {% for it in p["items"] %}
+          <li class="gov-{{ it.status }}">
+            <span class="badge badge-{{ it.status }}">{{ t.status[it.status] }}</span>
+            <span class="gov-text">{{ it.text }}</span>
+            {% if it.files %}<span class="gov-files"><span class="visually-hidden">{{ t.engineering.evidence_label }}: </span>{% for k in it.files %}<code>{{ f.files[k] }}</code>{% endfor %}</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="dates">
+      <h3>{{ t.dates.title }}</h3>
+      <ol class="timeline">
+        {% for m in f.milestones %}
+        {% if m.pending %}
+        <li class="pending"><span class="when"><span class="badge badge-pending">{{ t.dates.pending }}</span></span><span>{{ t.dates.events[m.key] }}</span></li>
+        {% else %}
+        <li><time datetime="{{ m.iso }}">{{ m.date }}</time><span>{{ t.dates.events[m.key] }}</span></li>
+        {% endif %}
+        {% endfor %}
+      </ol>
+      <p class="fine">{{ t.dates.note }}</p>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ 8 readiness and handoff #}
+<section id="handoff" class="section" aria-labelledby="readiness-title">
+  <div class="wrap">
+    <h2 id="readiness-title"><span class="part-n" aria-hidden="true">8</span>{{ t.readiness.title }}</h2>
+    <p class="section-intro">{{ t.readiness.intro }}</p>
+    <div class="phase-grid">
+      {% for col in t.readiness.cols %}
+      <div class="phase-col phase-{{ col.kind }}">
+        <h3><span class="badge badge-{{ col.kind }}">{{ t.status[col.kind] }}</span> {{ col.title }}</h3>
+        <ul>{% for it in col["items"] %}<li>{{ it }}</li>{% endfor %}</ul>
+      </div>
+      {% endfor %}
+    </div>
+    <h3 class="sub-h">{{ t.readiness.risks_title }}</h3>
+    <ul class="plain">{% for r in t.readiness.risks %}<li>{{ r }}</li>{% endfor %}</ul>
+
+    <h3 id="sites" class="sub-h">{{ t.sites.title }}</h3>
     <p class="section-intro">{{ t.sites.intro }}</p>
-    <div class="table-scroll" role="region" aria-labelledby="sites-title" tabindex="0">
+    <div class="table-scroll" role="region" aria-labelledby="sites" tabindex="0">
       <table class="grid-table">
         <thead><tr>{% for c in t.sites.cols %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
         <tbody>
@@ -387,17 +457,25 @@
         </tbody>
       </table>
     </div>
-  </div>
-</section>
 
-{# ------------------------------------------------------------------ handoff #}
-<section id="handoff" class="section" aria-labelledby="handoff-title">
-  <div class="wrap">
-    <h2 id="handoff-title">{{ t.handoff.title }}</h2>
+    <h3 id="handoff-needs" class="sub-h">{{ t.handoff.title }}</h3>
     <p class="section-intro">{{ t.handoff.intro }}</p>
     <dl class="handoff-grid">
       {% for h in t.handoff["items"] %}<div><dt>{{ h.title }}</dt><dd>{{ h.body }}</dd></div>{% endfor %}
     </dl>
+
+    <div class="roi-box cost-box">
+      <h3>{{ t.cost.title }}</h3>
+      <p>{{ t.cost.body }}</p>
+      <table class="metrics compact">
+        <thead><tr><th scope="col">{{ t.cost.col_policy }}</th><th scope="col">{{ t.cost.col_when }}</th></tr></thead>
+        <tbody>
+          {% for r in t.cost.policies %}<tr><th scope="row">{{ r.policy }}</th><td>{{ r.when }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+      <p class="fine">{{ t.cost.caution }}</p>
+    </div>
+
     <details class="terms">
       <summary>{{ t.terms.title }}</summary>
       <dl>

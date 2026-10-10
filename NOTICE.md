@@ -2,7 +2,8 @@
 
 ## VisA dataset (CC BY 4.0)
 
-This project uses the **VisA (Visual Anomaly) dataset**, `pcb1`, `pcb2` and `pcb3` subsets, released by
+This project uses the **VisA (Visual Anomaly) dataset**, `pcb1`, `pcb2` and `pcb3` subsets (and `pcb4` for the
+separate exploratory study in `exploratory/yolo_pcb4/`), released by
 Amazon Science under the Creative Commons Attribution 4.0 International license
 (<https://creativecommons.org/licenses/by/4.0/>; dataset licence file:
 <https://github.com/amazon-science/spot-diff/blob/main/LICENSE-DATASET>).
@@ -19,10 +20,14 @@ Amazon Science under the Creative Commons Attribution 4.0 International license
   - website images under `site/static/img/` (five JPEG files) and the extended executive brief
     `reports/executive_summary_extended.pdf`, which embeds three of them (the one-page summary
     `reports/executive_summary_one_page.pdf` embeds no images);
+  - `exploratory/yolo_pcb4/results/fig_failures.jpg` (downscaled PCB4 images of missed defects with
+    ground-truth outlines) and `exploratory/yolo_pcb4/audit/fig_annotation_check.jpg` (downscaled PCB4 defect
+    images with the YOLO training boxes and ground-truth outlines);
   - when a built website (`site/dist/`) or visual-QA screenshots of it are included in a review snapshot,
     they show the same derivative images.
 - **Changes made:** board registration (rotation/translation), cropping, resizing, averaging (mean images),
-  and overlaid anomaly heat maps, scoring-region outlines, board-mask tints and ground-truth defect outlines.
+  and overlaid anomaly heat maps, scoring-region outlines, board-mask tints, ground-truth defect outlines and
+  bounding boxes derived from the ground-truth masks.
   Scores and labels shown next to images are this project's outputs, not part of the dataset.
 - `manifests/visa_1cls_pcb{1,2,3}.csv` contain the corresponding rows of the official split file
   `split_csv/1cls.csv` from the spot-diff repository (Apache-2.0 code repository; upstream SHA-256 recorded
@@ -31,6 +36,13 @@ Amazon Science under the Creative Commons Attribution 4.0 International license
 - **No endorsement** of this project by the dataset authors or by Amazon is implied.
 - The CC BY 4.0 licence covers the VisA images and their derivatives. It does not apply to this project's
   own source code or documentation (see README → *Data, weights and licensing*).
+
+## Ultralytics (exploratory study only)
+
+- The exploratory study in `exploratory/yolo_pcb4/` trained YOLOv8s and YOLO11s with the `ultralytics`
+  package (AGPL-3.0) and its COCO-pretrained weights, installed in a separate local environment. Neither the
+  package nor any weights are part of this project's dependencies or redistributed here; only this
+  project's own scripts and recorded per-image scores are included.
 
 ## torchvision and pretrained weights
 

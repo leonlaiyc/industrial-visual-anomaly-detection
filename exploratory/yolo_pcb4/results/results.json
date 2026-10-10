@@ -1,0 +1,942 @@
+{
+ "protocol": "exploratory/yolo_pcb4/PROTOCOL.md",
+ "n_defects": 100,
+ "n_test_normal": 255,
+ "size_tercile_px": [
+  8402.0,
+  26202.0
+ ],
+ "methods": {
+  "m": {
+   "kind": "normal",
+   "recall": 0.6,
+   "recall_x": 60,
+   "recall_ci": [
+    0.4972091504223349,
+    0.6967052312971226
+   ],
+   "fpr_mean": 0.043137254901960784,
+   "fpr_folds": [
+    0.043137254901960784
+   ],
+   "auroc_mean": 0.9411764705882353,
+   "auroc_folds": [
+    0.9411764705882353
+   ],
+   "latency_median_ms": 31.637699999919278,
+   "recall_by_size": {
+    "small": [
+     16,
+     34
+    ],
+    "medium": [
+     20,
+     33
+    ],
+    "large": [
+     24,
+     33
+    ]
+   },
+   "missed": [
+    {
+     "image": "pcb4/Data/Images/Anomaly/004.JPG",
+     "types": "burnt,dirt",
+     "mask_area_px": 39939
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/006.JPG",
+     "types": "damage,dirt",
+     "mask_area_px": 25986
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/007.JPG",
+     "types": "scratch,damage,extra",
+     "mask_area_px": 4272
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/009.JPG",
+     "types": "damage,dirt",
+     "mask_area_px": 25028
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/012.JPG",
+     "types": "damage",
+     "mask_area_px": 5298
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/013.JPG",
+     "types": "damage,dirt",
+     "mask_area_px": 15090
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/020.JPG",
+     "types": "damage",
+     "mask_area_px": 7706
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/022.JPG",
+     "types": "scratch,damage",
+     "mask_area_px": 6397
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/023.JPG",
+     "types": "damage",
+     "mask_area_px": 12841
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/024.JPG",
+     "types": "damage,extra",
+     "mask_area_px": 13012
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/025.JPG",
+     "types": "extra",
+     "mask_area_px": 8560
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/030.JPG",
+     "types": "burnt,extra",
+     "mask_area_px": 3202
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/031.JPG",
+     "types": "extra,dirt",
+     "mask_area_px": 40870
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/032.JPG",
+     "types": "extra",
+     "mask_area_px": 5402
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/034.JPG",
+     "types": "scratch,extra,dirt",
+     "mask_area_px": 41408
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/046.JPG",
+     "types": "missing",
+     "mask_area_px": 1247
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/047.JPG",
+     "types": "scratch,missing,dirt",
+     "mask_area_px": 32030
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/048.JPG",
+     "types": "missing",
+     "mask_area_px": 11341
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/051.JPG",
+     "types": "missing",
+     "mask_area_px": 8713
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/055.JPG",
+     "types": "missing",
+     "mask_area_px": 9179
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/056.JPG",
+     "types": "scratch,missing,dirt",
+     "mask_area_px": 29107
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/058.JPG",
+     "types": "missing,damage,extra",
+     "mask_area_px": 4342
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/059.JPG",
+     "types": "missing",
+     "mask_area_px": 7883
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/060.JPG",
+     "types": "missing,damage",
+     "mask_area_px": 18506
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/061.JPG",
+     "types": "missing",
+     "mask_area_px": 6984
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/064.JPG",
+     "types": "missing,dirt",
+     "mask_area_px": 34722
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/067.JPG",
+     "types": "missing",
+     "mask_area_px": 5007
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/069.JPG",
+     "types": "missing",
+     "mask_area_px": 12432
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/070.JPG",
+     "types": "missing,dirt",
+     "mask_area_px": 35923
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/072.JPG",
+     "types": "missing",
+     "mask_area_px": 1204
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/075.JPG",
+     "types": "scratch,dirt",
+     "mask_area_px": 8402
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/076.JPG",
+     "types": "scratch",
+     "mask_area_px": 3932
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/077.JPG",
+     "types": "scratch",
+     "mask_area_px": 3255
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/079.JPG",
+     "types": "scratch,dirt",
+     "mask_area_px": 37495
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/081.JPG",
+     "types": "wrong place,dirt",
+     "mask_area_px": 26202
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/083.JPG",
+     "types": "extra",
+     "mask_area_px": 5662
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/091.JPG",
+     "types": "extra",
+     "mask_area_px": 6969
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/092.JPG",
+     "types": "wrong place,dirt",
+     "mask_area_px": 28720
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/093.JPG",
+     "types": "extra",
+     "mask_area_px": 5308
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/095.JPG",
+     "types": "wrong place,dirt",
+     "mask_area_px": 23540
+    }
+   ]
+  },
+  "m_reg": {
+   "kind": "normal",
+   "recall": 0.5,
+   "recall_x": 50,
+   "recall_ci": [
+    0.398321129503301,
+    0.601678870496699
+   ],
+   "fpr_mean": 0.07450980392156863,
+   "fpr_folds": [
+    0.07450980392156863
+   ],
+   "auroc_mean": 0.875921568627451,
+   "auroc_folds": [
+    0.875921568627451
+   ],
+   "latency_median_ms": 134.9504000008892,
+   "recall_by_size": {
+    "small": [
+     15,
+     34
+    ],
+    "medium": [
+     15,
+     33
+    ],
+    "large": [
+     20,
+     33
+    ]
+   },
+   "missed": [
+    {
+     "image": "pcb4/Data/Images/Anomaly/000.JPG",
+     "types": "burnt,scratch,dirt",
+     "mask_area_px": 41643
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/002.JPG",
+     "types": "burnt,dirt",
+     "mask_area_px": 39048
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/005.JPG",
+     "types": "damage",
+     "mask_area_px": 3188
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/006.JPG",
+     "types": "damage,dirt",
+     "mask_area_px": 25986
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/007.JPG",
+     "types": "scratch,damage,extra",
+     "mask_area_px": 4272
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/009.JPG",
+     "types": "damage,dirt",
+     "mask_area_px": 25028
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/011.JPG",
+     "types": "damage",
+     "mask_area_px": 10161
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/012.JPG",
+     "types": "damage",
+     "mask_area_px": 5298
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/017.JPG",
+     "types": "missing,damage",
+     "mask_area_px": 27157
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/018.JPG",
+     "types": "damage",
+     "mask_area_px": 10410
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/021.JPG",
+     "types": "damage,dirt",
+     "mask_area_px": 5009
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/022.JPG",
+     "types": "scratch,damage",
+     "mask_area_px": 6397
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/023.JPG",
+     "types": "damage",
+     "mask_area_px": 12841
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/024.JPG",
+     "types": "damage,extra",
+     "mask_area_px": 13012
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/025.JPG",
+     "types": "extra",
+     "mask_area_px": 8560
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/031.JPG",
+     "types": "extra,dirt",
+     "mask_area_px": 40870
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/032.JPG",
+     "types": "extra",
+     "mask_area_px": 5402
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/034.JPG",
+     "types": "scratch,extra,dirt",
+     "mask_area_px": 41408
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/038.JPG",
+     "types": "extra",
+     "mask_area_px": 2940
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/040.JPG",
+     "types": "extra,dirt",
+     "mask_area_px": 43287
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/042.JPG",
+     "types": "extra,dirt",
+     "mask_area_px": 26614
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/046.JPG",
+     "types": "missing",
+     "mask_area_px": 1247
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/048.JPG",
+     "types": "missing",
+     "mask_area_px": 11341
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/050.JPG",
+     "types": "missing,dirt",
+     "mask_area_px": 39962
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/054.JPG",
+     "types": "missing,damage",
+     "mask_area_px": 12770
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/055.JPG",
+     "types": "missing",
+     "mask_area_px": 9179
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/056.JPG",
+     "types": "scratch,missing,dirt",
+     "mask_area_px": 29107
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/058.JPG",
+     "types": "missing,damage,extra",
+     "mask_area_px": 4342
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/059.JPG",
+     "types": "missing",
+     "mask_area_px": 7883
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/060.JPG",
+     "types": "missing,damage",
+     "mask_area_px": 18506
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/061.JPG",
+     "types": "missing",
+     "mask_area_px": 6984
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/063.JPG",
+     "types": "missing",
+     "mask_area_px": 3025
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/064.JPG",
+     "types": "missing,dirt",
+     "mask_area_px": 34722
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/066.JPG",
+     "types": "missing",
+     "mask_area_px": 5046
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/067.JPG",
+     "types": "missing",
+     "mask_area_px": 5007
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/069.JPG",
+     "types": "missing",
+     "mask_area_px": 12432
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/070.JPG",
+     "types": "missing,dirt",
+     "mask_area_px": 35923
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/071.JPG",
+     "types": "scratch,missing",
+     "mask_area_px": 15434
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/072.JPG",
+     "types": "missing",
+     "mask_area_px": 1204
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/074.JPG",
+     "types": "missing,dirt",
+     "mask_area_px": 16109
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/075.JPG",
+     "types": "scratch,dirt",
+     "mask_area_px": 8402
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/077.JPG",
+     "types": "scratch",
+     "mask_area_px": 3255
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/078.JPG",
+     "types": "scratch,dirt",
+     "mask_area_px": 9020
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/079.JPG",
+     "types": "scratch,dirt",
+     "mask_area_px": 37495
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/080.JPG",
+     "types": "wrong place,dirt",
+     "mask_area_px": 21334
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/081.JPG",
+     "types": "wrong place,dirt",
+     "mask_area_px": 26202
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/083.JPG",
+     "types": "extra",
+     "mask_area_px": 5662
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/093.JPG",
+     "types": "extra",
+     "mask_area_px": 5308
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/095.JPG",
+     "types": "wrong place,dirt",
+     "mask_area_px": 23540
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/097.JPG",
+     "types": "wrong place,dirt",
+     "mask_area_px": 30199
+    }
+   ],
+   "paired_vs_m": {
+    "d_recall": -0.1,
+    "d_recall_ci": [
+     -0.2,
+     0.0
+    ],
+    "d_fpr": 0.03137254901960784,
+    "d_fpr_ci": [
+     0.0,
+     0.06666666666666667
+    ],
+    "caught_only_by_this": 9,
+    "caught_only_by_m": 19
+   }
+  },
+  "yolov8s": {
+   "kind": "boxes",
+   "recall": 0.98,
+   "recall_x": 98,
+   "recall_ci": [
+    0.9296160675289299,
+    0.9975686631760574
+   ],
+   "fpr_mean": 0.039999999999999994,
+   "fpr_folds": [
+    0.027450980392156862,
+    0.0196078431372549,
+    0.047058823529411764,
+    0.050980392156862744,
+    0.054901960784313725
+   ],
+   "auroc_mean": 0.9960392156862745,
+   "auroc_folds": [
+    0.9982352941176471,
+    1.0,
+    0.9988235294117647,
+    0.9835294117647059,
+    0.9996078431372549
+   ],
+   "latency_median_ms": 14.818999999988591,
+   "recall_by_size": {
+    "small": [
+     32,
+     34
+    ],
+    "medium": [
+     33,
+     33
+    ],
+    "large": [
+     33,
+     33
+    ]
+   },
+   "missed": [
+    {
+     "image": "pcb4/Data/Images/Anomaly/022.JPG",
+     "types": "scratch,damage",
+     "mask_area_px": 6397
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/032.JPG",
+     "types": "extra",
+     "mask_area_px": 5402
+    }
+   ],
+   "map50_folds": [
+    0.5473922681946936,
+    0.3283731144861164,
+    0.2459066985475228,
+    0.2208211664004477,
+    0.2494781618718595
+   ],
+   "paired_vs_m": {
+    "d_recall": 0.38,
+    "d_recall_ci": [
+     0.29,
+     0.48
+    ],
+    "d_fpr": -0.0031372549019607864,
+    "d_fpr_ci": [
+     -0.03294117647058824,
+     0.02588235294117647
+    ],
+    "caught_only_by_this": 38,
+    "caught_only_by_m": 0
+   }
+  },
+  "yolo11s": {
+   "kind": "boxes",
+   "recall": 0.95,
+   "recall_x": 95,
+   "recall_ci": [
+    0.8871650888945373,
+    0.9835681208179479
+   ],
+   "fpr_mean": 0.03058823529411765,
+   "fpr_folds": [
+    0.03137254901960784,
+    0.01568627450980392,
+    0.03529411764705882,
+    0.03529411764705882,
+    0.03529411764705882
+   ],
+   "auroc_mean": 0.9942549019607844,
+   "auroc_folds": [
+    0.9976470588235294,
+    0.9998039215686274,
+    0.9895098039215686,
+    0.9849019607843137,
+    0.9994117647058823
+   ],
+   "latency_median_ms": 13.986399999339483,
+   "recall_by_size": {
+    "small": [
+     31,
+     34
+    ],
+    "medium": [
+     31,
+     33
+    ],
+    "large": [
+     33,
+     33
+    ]
+   },
+   "missed": [
+    {
+     "image": "pcb4/Data/Images/Anomaly/029.JPG",
+     "types": "extra,dirt",
+     "mask_area_px": 10211
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/032.JPG",
+     "types": "extra",
+     "mask_area_px": 5402
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/036.JPG",
+     "types": "scratch,extra",
+     "mask_area_px": 9215
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/041.JPG",
+     "types": "extra",
+     "mask_area_px": 8140
+    },
+    {
+     "image": "pcb4/Data/Images/Anomaly/077.JPG",
+     "types": "scratch",
+     "mask_area_px": 3255
+    }
+   ],
+   "map50_folds": [
+    0.4888494585112658,
+    0.30000413939145765,
+    0.21614012755343778,
+    0.19040467242083767,
+    0.2773144166624124
+   ],
+   "paired_vs_m": {
+    "d_recall": 0.35,
+    "d_recall_ci": [
+     0.24,
+     0.45
+    ],
+    "d_fpr": -0.012549019607843138,
+    "d_fpr_ci": [
+     -0.04158823529411761,
+     0.014901960784313726
+    ],
+    "caught_only_by_this": 38,
+    "caught_only_by_m": 3
+   }
+  }
+ },
+ "unseen_type": {
+  "missing": {
+   "n": 19,
+   "unseen_hits": 11,
+   "seen_hits": 19,
+   "m_hits": 10,
+   "unseen_fpr_test_n": 0.054901960784313725,
+   "threshold": 0.061449
+  },
+  "extra": {
+   "n": 12,
+   "unseen_hits": 9,
+   "seen_hits": 10,
+   "m_hits": 7,
+   "unseen_fpr_test_n": 0.043137254901960784,
+   "threshold": 0.057366
+  }
+ },
+ "site": {
+  "rows": [
+   {
+    "kind": "normal",
+    "recall": "60%",
+    "recall_frac": "60/100",
+    "recall_ci": "50%\u201370%",
+    "fpr": "4.3%",
+    "fpr_range": "",
+    "auroc": "0.941",
+    "latency": "32 ms",
+    "label_key": "ref_m",
+    "name": "",
+    "small": "47%"
+   },
+   {
+    "kind": "normal",
+    "recall": "50%",
+    "recall_frac": "50/100",
+    "recall_ci": "40%\u201360%",
+    "fpr": "7.5%",
+    "fpr_range": "",
+    "auroc": "0.876",
+    "latency": "135 ms",
+    "label_key": "ref_m_reg",
+    "name": "",
+    "d_recall": "\u221210",
+    "d_recall_lo": "\u221220",
+    "d_recall_hi": "+0",
+    "d_fpr": "+3",
+    "d_fpr_lo": "+0",
+    "d_fpr_hi": "+7",
+    "small": "44%"
+   },
+   {
+    "kind": "boxes",
+    "recall": "98%",
+    "recall_frac": "98/100",
+    "recall_ci": "93%\u2013100%",
+    "fpr": "4.0%",
+    "fpr_range": "2.0%\u20135.5%",
+    "auroc": "0.996",
+    "latency": "15 ms",
+    "label_key": "",
+    "name": "YOLOv8s",
+    "d_recall": "+38",
+    "d_recall_lo": "+29",
+    "d_recall_hi": "+48",
+    "d_fpr": "+0",
+    "d_fpr_lo": "\u22123",
+    "d_fpr_hi": "+3",
+    "map50": "0.32",
+    "map50_range": "0.22\u20130.55",
+    "small": "94%"
+   },
+   {
+    "kind": "boxes",
+    "recall": "95%",
+    "recall_frac": "95/100",
+    "recall_ci": "89%\u201398%",
+    "fpr": "3.1%",
+    "fpr_range": "1.6%\u20133.5%",
+    "auroc": "0.994",
+    "latency": "14 ms",
+    "label_key": "",
+    "name": "YOLO11s",
+    "d_recall": "+35",
+    "d_recall_lo": "+24",
+    "d_recall_hi": "+45",
+    "d_fpr": "\u22121",
+    "d_fpr_lo": "\u22124",
+    "d_fpr_hi": "+1",
+    "map50": "0.29",
+    "map50_range": "0.19\u20130.49",
+    "small": "91%"
+   }
+  ],
+  "by": {
+   "m": {
+    "kind": "normal",
+    "recall": "60%",
+    "recall_frac": "60/100",
+    "recall_ci": "50%\u201370%",
+    "fpr": "4.3%",
+    "fpr_range": "",
+    "auroc": "0.941",
+    "latency": "32 ms",
+    "label_key": "ref_m",
+    "name": "",
+    "small": "47%"
+   },
+   "m_reg": {
+    "kind": "normal",
+    "recall": "50%",
+    "recall_frac": "50/100",
+    "recall_ci": "40%\u201360%",
+    "fpr": "7.5%",
+    "fpr_range": "",
+    "auroc": "0.876",
+    "latency": "135 ms",
+    "label_key": "ref_m_reg",
+    "name": "",
+    "d_recall": "\u221210",
+    "d_recall_lo": "\u221220",
+    "d_recall_hi": "+0",
+    "d_fpr": "+3",
+    "d_fpr_lo": "+0",
+    "d_fpr_hi": "+7",
+    "small": "44%"
+   },
+   "yolov8s": {
+    "kind": "boxes",
+    "recall": "98%",
+    "recall_frac": "98/100",
+    "recall_ci": "93%\u2013100%",
+    "fpr": "4.0%",
+    "fpr_range": "2.0%\u20135.5%",
+    "auroc": "0.996",
+    "latency": "15 ms",
+    "label_key": "",
+    "name": "YOLOv8s",
+    "d_recall": "+38",
+    "d_recall_lo": "+29",
+    "d_recall_hi": "+48",
+    "d_fpr": "+0",
+    "d_fpr_lo": "\u22123",
+    "d_fpr_hi": "+3",
+    "map50": "0.32",
+    "map50_range": "0.22\u20130.55",
+    "small": "94%"
+   },
+   "yolo11s": {
+    "kind": "boxes",
+    "recall": "95%",
+    "recall_frac": "95/100",
+    "recall_ci": "89%\u201398%",
+    "fpr": "3.1%",
+    "fpr_range": "1.6%\u20133.5%",
+    "auroc": "0.994",
+    "latency": "14 ms",
+    "label_key": "",
+    "name": "YOLO11s",
+    "d_recall": "+35",
+    "d_recall_lo": "+24",
+    "d_recall_hi": "+45",
+    "d_fpr": "\u22121",
+    "d_fpr_lo": "\u22124",
+    "d_fpr_hi": "+1",
+    "map50": "0.29",
+    "map50_range": "0.19\u20130.49",
+    "small": "91%"
+   }
+  },
+  "size_rows": [
+   {
+    "label_key": "ref_m",
+    "name": "",
+    "vals": [
+     "47% (16/34)",
+     "61% (20/33)",
+     "73% (24/33)"
+    ]
+   },
+   {
+    "label_key": "ref_m_reg",
+    "name": "",
+    "vals": [
+     "44% (15/34)",
+     "45% (15/33)",
+     "61% (20/33)"
+    ]
+   },
+   {
+    "label_key": "",
+    "name": "YOLOv8s",
+    "vals": [
+     "94% (32/34)",
+     "100% (33/33)",
+     "100% (33/33)"
+    ]
+   },
+   {
+    "label_key": "",
+    "name": "YOLO11s",
+    "vals": [
+     "91% (31/34)",
+     "94% (31/33)",
+     "100% (33/33)"
+    ]
+   }
+  ],
+  "unseen_rows": [
+   {
+    "type": "missing",
+    "n": 19,
+    "seen": "19/19",
+    "unseen": "11/19",
+    "normal_only": "10/19"
+   },
+   {
+    "type": "extra",
+    "n": 12,
+    "seen": "10/12",
+    "unseen": "9/12",
+    "normal_only": "7/12"
+   }
+  ],
+  "unseen": {
+   "missing": {
+    "seen": "19/19",
+    "unseen": "11/19",
+    "normal_only": "10/19"
+   },
+   "extra": {
+    "seen": "10/12",
+    "unseen": "9/12",
+    "normal_only": "7/12"
+   }
+  }
+ }
+}

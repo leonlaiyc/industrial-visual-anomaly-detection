@@ -39,7 +39,9 @@ ALLOWED_TOKENS = {"PCB1", "PCB2", "PCB3", "PCB4", "v1", "v2", "v3", "P90", "P95"
                   "P4", "P5", "A4", "A0", "A1", "B1", "G1", "N1", "P0", "ResNet-50-2", "Wide-ResNet-50-2",
                   "layer2", "layer3", "B2", "B3", "B4", "A2", "A3",
                   "4.0",  # CC BY licence version
-                  "2022"}  # dataset citation year (Zou et al., ECCV 2022)
+                  "2022",  # dataset citation year (Zou et al., ECCV 2022)
+                  "YOLOv8", "YOLOv8s", "YOLO11", "YOLO11s",  # model names (exploratory study)
+                  "AGPL-3.0", "mAP50"}  # ultralytics licence name; detection metric name
 _EXPR = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.S)
 _TOKEN = re.compile(r"[A-Za-z\-]*\d[\w.\-]*")
 

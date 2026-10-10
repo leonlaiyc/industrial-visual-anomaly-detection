@@ -1,0 +1,1123 @@
+{
+ "source": "results/*.csv (saved per-image scores) and results/split.csv; independent code",
+ "threshold_rule": "flag iff score > the 144-th smallest of 150 CALIB scores (split conformal, alpha 0.05); YOLO image score = max box confidence, 0 if no box",
+ "denominators": {
+  "defects_unique": 100,
+  "calib_normals_unique": 150,
+  "test_normals_unique": 255,
+  "yolo_test_normal_evaluations_per_arch": 1275,
+  "note": "the SAME 255 TEST-N images and the SAME 150 CALIB images are scored by all 5 fold models of each architecture; pooled YOLO FPR has 1,275 evaluations of 255 unique images, which are NOT independent observations"
+ },
+ "methods": {
+  "m": {
+   "name": "Normal-only M (no registration)",
+   "pooled_out_of_fold_defects": {
+    "TP": 60,
+    "FN": 40,
+    "FP": 0,
+    "TN": 0,
+    "recall": 0.6,
+    "recall_ci95_cp": [
+     0.4972091504223349,
+     0.6967052312971226
+    ],
+    "fpr": null,
+    "fpr_ci95_cp": null
+   },
+   "per_fold": null,
+   "single_model": {
+    "TP": 60,
+    "FN": 40,
+    "FP": 11,
+    "TN": 244,
+    "recall": 0.6,
+    "recall_ci95_cp": [
+     0.4972091504223349,
+     0.6967052312971226
+    ],
+    "fpr": 0.043137254901960784,
+    "fpr_ci95_cp": [
+     0.02172768136637586,
+     0.07587220971342563
+    ],
+    "threshold": 61.740299,
+    "auroc_all_defects_vs_test_n": 0.9411764705882353
+   },
+   "conformal_marginal_fpr_per_threshold": {
+    "distribution": "Beta(7, 144)",
+    "expected": 0.046357615894039736,
+    "central_95": [
+     0.018965569634577503,
+     0.08502781471819879
+    ]
+   }
+  },
+  "m_reg": {
+   "name": "Normal-only M-reg (registration)",
+   "pooled_out_of_fold_defects": {
+    "TP": 50,
+    "FN": 50,
+    "FP": 0,
+    "TN": 0,
+    "recall": 0.5,
+    "recall_ci95_cp": [
+     0.398321129503301,
+     0.601678870496699
+    ],
+    "fpr": null,
+    "fpr_ci95_cp": null
+   },
+   "per_fold": null,
+   "single_model": {
+    "TP": 50,
+    "FN": 50,
+    "FP": 19,
+    "TN": 236,
+    "recall": 0.5,
+    "recall_ci95_cp": [
+     0.398321129503301,
+     0.601678870496699
+    ],
+    "fpr": 0.07450980392156863,
+    "fpr_ci95_cp": [
+     0.04545368330855604,
+     0.11391234983666416
+    ],
+    "threshold": 56.841507,
+    "auroc_all_defects_vs_test_n": 0.875921568627451
+   },
+   "conformal_marginal_fpr_per_threshold": {
+    "distribution": "Beta(7, 144)",
+    "expected": 0.046357615894039736,
+    "central_95": [
+     0.018965569634577503,
+     0.08502781471819879
+    ]
+   }
+  },
+  "yolov8s": {
+   "name": "YOLOv8s",
+   "pooled_out_of_fold_defects": {
+    "TP": 98,
+    "FN": 2,
+    "FP": 0,
+    "TN": 0,
+    "recall": 0.98,
+    "recall_ci95_cp": [
+     0.9296160675289299,
+     0.9975686631760574
+    ],
+    "fpr": null,
+    "fpr_ci95_cp": null
+   },
+   "per_fold": [
+    {
+     "TP": 20,
+     "FN": 0,
+     "FP": 7,
+     "TN": 248,
+     "recall": 1.0,
+     "recall_ci95_cp": [
+      0.8315665290169146,
+      1.0
+     ],
+     "fpr": 0.027450980392156862,
+     "fpr_ci95_cp": [
+      0.011106445774405827,
+      0.055739140270386414
+     ],
+     "fold": 1,
+     "threshold": 0.077989,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9982352941176471
+    },
+    {
+     "TP": 20,
+     "FN": 0,
+     "FP": 5,
+     "TN": 250,
+     "recall": 1.0,
+     "recall_ci95_cp": [
+      0.8315665290169146,
+      1.0
+     ],
+     "fpr": 0.0196078431372549,
+     "fpr_ci95_cp": [
+      0.006396524214227291,
+      0.045162428703176626
+     ],
+     "fold": 2,
+     "threshold": 0.067601,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 1.0
+    },
+    {
+     "TP": 20,
+     "FN": 0,
+     "FP": 12,
+     "TN": 243,
+     "recall": 1.0,
+     "recall_ci95_cp": [
+      0.8315665290169146,
+      1.0
+     ],
+     "fpr": 0.047058823529411764,
+     "fpr_ci95_cp": [
+      0.024549163757541084,
+      0.0807588795785934
+     ],
+     "fold": 3,
+     "threshold": 0.042852,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9988235294117647
+    },
+    {
+     "TP": 18,
+     "FN": 2,
+     "FP": 13,
+     "TN": 242,
+     "recall": 0.9,
+     "recall_ci95_cp": [
+      0.6830172859809176,
+      0.9876514728297052
+     ],
+     "fpr": 0.050980392156862744,
+     "fpr_ci95_cp": [
+      0.027420732523276713,
+      0.08560036345237043
+     ],
+     "fold": 4,
+     "threshold": 0.069471,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9835294117647059
+    },
+    {
+     "TP": 20,
+     "FN": 0,
+     "FP": 14,
+     "TN": 241,
+     "recall": 1.0,
+     "recall_ci95_cp": [
+      0.8315665290169146,
+      1.0
+     ],
+     "fpr": 0.054901960784313725,
+     "fpr_ci95_cp": [
+      0.030336957797836028,
+      0.09040125040474041
+     ],
+     "fold": 5,
+     "threshold": 0.021049,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9996078431372549
+    }
+   ],
+   "test_normal_evaluations_pooled": {
+    "FP_evaluations": 51,
+    "TN_evaluations": 1224,
+    "evaluations": 1275,
+    "unique_images": 255,
+    "fpr_mean_of_folds": 0.04,
+    "fpr_fold_range": [
+     0.0196078431372549,
+     0.054901960784313725
+    ],
+    "unique_normals_flagged_by_k_folds": {
+     "0": 222,
+     "1": 25,
+     "2": 2,
+     "3": 3,
+     "4": 2,
+     "5": 1
+    },
+    "unique_normals_flagged_at_least_once": 33,
+    "naive_cp_on_1275_INVALID_shown_only_for_contrast": [
+     0.029925033073056707,
+     0.05225964683997816
+    ]
+   },
+   "auroc_mean_of_fold_aurocs": 0.9960392156862745,
+   "thresholds": [
+    0.077989,
+    0.067601,
+    0.042852,
+    0.069471,
+    0.021049
+   ],
+   "calib_scores_eq_0": [
+    65,
+    48,
+    13,
+    63,
+    58
+   ],
+   "zero_box_counts": [
+    {
+     "fold": 1,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 65,
+      "test_n": 108
+     }
+    },
+    {
+     "fold": 2,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 48,
+      "test_n": 77
+     }
+    },
+    {
+     "fold": 3,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 13,
+      "test_n": 27
+     }
+    },
+    {
+     "fold": 4,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 63,
+      "test_n": 84
+     }
+    },
+    {
+     "fold": 5,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 58,
+      "test_n": 108
+     }
+    }
+   ],
+   "conformal_marginal_fpr_per_threshold": {
+    "distribution": "Beta(7, 144)",
+    "expected": 0.046357615894039736,
+    "central_95": [
+     0.018965569634577503,
+     0.08502781471819879
+    ]
+   }
+  },
+  "yolo11s": {
+   "name": "YOLO11s",
+   "pooled_out_of_fold_defects": {
+    "TP": 95,
+    "FN": 5,
+    "FP": 0,
+    "TN": 0,
+    "recall": 0.95,
+    "recall_ci95_cp": [
+     0.8871650888945373,
+     0.9835681208179479
+    ],
+    "fpr": null,
+    "fpr_ci95_cp": null
+   },
+   "per_fold": [
+    {
+     "TP": 19,
+     "FN": 1,
+     "FP": 8,
+     "TN": 247,
+     "recall": 0.95,
+     "recall_ci95_cp": [
+      0.7512672372279723,
+      0.9987349105020502
+     ],
+     "fpr": 0.03137254901960784,
+     "fpr_ci95_cp": [
+      0.01363984256818659,
+      0.06087821631361154
+     ],
+     "fold": 1,
+     "threshold": 0.07967,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9976470588235294
+    },
+    {
+     "TP": 20,
+     "FN": 0,
+     "FP": 4,
+     "TN": 251,
+     "recall": 1.0,
+     "recall_ci95_cp": [
+      0.8315665290169146,
+      1.0
+     ],
+     "fpr": 0.01568627450980392,
+     "fpr_ci95_cp": [
+      0.004290093763202048,
+      0.0396738375539385
+     ],
+     "fold": 2,
+     "threshold": 0.075567,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9998039215686274
+    },
+    {
+     "TP": 18,
+     "FN": 2,
+     "FP": 9,
+     "TN": 246,
+     "recall": 0.9,
+     "recall_ci95_cp": [
+      0.6830172859809176,
+      0.9876514728297052
+     ],
+     "fpr": 0.03529411764705882,
+     "fpr_ci95_cp": [
+      0.016263432211227457,
+      0.06593967799251448
+     ],
+     "fold": 3,
+     "threshold": 0.23089,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9895098039215686
+    },
+    {
+     "TP": 18,
+     "FN": 2,
+     "FP": 9,
+     "TN": 246,
+     "recall": 0.9,
+     "recall_ci95_cp": [
+      0.6830172859809176,
+      0.9876514728297052
+     ],
+     "fpr": 0.03529411764705882,
+     "fpr_ci95_cp": [
+      0.016263432211227457,
+      0.06593967799251448
+     ],
+     "fold": 4,
+     "threshold": 0.03483,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9849019607843137
+    },
+    {
+     "TP": 20,
+     "FN": 0,
+     "FP": 9,
+     "TN": 246,
+     "recall": 1.0,
+     "recall_ci95_cp": [
+      0.8315665290169146,
+      1.0
+     ],
+     "fpr": 0.03529411764705882,
+     "fpr_ci95_cp": [
+      0.016263432211227457,
+      0.06593967799251448
+     ],
+     "fold": 5,
+     "threshold": 0.095528,
+     "calib_ties_at_threshold": 1,
+     "auroc_fold_defects_vs_test_n": 0.9994117647058823
+    }
+   ],
+   "test_normal_evaluations_pooled": {
+    "FP_evaluations": 39,
+    "TN_evaluations": 1236,
+    "evaluations": 1275,
+    "unique_images": 255,
+    "fpr_mean_of_folds": 0.03058823529411765,
+    "fpr_fold_range": [
+     0.01568627450980392,
+     0.03529411764705882
+    ],
+    "unique_normals_flagged_by_k_folds": {
+     "0": 228,
+     "1": 19,
+     "2": 4,
+     "3": 4,
+     "4": 0,
+     "5": 0
+    },
+    "unique_normals_flagged_at_least_once": 27,
+    "naive_cp_on_1275_INVALID_shown_only_for_contrast": [
+     0.021839748437108546,
+     0.04157954829626782
+    ]
+   },
+   "auroc_mean_of_fold_aurocs": 0.9942549019607844,
+   "thresholds": [
+    0.07967,
+    0.075567,
+    0.23089,
+    0.03483,
+    0.095528
+   ],
+   "calib_scores_eq_0": [
+    38,
+    80,
+    19,
+    26,
+    26
+   ],
+   "zero_box_counts": [
+    {
+     "fold": 1,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 38,
+      "test_n": 75
+     }
+    },
+    {
+     "fold": 2,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 80,
+      "test_n": 135
+     }
+    },
+    {
+     "fold": 3,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 19,
+      "test_n": 30
+     }
+    },
+    {
+     "fold": 4,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 26,
+      "test_n": 54
+     }
+    },
+    {
+     "fold": 5,
+     "rows": {
+      "test": 20,
+      "calib": 150,
+      "test_n": 255
+     },
+     "score_eq_0_(no_box)": {
+      "test": 0,
+      "calib": 26,
+      "test_n": 43
+     }
+    }
+   ],
+   "conformal_marginal_fpr_per_threshold": {
+    "distribution": "Beta(7, 144)",
+    "expected": 0.046357615894039736,
+    "central_95": [
+     0.018965569634577503,
+     0.08502781471819879
+    ]
+   }
+  }
+ },
+ "cluster_bootstrap": {
+  "B": 2000,
+  "seed": 20261011,
+  "thresholds_fixed": {
+   "ci95": {
+    "m": {
+     "recall": [
+      0.5,
+      0.69
+     ],
+     "fpr": [
+      0.0196078431372549,
+      0.07058823529411765
+     ]
+    },
+    "m_reg": {
+     "recall": [
+      0.41,
+      0.6
+     ],
+     "fpr": [
+      0.043137254901960784,
+      0.10588235294117647
+     ]
+    },
+    "yolov8s": {
+     "recall": [
+      0.95,
+      1.0
+     ],
+     "fpr": [
+      0.025098039215686273,
+      0.05725490196078432
+     ]
+    },
+    "yolo11s": {
+     "recall": [
+      0.9,
+      0.99
+     ],
+     "fpr": [
+      0.018823529411764704,
+      0.043137254901960784
+     ]
+    }
+   },
+   "paired_differences_ci95": {
+    "yolov8s_minus_yolo11s": {
+     "d_recall": [
+      -0.010000000000000009,
+      0.07999999999999996
+     ],
+     "d_fpr": [
+      -0.0007843137254901975,
+      0.0203921568627451
+     ]
+    },
+    "yolov8s_minus_m": {
+     "d_recall": [
+      0.29000000000000004,
+      0.48
+     ],
+     "d_fpr": [
+      -0.03529411764705882,
+      0.027450980392156862
+     ]
+    },
+    "yolo11s_minus_m": {
+     "d_recall": [
+      0.24,
+      0.45999999999999996
+     ],
+     "d_fpr": [
+      -0.042352941176470586,
+      0.01568627450980392
+     ]
+    }
+   }
+  },
+  "thresholds_recalibrated": {
+   "ci95": {
+    "m": {
+     "recall": [
+      0.37,
+      0.74
+     ],
+     "fpr": [
+      0.007745098039215859,
+      0.10196078431372549
+     ]
+    },
+    "m_reg": {
+     "recall": [
+      0.18,
+      0.61
+     ],
+     "fpr": [
+      0.01568627450980392,
+      0.13343137254901907
+     ]
+    },
+    "yolov8s": {
+     "recall": [
+      0.92,
+      1.0
+     ],
+     "fpr": [
+      0.011764705882352941,
+      0.07686274509803921
+     ]
+    },
+    "yolo11s": {
+     "recall": [
+      0.89,
+      1.0
+     ],
+     "fpr": [
+      0.013333333333333334,
+      0.06901960784313725
+     ]
+    }
+   },
+   "paired_differences_ci95": {
+    "yolov8s_minus_yolo11s": {
+     "d_recall": [
+      -0.030000000000000027,
+      0.06999999999999995
+     ],
+     "d_fpr": [
+      -0.018823529411764704,
+      0.027450980392156862
+     ]
+    },
+    "yolov8s_minus_m": {
+     "d_recall": [
+      0.22000000000000008,
+      0.6
+     ],
+     "d_fpr": [
+      -0.06980392156862744,
+      0.043921568627450974
+     ]
+    },
+    "yolo11s_minus_m": {
+     "d_recall": [
+      0.20999999999999996,
+      0.5702499999999987
+     ],
+     "d_fpr": [
+      -0.07058823529411765,
+      0.038431372549019606
+     ]
+    }
+   }
+  },
+  "resampled_units": "unique defect images and unique TEST-N normals (all five fold evaluations of a resampled normal move together); 'thresholds_fixed' keeps the thresholds actually used, 'thresholds_recalibrated' also resamples the 150 unique CALIB normals and recomputes every fold threshold, adding calibration noise at the 144th-of-150 rank"
+ },
+ "mcnemar_defects": {
+  "yolov8s_vs_yolo11s": {
+   "only_first": 4,
+   "only_second": 1,
+   "exact_mcnemar_p_two_sided": 0.375
+  },
+  "yolov8s_vs_m": {
+   "only_first": 38,
+   "only_second": 0,
+   "exact_mcnemar_p_two_sided": 7.275957614183426e-12
+  },
+  "yolo11s_vs_m": {
+   "only_first": 38,
+   "only_second": 3,
+   "exact_mcnemar_p_two_sided": 1.0479197953827679e-08
+  },
+  "m_reg_vs_m": {
+   "only_first": 9,
+   "only_second": 19,
+   "exact_mcnemar_p_two_sided": 0.08715855330228806
+  }
+ },
+ "observed_paired": {
+  "yolov8s_minus_yolo11s": {
+   "d_recall": 0.030000000000000027,
+   "d_fpr": 0.009411764705882352
+  },
+  "yolov8s_minus_m": {
+   "d_recall": 0.38,
+   "d_fpr": -0.003137254901960783
+  },
+  "yolo11s_minus_m": {
+   "d_recall": 0.35,
+   "d_fpr": -0.012549019607843135
+  }
+ },
+ "unseen_type": {
+  "missing": {
+   "n_test_single_label": 19,
+   "n_multi_label_with_type_excluded_from_both": 14,
+   "unseen_hits": 11,
+   "unseen_recall_ci95_cp": [
+    0.3349978440117354,
+    0.7974785610228372
+   ],
+   "seen_5fold_hits_same_images": 19,
+   "m_hits_same_images": 10,
+   "threshold": 0.061449,
+   "fpr_test_n": 0.054901960784313725,
+   "fp_test_n": 14,
+   "exact_mcnemar_seen_vs_unseen": null
+  },
+  "extra": {
+   "n_test_single_label": 12,
+   "n_multi_label_with_type_excluded_from_both": 18,
+   "unseen_hits": 9,
+   "unseen_recall_ci95_cp": [
+    0.4281415381218109,
+    0.9451393554720072
+   ],
+   "seen_5fold_hits_same_images": 10,
+   "m_hits_same_images": 7,
+   "threshold": 0.057366,
+   "fpr_test_n": 0.043137254901960784,
+   "fp_test_n": 11,
+   "exact_mcnemar_seen_vs_unseen": null
+  }
+ },
+ "latency_as_recorded": {
+  "m": {
+   "n_images": 50,
+   "median_ms": 31.637699999919278,
+   "p95_ms": 34.48160499929145,
+   "mean_ms": 31.57612600010907,
+   "device": "cuda:0",
+   "device_name": "NVIDIA GeForce RTX 4070 Ti",
+   "definition": "decode JPEG + register + crop + resize + normalise + CNN forward + Mahalanobis + map + max; batch 1; after warm-up"
+  },
+  "m_reg": {
+   "n_images": 50,
+   "median_ms": 134.9504000008892,
+   "p95_ms": 148.33674499950575,
+   "mean_ms": 132.38175200011028,
+   "device": "cuda:0",
+   "device_name": "NVIDIA GeForce RTX 4070 Ti",
+   "definition": "decode JPEG + register + crop + resize + normalise + CNN forward + Mahalanobis + map + max; batch 1; after warm-up"
+  },
+  "yolov8s": {
+   "n_images": 50,
+   "median_ms": 14.818999999988591,
+   "device_name": "NVIDIA GeForce RTX 4070 Ti",
+   "definition": "ultralytics predict from file path (decode + letterbox + forward + NMS), batch 1, imgsz 1024, after warm-up"
+  },
+  "yolo11s": {
+   "n_images": 50,
+   "median_ms": 13.986399999339483,
+   "device_name": "NVIDIA GeForce RTX 4070 Ti",
+   "definition": "ultralytics predict from file path (decode + letterbox + forward + NMS), batch 1, imgsz 1024, after warm-up"
+  }
+ },
+ "checks_vs_recorded_results_json": [
+  {
+   "check": "m.recall_x",
+   "recomputed": 60,
+   "recorded": 60,
+   "ok": true
+  },
+  {
+   "check": "m.recall_ci.lo",
+   "recomputed": 0.4972091504223349,
+   "recorded": 0.4972091504223349,
+   "ok": true
+  },
+  {
+   "check": "m.recall_ci.hi",
+   "recomputed": 0.6967052312971226,
+   "recorded": 0.6967052312971226,
+   "ok": true
+  },
+  {
+   "check": "m.fpr_mean",
+   "recomputed": 0.043137254901960784,
+   "recorded": 0.043137254901960784,
+   "ok": true
+  },
+  {
+   "check": "m.auroc",
+   "recomputed": 0.9411764705882353,
+   "recorded": 0.9411764705882353,
+   "ok": true
+  },
+  {
+   "check": "m.missed",
+   "recomputed": "['pcb4/Data/Images/Anomaly/004.JPG', 'pcb4/Data/Images/Anomaly/006.JPG', 'pcb4/Data/Images/Anomaly/007.JPG', 'pcb4/Data/Images/Anomaly/009.JPG', 'pcb4/Data/Images/Anomaly/012.JPG', 'pcb4/Data/Images/Anomaly/013.JPG', 'pcb4/Data/Images/Anomaly/020.JPG', 'pcb4/Data/Images/Anomaly/022.JPG', 'pcb4/Data/Images/Anomaly/023.JPG', 'pcb4/Data/Images/Anomaly/024.JPG', 'pcb4/Data/Images/Anomaly/025.JPG', 'pcb4/Data/Images/Anomaly/030.JPG', 'pcb4/Data/Images/Anomaly/031.JPG', 'pcb4/Data/Images/Anomaly/032.JPG', 'pcb4/Data/Images/Anomaly/034.JPG', 'pcb4/Data/Images/Anomaly/046.JPG', 'pcb4/Data/Images/Anomaly/047.JPG', 'pcb4/Data/Images/Anomaly/048.JPG', 'pcb4/Data/Images/Anomaly/051.JPG', 'pcb4/Data/Images/Anomaly/055.JPG', 'pcb4/Data/Images/Anomaly/056.JPG', 'pcb4/Data/Images/Anomaly/058.JPG', 'pcb4/Data/Images/Anomaly/059.JPG', 'pcb4/Data/Images/Anomaly/060.JPG', 'pcb4/Data/Images/Anomaly/061.JPG', 'pcb4/Data/Images/Anomaly/064.JPG', 'pcb4/Data/Images/Anomaly/067.JPG', 'pcb4/Data/Images/Anomaly/069.JPG', 'pcb4/Data/Images/Anomaly/070.JPG', 'pcb4/Data/Images/Anomaly/072.JPG', 'pcb4/Data/Images/Anomaly/075.JPG', 'pcb4/Data/Images/Anomaly/076.JPG', 'pcb4/Data/Images/Anomaly/077.JPG', 'pcb4/Data/Images/Anomaly/079.JPG', 'pcb4/Data/Images/Anomaly/081.JPG', 'pcb4/Data/Images/Anomaly/083.JPG', 'pcb4/Data/Images/Anomaly/091.JPG', 'pcb4/Data/Images/Anomaly/092.JPG', 'pcb4/Data/Images/Anomaly/093.JPG', 'pcb4/Data/Images/Anomaly/095.JPG']",
+   "recorded": "['pcb4/Data/Images/Anomaly/004.JPG', 'pcb4/Data/Images/Anomaly/006.JPG', 'pcb4/Data/Images/Anomaly/007.JPG', 'pcb4/Data/Images/Anomaly/009.JPG', 'pcb4/Data/Images/Anomaly/012.JPG', 'pcb4/Data/Images/Anomaly/013.JPG', 'pcb4/Data/Images/Anomaly/020.JPG', 'pcb4/Data/Images/Anomaly/022.JPG', 'pcb4/Data/Images/Anomaly/023.JPG', 'pcb4/Data/Images/Anomaly/024.JPG', 'pcb4/Data/Images/Anomaly/025.JPG', 'pcb4/Data/Images/Anomaly/030.JPG', 'pcb4/Data/Images/Anomaly/031.JPG', 'pcb4/Data/Images/Anomaly/032.JPG', 'pcb4/Data/Images/Anomaly/034.JPG', 'pcb4/Data/Images/Anomaly/046.JPG', 'pcb4/Data/Images/Anomaly/047.JPG', 'pcb4/Data/Images/Anomaly/048.JPG', 'pcb4/Data/Images/Anomaly/051.JPG', 'pcb4/Data/Images/Anomaly/055.JPG', 'pcb4/Data/Images/Anomaly/056.JPG', 'pcb4/Data/Images/Anomaly/058.JPG', 'pcb4/Data/Images/Anomaly/059.JPG', 'pcb4/Data/Images/Anomaly/060.JPG', 'pcb4/Data/Images/Anomaly/061.JPG', 'pcb4/Data/Images/Anomaly/064.JPG', 'pcb4/Data/Images/Anomaly/067.JPG', 'pcb4/Data/Images/Anomaly/069.JPG', 'pcb4/Data/Images/Anomaly/070.JPG', 'pcb4/Data/Images/Anomaly/072.JPG', 'pcb4/Data/Images/Anomaly/075.JPG', 'pcb4/Data/Images/Anomaly/076.JPG', 'pcb4/Data/Images/Anomaly/077.JPG', 'pcb4/Data/Images/Anomaly/079.JPG', 'pcb4/Data/Images/Anomaly/081.JPG', 'pcb4/Data/Images/Anomaly/083.JPG', 'pcb4/Data/Images/Anomaly/091.JPG', 'pcb4/Data/Images/Anomaly/092.JPG', 'pcb4/Data/Images/Anomaly/093.JPG', 'pcb4/Data/Images/Anomaly/095.JPG']",
+   "ok": true
+  },
+  {
+   "check": "m_reg.recall_x",
+   "recomputed": 50,
+   "recorded": 50,
+   "ok": true
+  },
+  {
+   "check": "m_reg.recall_ci.lo",
+   "recomputed": 0.398321129503301,
+   "recorded": 0.398321129503301,
+   "ok": true
+  },
+  {
+   "check": "m_reg.recall_ci.hi",
+   "recomputed": 0.601678870496699,
+   "recorded": 0.601678870496699,
+   "ok": true
+  },
+  {
+   "check": "m_reg.fpr_mean",
+   "recomputed": 0.07450980392156863,
+   "recorded": 0.07450980392156863,
+   "ok": true
+  },
+  {
+   "check": "m_reg.auroc",
+   "recomputed": 0.875921568627451,
+   "recorded": 0.875921568627451,
+   "ok": true
+  },
+  {
+   "check": "m_reg.missed",
+   "recomputed": "['pcb4/Data/Images/Anomaly/000.JPG', 'pcb4/Data/Images/Anomaly/002.JPG', 'pcb4/Data/Images/Anomaly/005.JPG', 'pcb4/Data/Images/Anomaly/006.JPG', 'pcb4/Data/Images/Anomaly/007.JPG', 'pcb4/Data/Images/Anomaly/009.JPG', 'pcb4/Data/Images/Anomaly/011.JPG', 'pcb4/Data/Images/Anomaly/012.JPG', 'pcb4/Data/Images/Anomaly/017.JPG', 'pcb4/Data/Images/Anomaly/018.JPG', 'pcb4/Data/Images/Anomaly/021.JPG', 'pcb4/Data/Images/Anomaly/022.JPG', 'pcb4/Data/Images/Anomaly/023.JPG', 'pcb4/Data/Images/Anomaly/024.JPG', 'pcb4/Data/Images/Anomaly/025.JPG', 'pcb4/Data/Images/Anomaly/031.JPG', 'pcb4/Data/Images/Anomaly/032.JPG', 'pcb4/Data/Images/Anomaly/034.JPG', 'pcb4/Data/Images/Anomaly/038.JPG', 'pcb4/Data/Images/Anomaly/040.JPG', 'pcb4/Data/Images/Anomaly/042.JPG', 'pcb4/Data/Images/Anomaly/046.JPG', 'pcb4/Data/Images/Anomaly/048.JPG', 'pcb4/Data/Images/Anomaly/050.JPG', 'pcb4/Data/Images/Anomaly/054.JPG', 'pcb4/Data/Images/Anomaly/055.JPG', 'pcb4/Data/Images/Anomaly/056.JPG', 'pcb4/Data/Images/Anomaly/058.JPG', 'pcb4/Data/Images/Anomaly/059.JPG', 'pcb4/Data/Images/Anomaly/060.JPG', 'pcb4/Data/Images/Anomaly/061.JPG', 'pcb4/Data/Images/Anomaly/063.JPG', 'pcb4/Data/Images/Anomaly/064.JPG', 'pcb4/Data/Images/Anomaly/066.JPG', 'pcb4/Data/Images/Anomaly/067.JPG', 'pcb4/Data/Images/Anomaly/069.JPG', 'pcb4/Data/Images/Anomaly/070.JPG', 'pcb4/Data/Images/Anomaly/071.JPG', 'pcb4/Data/Images/Anomaly/072.JPG', 'pcb4/Data/Images/Anomaly/074.JPG', 'pcb4/Data/Images/Anomaly/075.JPG', 'pcb4/Data/Images/Anomaly/077.JPG', 'pcb4/Data/Images/Anomaly/078.JPG', 'pcb4/Data/Images/Anomaly/079.JPG', 'pcb4/Data/Images/Anomaly/080.JPG', 'pcb4/Data/Images/Anomaly/081.JPG', 'pcb4/Data/Images/Anomaly/083.JPG', 'pcb4/Data/Images/Anomaly/093.JPG', 'pcb4/Data/Images/Anomaly/095.JPG', 'pcb4/Data/Images/Anomaly/097.JPG']",
+   "recorded": "['pcb4/Data/Images/Anomaly/000.JPG', 'pcb4/Data/Images/Anomaly/002.JPG', 'pcb4/Data/Images/Anomaly/005.JPG', 'pcb4/Data/Images/Anomaly/006.JPG', 'pcb4/Data/Images/Anomaly/007.JPG', 'pcb4/Data/Images/Anomaly/009.JPG', 'pcb4/Data/Images/Anomaly/011.JPG', 'pcb4/Data/Images/Anomaly/012.JPG', 'pcb4/Data/Images/Anomaly/017.JPG', 'pcb4/Data/Images/Anomaly/018.JPG', 'pcb4/Data/Images/Anomaly/021.JPG', 'pcb4/Data/Images/Anomaly/022.JPG', 'pcb4/Data/Images/Anomaly/023.JPG', 'pcb4/Data/Images/Anomaly/024.JPG', 'pcb4/Data/Images/Anomaly/025.JPG', 'pcb4/Data/Images/Anomaly/031.JPG', 'pcb4/Data/Images/Anomaly/032.JPG', 'pcb4/Data/Images/Anomaly/034.JPG', 'pcb4/Data/Images/Anomaly/038.JPG', 'pcb4/Data/Images/Anomaly/040.JPG', 'pcb4/Data/Images/Anomaly/042.JPG', 'pcb4/Data/Images/Anomaly/046.JPG', 'pcb4/Data/Images/Anomaly/048.JPG', 'pcb4/Data/Images/Anomaly/050.JPG', 'pcb4/Data/Images/Anomaly/054.JPG', 'pcb4/Data/Images/Anomaly/055.JPG', 'pcb4/Data/Images/Anomaly/056.JPG', 'pcb4/Data/Images/Anomaly/058.JPG', 'pcb4/Data/Images/Anomaly/059.JPG', 'pcb4/Data/Images/Anomaly/060.JPG', 'pcb4/Data/Images/Anomaly/061.JPG', 'pcb4/Data/Images/Anomaly/063.JPG', 'pcb4/Data/Images/Anomaly/064.JPG', 'pcb4/Data/Images/Anomaly/066.JPG', 'pcb4/Data/Images/Anomaly/067.JPG', 'pcb4/Data/Images/Anomaly/069.JPG', 'pcb4/Data/Images/Anomaly/070.JPG', 'pcb4/Data/Images/Anomaly/071.JPG', 'pcb4/Data/Images/Anomaly/072.JPG', 'pcb4/Data/Images/Anomaly/074.JPG', 'pcb4/Data/Images/Anomaly/075.JPG', 'pcb4/Data/Images/Anomaly/077.JPG', 'pcb4/Data/Images/Anomaly/078.JPG', 'pcb4/Data/Images/Anomaly/079.JPG', 'pcb4/Data/Images/Anomaly/080.JPG', 'pcb4/Data/Images/Anomaly/081.JPG', 'pcb4/Data/Images/Anomaly/083.JPG', 'pcb4/Data/Images/Anomaly/093.JPG', 'pcb4/Data/Images/Anomaly/095.JPG', 'pcb4/Data/Images/Anomaly/097.JPG']",
+   "ok": true
+  },
+  {
+   "check": "yolov8s.recall_x",
+   "recomputed": 98,
+   "recorded": 98,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.recall_ci.lo",
+   "recomputed": 0.9296160675289299,
+   "recorded": 0.9296160675289299,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.recall_ci.hi",
+   "recomputed": 0.9975686631760574,
+   "recorded": 0.9975686631760574,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fpr_mean",
+   "recomputed": 0.04,
+   "recorded": 0.039999999999999994,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold1.fpr",
+   "recomputed": 0.027450980392156862,
+   "recorded": 0.027450980392156862,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold1.auroc",
+   "recomputed": 0.9982352941176471,
+   "recorded": 0.9982352941176471,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold2.fpr",
+   "recomputed": 0.0196078431372549,
+   "recorded": 0.0196078431372549,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold2.auroc",
+   "recomputed": 1.0,
+   "recorded": 1.0,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold3.fpr",
+   "recomputed": 0.047058823529411764,
+   "recorded": 0.047058823529411764,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold3.auroc",
+   "recomputed": 0.9988235294117647,
+   "recorded": 0.9988235294117647,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold4.fpr",
+   "recomputed": 0.050980392156862744,
+   "recorded": 0.050980392156862744,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold4.auroc",
+   "recomputed": 0.9835294117647059,
+   "recorded": 0.9835294117647059,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold5.fpr",
+   "recomputed": 0.054901960784313725,
+   "recorded": 0.054901960784313725,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.fold5.auroc",
+   "recomputed": 0.9996078431372549,
+   "recorded": 0.9996078431372549,
+   "ok": true
+  },
+  {
+   "check": "yolov8s.missed",
+   "recomputed": "['pcb4/Data/Images/Anomaly/022.JPG', 'pcb4/Data/Images/Anomaly/032.JPG']",
+   "recorded": "['pcb4/Data/Images/Anomaly/022.JPG', 'pcb4/Data/Images/Anomaly/032.JPG']",
+   "ok": true
+  },
+  {
+   "check": "yolo11s.recall_x",
+   "recomputed": 95,
+   "recorded": 95,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.recall_ci.lo",
+   "recomputed": 0.8871650888945373,
+   "recorded": 0.8871650888945373,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.recall_ci.hi",
+   "recomputed": 0.9835681208179479,
+   "recorded": 0.9835681208179479,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fpr_mean",
+   "recomputed": 0.03058823529411765,
+   "recorded": 0.03058823529411765,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold1.fpr",
+   "recomputed": 0.03137254901960784,
+   "recorded": 0.03137254901960784,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold1.auroc",
+   "recomputed": 0.9976470588235294,
+   "recorded": 0.9976470588235294,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold2.fpr",
+   "recomputed": 0.01568627450980392,
+   "recorded": 0.01568627450980392,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold2.auroc",
+   "recomputed": 0.9998039215686274,
+   "recorded": 0.9998039215686274,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold3.fpr",
+   "recomputed": 0.03529411764705882,
+   "recorded": 0.03529411764705882,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold3.auroc",
+   "recomputed": 0.9895098039215686,
+   "recorded": 0.9895098039215686,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold4.fpr",
+   "recomputed": 0.03529411764705882,
+   "recorded": 0.03529411764705882,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold4.auroc",
+   "recomputed": 0.9849019607843137,
+   "recorded": 0.9849019607843137,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold5.fpr",
+   "recomputed": 0.03529411764705882,
+   "recorded": 0.03529411764705882,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.fold5.auroc",
+   "recomputed": 0.9994117647058823,
+   "recorded": 0.9994117647058823,
+   "ok": true
+  },
+  {
+   "check": "yolo11s.missed",
+   "recomputed": "['pcb4/Data/Images/Anomaly/029.JPG', 'pcb4/Data/Images/Anomaly/032.JPG', 'pcb4/Data/Images/Anomaly/036.JPG', 'pcb4/Data/Images/Anomaly/041.JPG', 'pcb4/Data/Images/Anomaly/077.JPG']",
+   "recorded": "['pcb4/Data/Images/Anomaly/029.JPG', 'pcb4/Data/Images/Anomaly/032.JPG', 'pcb4/Data/Images/Anomaly/036.JPG', 'pcb4/Data/Images/Anomaly/041.JPG', 'pcb4/Data/Images/Anomaly/077.JPG']",
+   "ok": true
+  },
+  {
+   "check": "unseen.missing.n",
+   "recomputed": 19,
+   "recorded": 19,
+   "ok": true
+  },
+  {
+   "check": "unseen.missing.unseen_hits",
+   "recomputed": 11,
+   "recorded": 11,
+   "ok": true
+  },
+  {
+   "check": "unseen.missing.seen_hits",
+   "recomputed": 19,
+   "recorded": 19,
+   "ok": true
+  },
+  {
+   "check": "unseen.missing.m_hits",
+   "recomputed": 10,
+   "recorded": 10,
+   "ok": true
+  },
+  {
+   "check": "unseen.extra.n",
+   "recomputed": 12,
+   "recorded": 12,
+   "ok": true
+  },
+  {
+   "check": "unseen.extra.unseen_hits",
+   "recomputed": 9,
+   "recorded": 9,
+   "ok": true
+  },
+  {
+   "check": "unseen.extra.seen_hits",
+   "recomputed": 10,
+   "recorded": 10,
+   "ok": true
+  },
+  {
+   "check": "unseen.extra.m_hits",
+   "recomputed": 7,
+   "recorded": 7,
+   "ok": true
+  }
+ ],
+ "all_checks_ok": true
+}

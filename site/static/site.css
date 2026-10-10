@@ -229,19 +229,60 @@ h1 { font-size: clamp(27px, 1.4vw + 15px, 33px); margin-bottom: 16px; max-width:
 @media (min-width: 720px) { .timeline li { grid-template-columns: 15em minmax(0, 1fr); gap: 12px; } }
 .timeline time { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
 
-/* Lifecycle stages */
-.stages { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 900px) { .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.stage-card { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px;
-  border-top: 3px solid var(--good); }
-.stage-card.stage-proposed { border-top: 3px dashed var(--accent); }
-.stage-card.stage-pending { border-top: 3px dashed var(--warn); }
-.stage-card header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
-.stage-card h3 { font-size: 16px; flex: 1; }
-.stage-card dl { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px 14px; font-size: 14px; }
-@media (min-width: 560px) { .stage-card dl { grid-template-columns: 7.5em minmax(0, 1fr); } }
-.stage-card dt { font-weight: 650; color: var(--muted); font-size: 12.5px; padding-top: 2px; }
-.stage-card dd { margin: 0 0 8px; color: var(--ink-2); }
+/* Section numbers (technical case study, parts 1-8) */
+.part-n { display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; margin-right: 10px; border-radius: 4px;
+  background: var(--ink); color: #fff; font-size: 0.72em; font-variant-numeric: tabular-nums; vertical-align: 0.12em; }
+h4 { font-size: 15px; line-height: 1.3; margin: 0 0 6px; font-weight: 650; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.split-box { margin-top: 20px; max-width: var(--measure); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 18px; }
+.split-box .plain li { margin-bottom: 4px; }
+
+/* Architecture pipeline */
+.pipeline { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); counter-reset: none; }
+@media (min-width: 720px) { .pipeline { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .pipeline { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.pipeline li { position: relative; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.pipe-n { font-weight: 700; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.pipe-body { color: var(--ink-2); flex: 1; }
+.pipeline code { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+@media (min-width: 1100px) {
+  .pipeline li:not(:last-child)::after { content: ""; position: absolute; right: -8px; top: 22px; width: 6px; height: 6px;
+    border-top: 2px solid var(--muted); border-right: 2px solid var(--muted); transform: rotate(45deg); }
+}
+
+/* Exploratory study */
+.explore { margin-top: 40px; padding: 20px 22px; border: 1px dashed var(--accent); border-radius: 10px; background: var(--bg); }
+.explore > p { color: var(--ink-2); max-width: var(--measure); }
+.explore .mock-banner { margin-bottom: 12px; }
+.explore-table { min-width: 760px; }
+.explore-table .ref-row th, .explore-table .ref-row td { background: var(--surface); }
+.badge-exploratory { color: var(--accent); border-style: dashed; }
+.explore-table .hint { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
+.explore h4 { margin-top: 4px; }
+.explore h4.sub-h { margin-top: 24px; }
+.compact-scroll { overflow-x: auto; max-width: 100%; }
+.explore .metrics.compact th, .explore .metrics.compact td { vertical-align: top; }
+
+/* Engineering discipline (four principles) */
+.gov-key { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+.gov-grid { display: grid; gap: 14px; margin-top: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 760px) { .gov-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1180px) { .gov-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.gov-col { background: var(--bg); border: 1px solid var(--line); border-top: 3px solid var(--ink); border-radius: 8px; padding: 14px 16px; }
+.gov-col header { display: flex; align-items: center; gap: 8px; }
+.gov-col h3 { font-size: 16px; }
+.gov-lead { font-size: 13.5px; color: var(--muted); margin: 6px 0 10px; }
+.gov-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.gov-items li { display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); padding-top: 10px; border-top: 1px solid var(--line); }
+.gov-items .badge { justify-self: start; }
+.gov-files { display: flex; flex-wrap: wrap; gap: 4px; }
+.gov-files code { font-family: var(--mono); font-size: 11.5px; color: var(--accent); background: var(--accent-soft); padding: 1px 5px; border-radius: 3px;
+  overflow-wrap: anywhere; }
+.badge-not_impl { color: var(--muted); border-style: dotted; }
+.takeaways { margin: 8px 0 0; padding-left: 1.1em; max-width: var(--measure); }
+.takeaways li { margin-bottom: 6px; }
+.cost-box { margin-top: 28px; max-width: 46em; border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; }
 
 /* Findings */
 .findings { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
@@ -335,7 +376,7 @@ h1 { font-size: clamp(27px, 1.4vw + 15px, 33px); margin-bottom: 16px; max-width:
 .mock-fields > div:nth-child(odd) { border-right: 1px solid var(--line); }
 .mock-fields dt { font-size: 11.5px; color: var(--muted); }
 .mock-fields dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 650; font-size: 15px; }
-.mock-card h3 { font-size: 15px; margin: 12px 14px 4px; }
+.mock-card h4 { font-size: 15px; margin: 12px 14px 4px; }
 .mock-card p { font-size: 14px; color: var(--ink-2); margin: 0 14px 10px; }
 .mock-card .mock-action { margin-top: auto; padding: 10px 14px; background: var(--surface); margin: auto 0 0; color: var(--ink); }
 
