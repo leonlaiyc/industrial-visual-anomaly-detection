@@ -69,7 +69,7 @@ brief:
     - "Lighting: a {{ f.pcb2.dark_pct }} darker image raised PCB2 false alarms by {{ f.pcb2.dark.v2.rise }} pts; brighter images raised PCB3 false alarms by {{ f.pcb3.detail.cond.B1.base.rise }} pts."
     - "Portability: on a green background the original board-finding rule marked {{ f.pcb3_mask.original }} of the frame as board."
   q_status: "What is not established"
-  status: "No manufacturing user was interviewed, no factory image was used, no pilot was run, and no labour saving or financial return was measured. The requirements are the developer's proposal, not a user's. A separate engineering review recomputed the reported results from the raw score files and found them consistent; the project owner's review and acceptance are pending."
+  status: "No manufacturing user was interviewed, no factory image was used, no pilot was run, and no labour saving or financial return was measured. The requirements are the developer's proposal, not a user's. Reported metrics were cross-checked against the recorded per-image scores using a separate verification implementation. AI-assisted technical review was performed; final project-owner review remains pending."
 
 chart:
   title: "PCB2 test images flagged for review, v1 and v2"
@@ -114,10 +114,10 @@ dates:
     poc: "PCB1 proof of concept: working prototype, frozen split, tests, v1 evaluation"
     pcb2: "v2 pre-registered before PCB2 data access; thresholds frozen; one confirmatory evaluation"
     pcb3: "PCB3 lighting experiment pre-registered, frozen, evaluated once; paired analysis"
-    audit: "Engineering review of code and raw score files; reported results recomputed and found consistent"
-    owner_review: "Project owner's technical review"
+    audit: "AI-assisted technical cross-check and independent numerical recomputation"
+    owner_review: "Project owner's technical review and acceptance"
   pending: "Pending"
-  note: "Dates are commit dates in the development repository (Taiwan time); the engineering-review date is the date of its verdict. The first commit already contains a working prototype; earlier local work is not separately timestamped, and no total delivery time is claimed. Exact commit times and hashes are kept in the repository's audit history."
+  note: "Dates are commit dates in the development repository (Taiwan time); the AI-assisted cross-check is dated from its recorded verdict and is not a human sign-off. The first commit already contains a working prototype; earlier local work is not separately timestamped, and no total delivery time is claimed. Exact commit times and hashes are kept in the repository's audit history."
 
 lifecycle:
   title: "Delivery lifecycle: seven decisions"
@@ -288,7 +288,7 @@ pcb3:
       hint: "acceptance check only; not an endpoint"
   recall_label: "Clean recall"
   recall_hint: "defects caught / official-test defects"
-  table_note: "{{ f.pcb3.result.n_pooled }} unseen normal images ({{ f.pcb3.result.n_test_normal }} official test + {{ f.pcb3.result.n_holdout }} supplementary holdout), each variant at its own frozen threshold. Absolute rates and changes are separate columns: a change is the difference of two absolute rates on the same images. Full analysis and an independent recomputation are in the repository."
+  table_note: "{{ f.pcb3.result.n_pooled }} unseen normal images ({{ f.pcb3.result.n_test_normal }} official test + {{ f.pcb3.result.n_holdout }} supplementary holdout), each variant at its own frozen threshold. Absolute rates and changes are separate columns: a change is the difference of two absolute rates on the same images. Full analysis and a programmatic recomputation are in the repository."
   acc_title: "Original acceptance criteria (unchanged) — both variants"
   acc_cols: ["Criterion", "Baseline", "Candidate"]
   acc_rows:
@@ -344,7 +344,7 @@ repair:
   changed: "One condition in the function that reads ground-truth masks for the descriptive small/low-contrast defect table. That table could not be produced before the repair; its arithmetic did not change."
   unchanged_title: "What did not change"
   unchanged: "Model fitting, preprocessing, thresholds, test scores, predictions, the primary statistic and the decision rule. No image was re-scored and the test was not repeated."
-  verify_title: "Independent check"
+  verify_title: "Programmatic cross-check"
   verify: "A separate script that imports none of the project code recomputed every PCB3 number from the raw score files and the original masks: {{ f.repair.checks_ok }} of {{ f.repair.checks_total }} checks agree with the recorded outputs."
   where: "Full incident record — chronology, exact patch, file hashes, deviations — in the repository at <code>{{ f.repair.doc }}</code>; every post-test event in <code>{{ f.repair.deviations }}</code>; the recomputation in <code>{{ f.repair.recompute_doc }}</code>. Times are {{ f.repair.date }}, Taiwan time."
 
@@ -499,8 +499,8 @@ terms:
 footer:
   provenance: "Independent project on the public VisA dataset (Amazon Science). Not affiliated with or endorsed by the dataset authors or any company. PCB1–PCB3 are benchmark board types, not manufacturing sites. No production deployment, factory data, end-user sign-off or financial return is claimed."
   images: "Images: VisA, Zou et al., ECCV 2022, CC BY 4.0 (github.com/amazon-science/spot-diff). Shown resized, registered and cropped, with heat-map, outline and mask overlays added by this project."
-  ai: "Code and documentation were produced with AI coding assistance (Claude Code) under the project owner's direction. The owner's review of this work is pending."
-  owner: "Project owner: Leon Lai"
+  ai: "Code and documentation were produced with AI coding assistance (Claude Code) under the project owner's direction. Metrics were cross-checked programmatically and reviewed with AI assistance; the owner's review of this work is pending."
+  owner: "Project owner: Yu-Chen (Leon) Lai"
   downloads: "Downloads (English, A4):"
   pdf_one: "Executive summary, one page (PDF)"
   pdf_ext: "Extended brief, two pages, with the PCB3 experiment table (PDF)"

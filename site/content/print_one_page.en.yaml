@@ -3,7 +3,7 @@
 
 title: "Industrial Visual Inspection: From Prototype to Operational Decision"
 subtitle: "Executive summary · independent project on public benchmark images (VisA), not factory data"
-status: "Technical feasibility on public data only. A separate engineering review recomputed the reported results from the raw score files and found them consistent; the project owner's review and acceptance are pending."
+status: "Technical feasibility on public data only. Programmatic metric verification completed. Human owner review pending."
 
 problem_h: "Problem and prototype"
 problem: "On a production line, defects are rare and varied, so labelled defect examples are scarce. The question: can a model that has only seen good boards send the right circuit-board images to a human reviewer, without burying the reviewer in false alarms?"
@@ -54,4 +54,4 @@ next:
 
 footer:
   - "Data: VisA dataset, Zou et al., ECCV 2022, CC BY 4.0 (github.com/amazon-science/spot-diff). Pretrained network: torchvision Wide-ResNet-50-2 (ImageNet weights). PCB1–PCB3 are benchmark board types, not manufacturing sites. Not affiliated with or endorsed by the dataset authors or any company."
-  - "Built with AI coding assistance (Claude Code) under the project owner's direction; owner review pending. Project owner: Leon Lai. Protocols, raw results and the two-page extended brief: project repository."
+  - "Built with AI coding assistance (Claude Code) under the project owner's direction; owner review pending. Project owner: Yu-Chen (Leon) Lai. Protocols, raw results and the two-page extended brief: project repository."

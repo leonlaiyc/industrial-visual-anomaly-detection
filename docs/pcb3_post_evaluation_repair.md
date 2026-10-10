@@ -208,5 +208,9 @@ as SKIPPED.
 | D6 | The refused analysis was invoked twice; the log labelled "attempt 1" is the second invocation | — | corrected in §2; both invocations used identical code and inputs |
 | D7 | Reporting-code changes after test scoring: `ivad check` gates C5/C7 (`ef8480d`) and site/PDF builders | — | reporting only; disclosed in the release QA record and README |
 
+Follow-up on D5 (2026-10-10): no independent human auditor has reviewed this judgment. It was examined by an
+AI-assisted technical cross-check, which agreed; the project owner's confirmation is pending (deviation log
+rows 10 and 12).
+
 No configuration, threshold, correction parameter, perturbation definition, split, fitted model or
 score-affecting code changed after the freeze. No PCB4 data was used. The test was not repeated.

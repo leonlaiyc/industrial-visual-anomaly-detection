@@ -2,7 +2,7 @@
 
 title: "Industrial Visual Inspection: From Prototype to Operational Decision"
 subtitle: "Extended brief (two pages) · independent project on public benchmark images (VisA), not factory data"
-status: "Results recomputed from the raw score files by a separate engineering review. Owner review and acceptance pending. The one-page summary is the default executive version."
+status: "Programmatic metric verification completed: a separate implementation recomputed the reported results from the recorded per-image scores. AI-assisted technical review performed; human owner review and acceptance pending. The one-page summary is the default executive version."
 
 problem_h: "The problem"
 problem: "On a line, defects are rare and varied, so labelled examples are scarce; the model is fitted on normal images only, by design (VisA's defect labels and masks serve only evaluation). The question: can a model that has only seen good boards send the right images to a human reviewer without burying the reviewer in false alarms?"
@@ -70,7 +70,7 @@ pcb3_read:
   - "<strong>B. Engineering decision: do not adopt the correction.</strong> It made a mild blur raise false alarms by {{ f.pcb3.result.blur.cand.rise }} pts (uncorrected {{ f.pcb3.result.blur.base.rise }}), beyond the original {{ f.criteria.rob_pts }}-pt limit. Non-uniform lighting was not improved; part of the effect is likely more stable registration."
   - "<strong>The baseline is not production-ready either:</strong> brightening raised its false alarms by {{ f.pcb3.detail.cond.B1.base.rise }} pts; both variants are {{ f.pcb3.result.verdict.cand }} against the unchanged criteria."
   - "<strong>Not a progression:</strong> PCB1, PCB2 and PCB3 are separate board types with their own models and thresholds. The PCB3 baseline's {{ f.pcb3.result.recall.base }} recall is not comparable with PCB2's {{ f.pcb2.v2.recall.pct }} and does not predict recall on a real line."
-  - "<strong>Disclosure:</strong> after PCB3 test scoring, one input check in the analysis program was repaired ({{ f.repair.fix_sha }}); no score, threshold or decision changed, and an independent recomputation agrees on {{ f.repair.checks_ok }}/{{ f.repair.checks_total }} checks (repository: {{ f.repair.doc }})."
+  - "<strong>Disclosure:</strong> after PCB3 test scoring, one input check in the analysis program was repaired ({{ f.repair.fix_sha }}); no score, threshold or decision changed, and a separate verification script agrees on {{ f.repair.checks_ok }}/{{ f.repair.checks_total }} checks (repository: {{ f.repair.doc }})."
 
 next_h: "What a pilot site must prove first"
 next:
@@ -82,4 +82,4 @@ next:
 roi_note: "“ROI” here means the image region of interest. No financial return on investment or labour saving is claimed: only a classification-cost break-even range was computed (PCB2 v2 beats reviewing nothing or everything when k = defect odds × miss cost ÷ review cost lies between {{ f.cost.v2.k_low_fmt }} and {{ f.cost.v2.k_high_fmt }})."
 footer:
   - "Data: VisA dataset, Zou et al., ECCV 2022, CC BY 4.0. Benchmark board types PCB1–PCB3 are not manufacturing sites. Not affiliated with or endorsed by the dataset authors or any company."
-  - "Built with AI coding assistance (Claude Code) under the project owner's direction; owner review pending. Project owner: Leon Lai."
+  - "Built with AI coding assistance (Claude Code) under the project owner's direction; owner review pending. Project owner: Yu-Chen (Leon) Lai."

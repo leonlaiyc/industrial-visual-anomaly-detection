@@ -244,7 +244,7 @@ Each needs a new freeze and an evaluation on data that did not motivate it.
 | [`docs/pcb3_illumination_results.md`](docs/pcb3_illumination_results.md) | PCB3 results, the two decisions (rule outcome vs adoption), all conditions, interpretation |
 | [`docs/pcb3_post_evaluation_repair.md`](docs/pcb3_post_evaluation_repair.md) | incident record: analysis-code repair after PCB3 test scoring, chronology, patch, hashes |
 | [`docs/illumination_experiment_deviations.md`](docs/illumination_experiment_deviations.md) | every post-freeze event of the PCB3 experiment (the protocol itself is frozen) |
-| [`reports/pcb3_verification/recompute.md`](reports/pcb3_verification/recompute.md) | independent recomputation of every PCB3 number from the raw score files |
+| [`reports/pcb3_verification/recompute.md`](reports/pcb3_verification/recompute.md) | programmatic recomputation of every PCB3 number from the raw score files by a separate script |
 | [`docs/v2_experiment_protocol.md`](docs/v2_experiment_protocol.md) | pre-registered hypothesis, single change, PCB2 protocol, amendment A1 |
 | [`docs/requirements.md`](docs/requirements.md) | proposed requirements, acceptance criteria, go/no-go rules, open user questions |
 | [`docs/evaluation_methodology.md`](docs/evaluation_methodology.md) | splits, freeze, statistics |
@@ -257,8 +257,11 @@ Each needs a new freeze and an evaluation on data that did not motivate it.
 
 This project was developed with AI coding assistance (Anthropic Claude Code), which wrote most of the
 implementation and documentation under the project owner's direction. Design decisions, evidence and the
-protocol history are documented in `docs/`. The project owner's technical review of the final deliverables
-is pending.
+protocol history are documented in `docs/`. Verification is (A) programmatic — `ivad check` and
+`verification/recompute_pcb3.py` recompute the reported metrics from the recorded per-image scores — and
+(B) AI-assisted technical review; neither is a human sign-off, and no independent human audit has occurred
+(scope and limits: `reports/project_milestones.json`). (C) The project owner's (Yu-Chen (Leon) Lai)
+technical review of the final deliverables is pending.
 
 This repository starts from a curated snapshot. Commit identifiers cited in `docs/` refer to the original
 development history, which is kept separately because it also contains personal working notes. The

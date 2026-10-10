@@ -99,7 +99,7 @@ def test_timeline_has_dates_only_and_pending_reviews(built):
     for lang, html in pages.items():
         tl = html.split('class="timeline"', 1)[1].split("</ol>", 1)[0]
         assert not re.search(r"\b\d{2}:\d{2}\b", tl), lang
-        assert tl.count('class="pending"') == 1  # owner review; the engineering review is dated from its verdict
+        assert tl.count('class="pending"') == 1  # owner review; the AI-assisted cross-check is dated from its verdict
         assert len(re.findall(r"<li", tl)) == 5
 
 
@@ -137,8 +137,9 @@ def test_pdf_one_page_and_states_the_decisions():
                  "normal images only", "Zou et al., ECCV 2022, CC BY 4.0", "owner review pending",
                  "Next recommended validation step"):
         assert must in t, must
-    for bad in ("every change was pre-registered", "no large labelled defect library"):
+    for bad in ("every change was pre-registered", "no large labelled defect library", "separate engineering review"):
         assert bad not in t.lower(), bad
+    assert "Yu-Chen (Leon) Lai" in t
 
 
 def test_pdf_extended_two_pages_and_states_the_decisions():
@@ -146,8 +147,9 @@ def test_pdf_extended_two_pages_and_states_the_decisions():
     for must in ("Extended brief", "No manufacturing pilot recommended yet.", "do not adopt the correction",
                  "weakly informative", "not production-ready", "Not a progression", "7dbd302", "INCONCLUSIVE"):
         assert must in t, must
-    for bad in ("every change was pre-registered", "no large labelled defect library"):
+    for bad in ("every change was pre-registered", "no large labelled defect library", "separate engineering review"):
         assert bad not in t.lower(), bad
+    assert "Yu-Chen (Leon) Lai" in t
 
 
 def test_zh_terminology_and_claims(built):
@@ -159,6 +161,13 @@ def test_zh_terminology_and_claims(built):
         assert must in zh, must
     for bad in ("Each change was pre-registered", "no large labelled defect library", "independent audit are pending"):
         assert bad not in en, bad
+    # review provenance: never imply a human engineering review or audit (owner-handoff correction)
+    for bad in ("separate engineering review", "Engineering review of code"):
+        assert bad not in en, bad
+    for bad in ("另一位審查者", "工程審查"):
+        assert bad not in zh, bad
+    assert "AI-assisted" in en and "AI 輔助" in zh
+    assert "Yu-Chen (Leon) Lai" in en and "Yu-Chen (Leon) Lai" in zh
     assert "defect labels and masks" in en and "瑕疵標籤與遮罩" in zh
 
 

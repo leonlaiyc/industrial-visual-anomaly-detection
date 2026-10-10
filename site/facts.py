@@ -303,8 +303,8 @@ def repair() -> dict[str, Any]:
 
 def milestones() -> list[dict[str, Any]]:
     """Date-level milestones for the site (reports/project_milestones.json). Exact commit times stay in the
-    repository's audit history; the site shows only verified dates. The engineering review is dated from its
-    recorded verdict (`reviews`, not a commit); the owner's review carries no date: pending."""
+    repository's audit history; the site shows only verified dates. The AI-assisted cross-check is dated from
+    its recorded verdict (`reviews`, not a commit; not a human sign-off); the owner's review carries no date: pending."""
     from datetime import datetime
     rec = _j(REP / "project_milestones.json")
     ms = {m["key"]: datetime.fromisoformat(m["committed_at"]) for m in rec["milestones"]}
@@ -315,7 +315,7 @@ def milestones() -> list[dict[str, Any]]:
     for key, ks in groups:
         d0, d1 = ms[ks[0]].strftime("%Y-%m-%d"), ms[ks[-1]].strftime("%Y-%m-%d")
         out.append({"key": key, "iso": d0, "date": d0 if d0 == d1 else f"{d0} – {d1}", "pending": False})
-    er = reviews.get("engineering_review")
+    er = reviews.get("ai_cross_check")
     out.append({"key": "audit", "iso": er["date"], "date": er["date"], "pending": False} if er else
                {"key": "audit", "iso": "", "date": "", "pending": True})
     out.append({"key": "owner_review", "iso": "", "date": "", "pending": True})
