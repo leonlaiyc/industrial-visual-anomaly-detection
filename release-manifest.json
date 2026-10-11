@@ -1,8 +1,12 @@
 {
-  "status": "BUILT STATIC PORTFOLIO; deployment not yet verified",
-  "reviewed_source_baseline": "9f9a3a001933c09349a05792d57014b4d431041b",
+  "status": "QA VERIFIED STATIC PORTFOLIO; LIVE HOSTING BLOCKED BY GITHUB ACCOUNT PLAN",
+  "source_commit": "3ae600ae66afaeebba7526ec1462af26ac17cef7",
   "source_mode": "private-repository",
   "website_url": "",
+  "pages_create_api_status": 422,
+  "assigned_pages_url": null,
+  "expected_url_not_deployed": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
+  "scope": "All static payload files except this manifest; no source implementation, raw data or model weights.",
   "files": [
     {
       "path": ".nojekyll",
@@ -41,8 +45,8 @@
     },
     {
       "path": "assets/site.css",
-      "bytes": 10674,
-      "sha256": "4facae6a2bf3a6d3c120603762abb07b2cb1c98c237b9e972da5e5ca9d95c3be"
+      "bytes": 10659,
+      "sha256": "0993cf102367065185aedab8a80bdd1bf00ff9852ff7d3010db5c1695f61265a"
     },
     {
       "path": "executive-summary-one-page.pdf",
@@ -51,13 +55,13 @@
     },
     {
       "path": "index.html",
-      "bytes": 14222,
-      "sha256": "666ad6e9d6a806314a62e6a094bf855bdf951220993ea960b390803ba8c4f1c4"
+      "bytes": 14221,
+      "sha256": "5606c268fecac6b517c8443ad7dd1fb1583e894b1d5df129e25275b91e2d1da4"
     },
     {
       "path": "print/one-page/index.html",
-      "bytes": 8341,
-      "sha256": "1c9c49827fd9a4a332175eb348bb3b8e1611648caf8944ca5985d3b76775bd5c"
+      "bytes": 8340,
+      "sha256": "2db419c5249086a933e4467604dfab56653cf74cb5baea2677a1bdae79ad205b"
     },
     {
       "path": "release-link-status.json",
@@ -71,8 +75,8 @@
     },
     {
       "path": "zh-tw/index.html",
-      "bytes": 13871,
-      "sha256": "16bd79328a950a6ab5cf1b98dcb5ed90df647bf496c47edda24f2ef5ce4ae566"
+      "bytes": 13870,
+      "sha256": "80d2718cfb1b6fd50ed0cced55992cf7a577713aab6397e45bb63bb5520d070e"
     }
   ]
 }
