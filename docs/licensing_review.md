@@ -73,3 +73,30 @@ licence and boundaries explicitly, subject to the YOLO scope above. Dataset CC B
 framework code, pretrained weights or IVAD source. Preserve attribution and existing limitations under
 either access option. Release preparation is complete only as a private candidate; these licensing decisions
 remain visible gates for publication.
+
+## Publication-scope clarification (2026-10-11 reconciliation)
+
+The original review above and its attributions remain in force. The minimum owner decision differs by
+what is actually distributed; no new source licence is applied here.
+
+| Option | Minimum source-licensing decision | Minimum Ultralytics scope decision |
+|---|---|---|
+| A: public static website + sanitized public source repository | Approve the exact source snapshot and choose an explicit licence and boundaries for IVAD-authored code; do not label the whole YOLO-dependent candidate MIT-only without resolving covered-work scope. | Decide whether to include the importing YOLO scripts and any larger covered work. If included and covered, satisfy AGPL-3.0 notices, licence and corresponding-source obligations, or obtain applicable alternative permission. Excluding covered source requires a reviewed boundary and an updated explicit snapshot; no exclusion is performed here. |
+| B: public static website + public technical evidence; source repository stays private | No public source-code licence is needed merely for code that is not distributed. Approve rights and notices for the static site, authored documents, figures, numeric records and evidence subset; keep source and executable scripts out of that public subset. | Confirm that the published subset contains static results/evidence only, with no covered implementation, weights or YOLO service. Under AGPL-3.0 section 2, output is covered only when its content constitutes a covered work; static publication alone does not establish an Enterprise requirement. Existing private YOLO use and any future proprietary deployment remain separate questions under the original review. |
+
+This is a scope distinction, not a blanket exemption for all outputs or a conclusion that importing
+YOLO-dependent source has no obligations. The [upstream AGPL text](https://github.com/ultralytics/ultralytics/blob/main/LICENSE)
+(sections 2, 4-6 and 13) controls covered works; [Ultralytics' licensing guidance](https://www.ultralytics.com/license)
+states a broader full-derivative-project AGPL/Enterprise position. Record the owner's selected boundary
+and compliance path before publishing covered source. Do not infer an Enterprise purchase requirement
+merely from publishing this static technical case study. Dataset attribution, dependency notices and
+the original pretrained-weight/font review are retained. No code, weights, service or website is published.
+
+## Later portfolio release status (October 11, 2026)
+
+The owner subsequently authorized synchronization to main and publication through GitHub Pages while
+preserving PRIVATE repository visibility. The earlier pending/not-authorized statements above describe
+those earlier snapshots. Current scope and the actual HTTP 422 account-plan hosting blocker are recorded
+in [portfolio_release.md](portfolio_release.md). No source licence or Ultralytics scope decision is silently
+applied; public source redistribution remains separate. D5 acceptance and overall portfolio acceptance
+remain distinct. Private correspondence and model/data distribution are excluded.

@@ -19,7 +19,7 @@ const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? proces
 const BASE = arg("--base", "http://127.0.0.1:8765").replace(/\/$/, "");
 const OUT = arg("--out", "site/qa");
 const SEG = 4000;
-const PAGES = [["en", "/"], ["zh", "/zh-tw/"], ["print", "/print/"], ["print1", "/print/one-page/"]];
+const PAGES = [["en", "/"], ["zh", "/zh-tw/"], ["print1", "/print/one-page/"]];
 const VIEWPORTS = { desktop: [1440, 900, 1, false], tablet: [820, 1180, 1, false], mobile: [375, 812, 2, true] };
 const CHROME = ["C:/Program Files/Google/Chrome/Application/chrome.exe",
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", "/usr/bin/google-chrome", "/usr/bin/chromium"]

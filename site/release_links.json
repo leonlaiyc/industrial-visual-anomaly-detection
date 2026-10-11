@@ -1,6 +1,6 @@
 {
   "website_url": "",
-  "technical_repository_url": "",
+  "technical_repository_url": "https://github.com/leonlaiyc/industrial-visual-anomaly-detection",
   "technical_evidence_url": "",
-  "source_mode": "public-repository"
+  "source_mode": "private-repository"
 }

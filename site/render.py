@@ -1,7 +1,7 @@
 """Headless-Chrome rendering for QA screenshots and the executive PDF.
 
     python site/render.py shots  [--base http://127.0.0.1:8765] [--out site/qa]
-    python site/render.py pdf    [--base http://127.0.0.1:8765]   # both executive PDFs, also copied to reports/
+    python site/render.py pdf    [--base http://127.0.0.1:8765]   # one A4 sheet, also copied to reports/
 
 Serve site/dist first (e.g. `python -m http.server 8765 --directory site/dist`).
 Uses a throwaway browser profile, never the user's own.
@@ -20,10 +20,8 @@ HERE = Path(__file__).resolve().parent
 CANDIDATES = [r"C:\Program Files\Google\Chrome\Application\chrome.exe",
               r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
               "google-chrome", "chromium", "chromium-browser", "msedge"]
-# print page -> (file in dist/, file in reports/). The one-page summary is the default executive download;
-# the two-page extended brief adds the PCB3 experiment table.
-PDFS = {"print/one-page/": ("executive-summary-one-page.pdf", "executive_summary_one_page.pdf"),
-        "print/": ("executive-summary-extended.pdf", "executive_summary_extended.pdf")}
+# print page -> (file in dist/, canonical file in reports/). Retired briefs are not rendered.
+PDFS = {"print/one-page/": ("executive-summary-one-page.pdf", "executive-summary-one-page.pdf")}
 VIEWPORTS = {"desktop": (1440, 900, 1), "tablet": (820, 1180, 1), "mobile": (390, 844, 2)}
 
 
@@ -58,14 +56,19 @@ def verify_pdf(path: Path, n_pages: int, links: dict) -> None:
     r = PdfReader(path)
     if len(r.pages) != n_pages or any(abs(float(p.mediabox.width)-595) > 2 or abs(float(p.mediabox.height)-842) > 2 for p in r.pages):
         raise ValueError(f"{path.name}: expected {n_pages} A4 pages")
-    uris = {str(a.get_object().get('/A', {}).get('/URI', '')) for p in r.pages for a in p.get('/Annots', [])}
+    uris = {str(a.get_object().get('/A', {}).get('/URI', '')) for p in r.pages for a in p.get('/Annots', [])} - {''}
     if not uris:
         raise ValueError(f"{path.name}: no clickable URI annotations")
     for k in ('website_url', 'technical_repository_url', 'technical_evidence_url'):
         if links[k] and links[k] not in uris:
             raise ValueError(f"{path.name}: missing clickable {k}")
-    if not links['preview'] and any('127.0.0.1' in u or 'localhost' in u for u in uris):
-        raise ValueError(f"{path.name}: release PDF contains a local preview URI")
+    import release_links
+    if any(not release_links.public_url(u) for u in uris):
+        raise ValueError(f"{path.name}: recipient PDF contains a non-public URI")
+    if not links['website_url']:
+        text = '\n'.join(p.extract_text() for p in r.pages)
+        if 'Website not yet deployed.' not in text:
+            raise ValueError(f"{path.name}: missing honest undeployed website notice")
     print(path.name, 'verified A4 pages:', n_pages, 'clickable URIs:', sorted(uris))
 
 

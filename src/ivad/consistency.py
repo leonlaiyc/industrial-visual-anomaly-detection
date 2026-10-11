@@ -8,14 +8,13 @@ C2  per run: freeze matches config/model/split and precedes evaluation; for runs
     repository's history (curated snapshot).
 C3  split manifests pass the leakage audit
 C4  paired comparison recomputed from the score CSVs; pairing checks all true
-C5  executive PDFs (A4, built from site/ since the PCB3 experiment): the one-page summary has exactly one
-    page and the extended brief two; in each, every numeric token traces to a recorded output and the
-    headline numbers are present
+C5  current project PDF (A4, built from site/): exactly one page; every numeric token traces to a recorded
+    output and representative PCB2 endpoint numbers are present
 C6  README results block equals the generated block
 C7  repository hygiene: no dataset, weights, large files or secret-like strings tracked (allowed images: the
     website's resized, overlaid VisA derivatives under site/static/img/, and the exploratory study's named
     illustrative figures in EXPLORATORY_FIGS, each < 500 kB and each listed in NOTICE.md)
-C8  current summaries distinguish production deployment from authorized shadow validation;
+C8  current summaries disclose the PoC scope and model-comparison limitations;
     the frozen decision record and handoff retain their original recommendation
 """
 from __future__ import annotations
@@ -190,11 +189,9 @@ def run_checks() -> bool:
     allowed = traceable_tokens(srcs) | PDF_LITERALS | PDF_FIXED_LABELS
     f = facts()
     must = []
-    for n_ in (BASE, NEW):  # every executive PDF reports the confirmatory PCB2 comparison
+    for n_ in (BASE, NEW):  # the showcase reports representative PCB2 endpoints, not a statistics table
         r_ = f["runs"][n_]
-        must += [f"{r_['auroc']['value']:.3f}", f"{100 * r_['op']['recall']['value']:.0f}%",
-                 f"{100 * r_['op']['fpr']['value']:.0f}%", f"{r_['lat']['median_ms']:.0f}",
-                 f"{100 * r_['hold']['value']:.1f}%"]
+        must += [f"{100 * r_['op']['recall']['value']:.0f}%", f"{100 * r_['op']['fpr']['value']:.0f}%"]
     pdf_texts: dict[str, str] = {}
     for pdf_path, n_pages in EXECUTIVE_PDFS.items():
         name = pdf_path.name
@@ -222,15 +219,13 @@ def run_checks() -> bool:
         p_ = REPO_ROOT / rel
         holders[rel] = " ".join(p_.read_text(encoding="utf-8").split()) if p_.exists() else ""
     current = {name: holders[name] for name in (*pdf_texts, "README.md")}
-    required = ("Not ready for production-affecting deployment", "bounded, non-disruptive",
-                "shadow-mode validation", "authorization", "entry checks",
-                "Factory access has not been obtained")
+    required = ("VisA", "AI-assisted", "brightness confound", "localization", "no production-readiness claim")
     lacking = {name: [phrase for phrase in required if phrase.lower() not in text.lower()]
                for name, text in current.items()}
     lacking = {name: phrases for name, phrases in lacking.items() if phrases}
     frozen_lacking = [name for name in ("docs/v2_decision_record.md", "docs/handoff.md")
                       if RECOMMENDATION not in holders[name]]
-    record("C8 deployment/shadow-validation scope clear; frozen recommendations retained",
+    record("C8 PoC scope and limitations clear; frozen recommendations retained",
            not lacking and not frozen_lacking,
            f"current missing: {lacking}; frozen missing: {frozen_lacking}")
 

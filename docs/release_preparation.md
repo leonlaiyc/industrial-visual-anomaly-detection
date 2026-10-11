@@ -10,8 +10,8 @@ Website deployment and GitHub push, merge or visibility changes are NOT AUTHORIZ
 | A: public website + sanitized public GitHub repository | Lowest friction: browse scripts, protocols, raw scores and tests directly | Separate authorization for public source, licence decision and YOLO scope review; publish only the curated snapshot, with no development history or weights |
 | B: public website + private repository + public evidence package | No login for results/protocols/raw scores; source inspection requires separate access | A public evidence URL, with protocols, deviations, splits, thresholds, per-image scores, verification results, notices and limitations; do not label the private GitHub URL as public source |
 
-Recommend A for technical review once licensing and privacy are resolved. B is a practical alternative if
-source stays private; evidence publication still needs review and authorization. The local sanitized
+The owner must choose A or B; neither is selected by this reconciliation. Evidence publication still
+needs review and authorization. The local sanitized
 candidate includes the complete technical evidence and source for private review, not permission to publish.
 
 ## Canonical links and local preview
@@ -25,7 +25,9 @@ candidate includes the complete technical evidence and source for private review
 
 The known GitHub repository is private. Its address is not automatically copied into public navigation.
 No website URL is assigned or invented. An empty setting builds a preview with an explicit source-access
-notice. PDF preview annotations point to the local server and are labelled as local previews.
+notice. Recipient PDF previews display "Website link pending first deployment." and have only public
+attribution URI annotations. Localhost links are rejected in every PDF mode. The renderer's local
+server is a transport for generating the PDF, not a recipient-facing link.
 
 From the project root with the recorded Python environment (or `pip install -e ".[site,dev]"`):
 
@@ -53,9 +55,11 @@ rate-limit failure stops the release build. Every configured external navigation
 Release mode requires the website plus either source or evidence. For B the private repository setting
 must remain empty.
 
-The gate runs before clearing output. A preview build can contain stale PDFs copied from `reports/`;
-always re-render after URL/content/template changes before preparing a publishable folder. Do not upload
-the current local-preview PDFs as a final public release.
+The gate runs before clearing output. A build copies canonical PDFs from `reports/`; they must match
+the print sources. The reconciled preview uses the exact received and verified PDF bytes documented in
+[artifact reconciliation](artifact_reconciliation.md). Preserve those bytes while URLs remain pending.
+After authorized URL changes, re-render, verify source/PDF parity, and regenerate all package manifests.
+This preview package is not a verified final public release.
 
 ## Hosting comparison
 
@@ -99,3 +103,12 @@ verified dist contents and `.nojekyll`. Save, record the displayed address and e
 staging/strict-link/re-render procedure. Never push the development checkout or its historical private notes.
 
 No external account operation, repository mutation or deployment has been performed in this task.
+
+## Later portfolio release status (October 11, 2026)
+
+The owner subsequently authorized synchronization to main and publication through GitHub Pages while
+preserving PRIVATE repository visibility. The earlier pending/not-authorized statements above describe
+those earlier snapshots. Current scope and the actual HTTP 422 account-plan hosting blocker are recorded
+in [portfolio_release.md](portfolio_release.md). No source licence or Ultralytics scope decision is silently
+applied; public source redistribution remains separate. D5 acceptance and overall portfolio acceptance
+remain distinct. Private correspondence and model/data distribution are excluded.

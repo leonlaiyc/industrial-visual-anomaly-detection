@@ -40,7 +40,7 @@ LANGS = {"en": {"dir": "", "html_lang": "en", "label": "EN"},
 # Tokens with digits that are names, not measurements (board types, versions, criteria IDs, units).
 ALLOWED_TOKENS = {"PCB1", "PCB2", "PCB3", "PCB4", "v1", "v2", "v3", "P90", "P95", "P99", "P1", "P2", "P3",
                   "P4", "P5", "A4", "A0", "A1", "B1", "G1", "N1", "P0", "ResNet-50-2", "Wide-ResNet-50-2",
-                  "layer2", "layer3", "B2", "B3", "B4", "A2", "A3",
+                  "WideResNet-50-2", "layer2", "layer3", "B2", "B3", "B4", "A2", "A3",
                   "4.0",  # CC BY licence version
                   "2022",  # dataset citation year (Zou et al., ECCV 2022)
                   "YOLOv8", "YOLOv8s", "YOLO11", "YOLO11s",  # model names (exploratory study)
@@ -56,7 +56,8 @@ def lint_content(content: dict[str, Any], lang: str) -> list[str]:
     def walk(node, path):
         if isinstance(node, dict):
             for k, v in node.items():
-                walk(v, f"{path}.{k}")
+                if k not in ("image", "w", "h"):
+                    walk(v, f"{path}.{k}")
         elif isinstance(node, list):
             for i, v in enumerate(node):
                 walk(v, f"{path}[{i}]")
@@ -89,7 +90,7 @@ def render_content(node, env: Environment, ctx: dict[str, Any]):
 
 
 # --------------------------------------------------------------------------- #
-# The one first-screen visual: unit chart of the PCB2 test images, v1 vs v2
+# Historical PCB2 unit-chart helper (the portfolio uses parallel workflow cards)
 # --------------------------------------------------------------------------- #
 def unit_chart(f: dict[str, Any], t: dict[str, Any]) -> Markup:
     """100 normal + 100 defective test images per version; each square is one image.
@@ -159,9 +160,18 @@ def build(dist: Path = DIST, *, release: bool = False, links_path: Path = releas
 
     env = Environment(loader=FileSystemLoader(HERE / "templates"), undefined=StrictUndefined,
                       autoescape=True, trim_blocks=True, lstrip_blocks=True, keep_trailing_newline=True)
+    if dist.resolve() in (HERE.resolve(), HERE.parent.resolve()) or HERE.resolve() not in dist.resolve().parents:
+        # Test outputs may live outside site/, but never delete a source/project root.
+        if dist.resolve() in (HERE.resolve(), HERE.parent.resolve()) or (dist.exists() and any(dist.iterdir())):
+            raise ValueError("output must be a build directory, not a source tree")
     if dist.exists():
         shutil.rmtree(dist)
-    shutil.copytree(HERE / "static", dist / "assets")
+    (dist / "assets" / "img").mkdir(parents=True)
+    for filename in ("site.css", "favicon.svg"):
+        shutil.copyfile(HERE / "static" / filename, dist / "assets" / filename)
+    images = {"workflow_caught.jpg"} | {item["image"] for item in content["en"]["findings"]["items"]}
+    for filename in sorted(images):
+        shutil.copyfile(HERE / "static" / "img" / filename, dist / "assets" / "img" / filename)
     pages = [("index.html.j2", "index.html")]
     for lang, meta in LANGS.items():
         t = render_content(content[lang], env, {"f": f, "links": links})
@@ -170,30 +180,27 @@ def build(dist: Path = DIST, *, release: bool = False, links_path: Path = releas
         for tpl, out_name in pages:
             html = env.get_template(tpl).render(
                 t=t, f=f, lang=lang, meta=meta, langs=LANGS, root=root, alt=alt, page=out_name,
-                links=links, unit_chart=unit_chart(f, t["chart"]))
+                links=links)
             out = dist / meta["dir"] / out_name
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(html, encoding="utf-8", newline="\n")
-    # English A4 executive PDFs (print pages -> `python site/render.py pdf`): the one-page summary (default
-    # download) and the two-page extended brief.
+    # One recipient-facing A4 project sheet. The historical extended brief is source evidence only.
     t_en = render_content(content["en"], env, {"f": f, "links": links})
-    for tpl, src, out_dir in (("print.html.j2", "print.en.yaml", dist / "print"),
-                              ("print_one_page.html.j2", "print_one_page.en.yaml", dist / "print" / "one-page")):
+    for tpl, src, out_dir in (("print_one_page.html.j2", "print_one_page.en.yaml", dist / "print" / "one-page"),):
         p = yaml.safe_load((HERE / "content" / src).read_text(encoding="utf-8"))
         bad = lint_content(p, src)
         if bad:
             raise SystemExit("content lint failed:\n  " + "\n  ".join(bad))
         html = env.get_template(tpl).render(p=render_content(p, env, {"f": f, "links": links}), t=t_en, f=f, links=links,
-                                            unit_chart=unit_chart(f, t_en["chart"]))
+                                            )
         out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "index.html").write_text(html, encoding="utf-8", newline="\n")
     (dist / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8", newline="\n")
     (dist / "release-link-status.json").write_text(json.dumps(links, indent=2) + "\n", encoding="utf-8")
     (dist / ".nojekyll").write_text("", encoding="utf-8")
-    # The pages link to both PDFs. Rebuilding wipes dist/, so carry over the last rendered ones
-    # (`python site/render.py pdf` re-renders them from dist/print/ and updates both copies).
-    for rep_name, dist_name in (("executive_summary_one_page.pdf", "executive-summary-one-page.pdf"),
-                                ("executive_summary_extended.pdf", "executive-summary-extended.pdf")):
+    shutil.copyfile(HERE.parent / "NOTICE.md", dist / "NOTICE.md")
+    # Rebuilding wipes dist/, so carry over the canonical sheet until re-rendered.
+    for rep_name, dist_name in (("executive-summary-one-page.pdf", "executive-summary-one-page.pdf"),):
         pdf = HERE.parent / "reports" / rep_name
         if pdf.exists():
             shutil.copyfile(pdf, dist / dist_name)

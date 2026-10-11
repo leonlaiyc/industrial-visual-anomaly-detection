@@ -17,9 +17,10 @@ Amazon Science under the Creative Commons Attribution 4.0 International license
 - **Derivative images are redistributed in small numbers:**
   - figures under `reports/` (downscaled VisA images, crops, contact sheets, mean images and heat-map /
     outline overlays);
-  - website images under `site/static/img/` (five JPEG files) and the extended executive brief
-    `reports/executive_summary_extended.pdf`, which embeds three of them (the one-page summary
-    `reports/executive_summary_one_page.pdf` embeds no images);
+  - website images under `site/static/img/`, including `pcb1_alignment.jpg` (JPEG compression of the
+    original PCB1 registration contact sheet) and `pcb4_annotations.jpg` (copy of the PCB4 label audit);
+  - the current project sheet `reports/executive-summary-one-page.pdf`, which embeds three genuine figures;
+    retired one/two-page briefs in `docs/history/` are historical evidence, not public downloads;
   - `exploratory/yolo_pcb4/results/fig_failures.jpg` (downscaled PCB4 images of missed defects with
     ground-truth outlines) and `exploratory/yolo_pcb4/audit/fig_annotation_check.jpg` (downscaled PCB4 defect
     images with the YOLO training boxes and ground-truth outlines);

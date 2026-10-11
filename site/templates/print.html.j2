@@ -47,6 +47,7 @@
   .foot { margin-top: 10pt; padding-top: 6pt; border-top: 0.75pt solid var(--line); font-size: 7.8pt; color: var(--muted); }
   .foot p { margin: 0 0 2pt; }
   .section { margin-top: 10pt; }
+  .foot a { overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
@@ -110,7 +111,7 @@
   <p class="note section"><strong>{{ t.status.not_validated }}:</strong> {{ t.readiness.cols[2]["items"] | join(" · ") }}</p>
   <p class="note">{{ p.roi_note }}</p>
 
-  <div class="foot">{% for x in p.footer %}<p>{{ x }}</p>{% endfor %}<p><a href="{{ links.website_url or '../' }}">{{ 'Full case study' if links.website_url else 'Local case-study preview' }}</a>{% if links.technical_repository_url %} · <a href="{{ links.technical_repository_url }}">Technical source</a>{% endif %}{% if links.technical_evidence_url %} · <a href="{{ links.technical_evidence_url }}">Technical evidence</a>{% endif %}</p></div>
+  <div class="foot">{% for x in p.footer %}<p>{{ x }}</p>{% endfor %}<p>{% if links.website_url %}<a href="{{ links.website_url }}">Full case study: {{ links.website_url }}</a>{% else %}Website link pending first deployment.{% endif %}{% if links.technical_repository_url %} · <a href="{{ links.technical_repository_url }}">Technical source</a>{% endif %}{% if links.technical_evidence_url %} · <a href="{{ links.technical_evidence_url }}">Technical evidence</a>{% endif %}</p></div>
 </section>
 </body>
 </html>

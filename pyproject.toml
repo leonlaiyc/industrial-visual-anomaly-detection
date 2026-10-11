@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ivad"
 version = "0.1.0"
-description = "Industrial visual anomaly detection PoC: Mahalanobis patch scoring on VisA PCB1"
+description = "Hands-on PCB anomaly detection PoC: normal-only CNN, ROI and robustness experiments, supervised YOLO exploration"
 requires-python = ">=3.10"
 readme = "README.md"
 dependencies = [

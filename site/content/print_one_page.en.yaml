@@ -1,57 +1,79 @@
-# One-page executive summary (English, one A4 page, print/PDF) — the default executive download.
-# Same rules as the site content: numbers only via {{ f.* }}. The two-page extended brief is print.en.yaml.
-
-title: "Industrial Visual Anomaly Detection: A Technical Case Study"
-subtitle: "Executive summary · independent project on public benchmark images (VisA), not factory data"
-status: "Technical feasibility on public data only. Programmatic metric verification completed. Human owner review pending."
-
-problem_h: "Problem and prototype"
-problem: "On a production line, defects are rare and varied, so labelled defect examples are scarce. The question: can a model that has only seen good boards send the right circuit-board images to a human reviewer, without burying the reviewer in false alarms?"
-built: "The prototype uses frozen pretrained CNN features and a per-position Gaussian (Mahalanobis) model of normal appearance, registers each board, and flags an image for review when its score exceeds a threshold frozen beforehand on separate normal images. With training on normal images only, VisA defect labels and masks are reserved for evaluation. It recommends a review and never rejects a board."
-
-result_h: "Controlled improvement on PCB2, a board type not used in development"
-result_sub: "v1 → v2: one pre-registered change — score only inside the board region. {{ f.pcb2.v2.recall.n }} defective + {{ f.pcb2.v2.fpr.n }} normal test images, thresholds frozen before testing, evaluated once; {{ f.ci_level }} confidence intervals."
-rows:
-  - label: "Defect recall"
-    v1: "{{ f.pcb2.v1.recall.pct }}"
-    v2: "{{ f.pcb2.v2.recall.pct }}"
-    change: "unchanged"
-  - label: "False alarms, test normals"
-    v1: "{{ f.pcb2.v1.fpr.pct }}"
-    v2: "{{ f.pcb2.v2.fpr.pct }}"
-    change: "{{ f.pcb2.paired.fpr_test.delta }} pts (CI {{ f.pcb2.paired.fpr_test.ci_low }} to {{ f.pcb2.paired.fpr_test.ci_high }})"
-  - label: "False alarms, holdout normals"
-    v1: "{{ f.pcb2.v1.fpr_holdout.pct }}"
-    v2: "{{ f.pcb2.v2.fpr_holdout.pct }}"
-    change: "{{ f.pcb2.paired.fpr_holdout.delta }} pts (CI {{ f.pcb2.paired.fpr_holdout.ci_low }} to {{ f.pcb2.paired.fpr_holdout.ci_high }})"
-  - label: "AUROC"
-    v1: "{{ f.pcb2.v1.auroc.fmt }}"
-    v2: "{{ f.pcb2.v2.auroc.fmt }}"
-    change: "{{ f.pcb2.paired.auroc.delta }} (CI {{ f.pcb2.paired.auroc.ci_low }} to {{ f.pcb2.paired.auroc.ci_high }})"
-result_note: "Fewer false alarms and better ranking; recall did not improve and stays below the proposed {{ f.criteria.recall_min }} target. Median latency per image (GPU): v1 {{ f.pcb2.v1.latency_ms.fmt }} ms, v2 {{ f.pcb2.v2.latency_ms.fmt }} ms."
-
-pcb3_h: "Follow-up finding on PCB3, a separate board type"
-pcb3: "A pre-registered global brightness/contrast correction met its own decision rule (“{{ f.pcb3.result.outcome }}”; darkening difference {{ f.pcb3.result.cond.G1.fpr.did }} pts, CI {{ f.pcb3.result.cond.G1.fpr.ci_low }} to {{ f.pcb3.result.cond.G1.fpr.ci_high }}), but that result is <strong>weakly informative</strong>, and the correction made a mild blur raise false alarms by {{ f.pcb3.result.blur.cand.rise }} pts. <strong>Decision: do not adopt it.</strong> The uncorrected pipeline is not production-ready either: brightening raised its false alarms by {{ f.pcb3.detail.cond.B1.base.rise }} pts. PCB3 numbers are not comparable with PCB2's."
-disclosure: "Disclosure: after PCB3 test scoring, one input check in the analysis program was repaired ({{ f.repair.fix_sha }}); no score, threshold or decision changed. Full record in the repository."
-
-risks_h: "Remaining risks"
-risks:
-  - "<strong>Detection:</strong> recall {{ f.pcb2.v2.recall.pct }} against a proposed {{ f.criteria.recall_min }}; the smallest third of defects only {{ f.pcb2.small.recall }}."
-  - "<strong>Lighting:</strong> a {{ f.pcb2.dark_pct }} darker image raised PCB2 false alarms from {{ f.pcb2.dark.v2.clean }} to {{ f.pcb2.dark.v2.dark }}."
-  - "<strong>Portability:</strong> on a green background the original board-finding rule marked {{ f.pcb3_mask.original }} of the frame as board, silently."
-  - "<strong>Evidence base:</strong> benchmark images and synthetic perturbations; targets are the developer's proposal. No end user, factory image, pilot or financial return."
-
-decision_h: "Go / No-Go"
-decision: "<strong>Not ready for production-affecting deployment.</strong> Although v2 reduced false alarms, it did not meet the proposed sensitivity and robustness requirements. Rule-based verdict against unchanged criteria: {{ f.pcb2.verdict.v2 }}."
-go: "<strong>Proposed next step: bounded, non-disruptive shadow-mode validation</strong>, subject to site requirements, authorization and entry checks. Factory access has not been obtained."
-
-next_h: "Next recommended validation step"
-next:
-  - "Confirm site requirements with the quality owner: cost of a missed defect versus one review, review capacity, defects that matter."
-  - "Run the unchanged tool in shadow mode on real line images, affecting no decision."
-  - "Entry gates: board segmentation and registration on the site's own normal images; a per-image lighting check; a labelled sample of real defects, with recall reported by defect size."
-  - "Decide Go / No-Go again on that evidence."
-
-footer:
-  - "Data: VisA dataset, Zou et al., ECCV 2022, CC BY 4.0 (github.com/amazon-science/spot-diff). Pretrained network: torchvision Wide-ResNet-50-2 (ImageNet weights). PCB1–PCB3 are benchmark board types, not manufacturing sites. Not affiliated with or endorsed by the dataset authors or any company."
-  - "Built with AI-assisted development; project-owner technical review pending. Project owner: Yu-Chen (Leon) Lai. Protocols, raw results and the two-page extended brief: project repository."
+{
+  "title": "Exploring PCB Anomaly Detection with CNN and YOLO",
+  "subtitle": "A Hands-on Computer Vision PoC",
+  "motivation": "I built a small PoC to understand visual anomaly detection: prepare public VisA PCB data, explore normal-only CNN modelling, improve and stress-test preprocessing, and train supervised YOLO models. These are complementary explorations on separate board datasets.",
+  "workflows_h": "Three technical explorations",
+  "rounds": [
+    {
+      "letter": "A",
+      "title": "CNN Baseline",
+      "dataset": "PCB1 / normal-only fitting",
+      "steps": [
+        "Inspect the data",
+        "Correct orientation & align",
+        "WideResNet-50-2 features",
+        "Per-position Gaussian / Mahalanobis distance",
+        "Anomaly score & heatmap"
+      ],
+      "finding": "Detected {{ f.pcb1.v1.recall.frac }} defects ({{ f.pcb1.v1.recall.pct }} recall). Orientation, registration and background interference mattered.",
+      "learned": "Inspect where the anomaly score comes from before adding complexity."
+    },
+    {
+      "letter": "B",
+      "title": "Improve & Stress-Test",
+      "dataset": "PCB2 / PCB3 - separate experiments",
+      "steps": [
+        "Start from the CNN baseline",
+        "Score inside the board ROI",
+        "Calibrate the threshold",
+        "Test lighting correction",
+        "Evaluate robustness & decide"
+      ],
+      "finding": "PCB2: false alarms {{ f.pcb2.v1.fpr.pct }} to {{ f.pcb2.v2.fpr.pct }}; recall stayed {{ f.pcb2.v2.recall.pct }}. PCB3: some lighting gains, worse false alarms under blur; correction not adopted.",
+      "learned": "A gain in one condition can create a new failure mode."
+    },
+    {
+      "letter": "C",
+      "title": "Supervised YOLO",
+      "dataset": "PCB4 / defect-labelled training",
+      "steps": [
+        "Inspect defect annotations",
+        "Convert masks to boxes",
+        "Train YOLOv8s / YOLO11s",
+        "Calibrate image detection",
+        "Analyse failures & confounds"
+      ],
+      "finding": "Image recall: YOLOv8s {{ f.explore.by.yolov8s.recall }}, YOLO11s {{ f.explore.by.yolo11s.recall }}. One generic defect class. Models were actually trained.",
+      "learned": "Higher recall here came with brightness confounding, unseen-type generalization limits and imprecise localization."
+    }
+  ],
+  "visuals_h": "Examples from the work",
+  "visuals": [
+    {
+      "image": "pcb1_alignment.jpg",
+      "caption": "PCB1 / raw inputs above, aligned below"
+    },
+    {
+      "image": "workflow_false_alarm.jpg",
+      "caption": "PCB2 / normal image, false alarm"
+    },
+    {
+      "image": "pcb4_annotations.jpg",
+      "caption": "PCB4 / label audit, not predictions"
+    }
+  ],
+  "limits": "Exploratory comparison: normal-only CNN fitting and supervised YOLO require different data and labels. The rounds use separate datasets; recall values do not establish architecture superiority. Image-level detection is not proof of accurate defect localization.",
+  "lessons_h": "What I learned",
+  "lessons": [
+    "Data quality and preprocessing matter.",
+    "Investigate the root cause before increasing complexity.",
+    "Better metrics can introduce unexpected trade-offs.",
+    "Choose models around available data, labels and real objectives."
+  ],
+  "project_h": "Project & technical record",
+  "pending": "Website not yet deployed. Source access requires repository permission.",
+  "source_private": "GitHub source (private; permission required)",
+  "source_public": "GitHub technical source",
+  "evidence": "Frozen score records, protocols, splits, audit and repair chronology are retained in the source. After PCB3 evaluation, an analysis input check was repaired ({{ f.repair.fix_sha }}); scores, thresholds and decisions were unchanged. D5 accepted by project owner: {{ links.d5_decision_date }}. Overall portfolio acceptance is separate.",
+  "disclaimer": "Data: VisA, Amazon Science, Zou et al., ECCV 2022, CC BY 4.0. Images modified by alignment, cropping, resizing and overlays. AI-assisted development. No validation on real manufacturing-line images; no production-readiness claim. No endorsement implied."
+}

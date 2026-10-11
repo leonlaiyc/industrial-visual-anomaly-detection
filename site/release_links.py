@@ -46,18 +46,24 @@ def check_access(url: str) -> dict:
 
 def load(path: Path = DEFAULT, release: bool = False) -> dict:
     c = json.loads(Path(path).read_text(encoding="utf-8"))
-    if c.get("source_mode") not in ("public-repository", "public-evidence"):
-        raise ValueError("source_mode must be public-repository or public-evidence")
+    if c.get("source_mode") not in ("public-repository", "public-evidence", "private-repository"):
+        raise ValueError("source_mode must explicitly describe public-repository, public-evidence or private-repository")
     for k in ("website_url", "technical_repository_url", "technical_evidence_url"):
         if not isinstance(c.get(k), str) or (c[k] and not public_url(c[k])):
             raise ValueError(f"{k} must be an actual public HTTPS URL or empty for preview")
-    required = ["website_url", "technical_repository_url" if c["source_mode"] == "public-repository" else "technical_evidence_url"]
+    required = ["website_url"]
+    if c["source_mode"] != "private-repository":
+        required.append("technical_repository_url" if c["source_mode"] == "public-repository" else "technical_evidence_url")
+    elif not c["technical_repository_url"]:
+        raise ValueError("private source must identify its repository, with an explicit access-required disclosure")
     if release:
         missing = [k for k in required if not c[k]]
         if missing:
             raise ValueError("release URLs missing: " + ", ".join(missing))
         # Every rendered external navigation target is checked, not just the required ones.
-        c["access_checks"] = [check_access(c[k]) for k in ("website_url", "technical_repository_url", "technical_evidence_url") if c[k]]
+        c["access_checks"] = [check_access(c[k]) for k in ("website_url", "technical_repository_url", "technical_evidence_url")
+                              if c[k] and not (k == "technical_repository_url" and c["source_mode"] == "private-repository")]
+    c["source_anonymous"] = c["source_mode"] == "public-repository" and release
     c["preview"] = not release
     c["d5_decision_date"] = "2026-10-11"
     return c

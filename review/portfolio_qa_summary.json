@@ -1,0 +1,47 @@
+{
+  "status": "SOURCE SYNCHRONIZATION AND STATIC PUSH AUTHORIZED; PAGES BLOCKED BY ACCOUNT PLAN",
+  "development_pytest": {
+    "passed": 174,
+    "failed": 0,
+    "skipped": 0
+  },
+  "sanitized_source_pytest": {
+    "passed": 167,
+    "failed": 0,
+    "skipped": 7,
+    "skip_scope": "original development Git commits, unbundled VisA data/masks, and private local browser screenshots"
+  },
+  "visual_browser_cases": 7,
+  "horizontal_overflow": false,
+  "pdf": {
+    "canonical": "reports/executive-summary-one-page.pdf",
+    "pages": 1,
+    "paper": "A4",
+    "genuine_figures": 3,
+    "visual_inspection": "passed",
+    "website_url": "",
+    "undeployed_notice": true
+  },
+  "development_protected_files_sha256_unchanged": 2529,
+  "reviewed_source_frozen_files_byte_identical": 178,
+  "pages_api": {
+    "create_status": 422,
+    "message": "Your current plan does not support GitHub Pages for this repository.",
+    "get_status": 404,
+    "assigned_url": null
+  },
+  "anonymous_http": {
+    "english": 404,
+    "traditional_chinese": 404,
+    "pdf_download": 404,
+    "private_source_api": 404
+  },
+  "repository_private": true,
+  "D5": "ACCEPTED BY PROJECT OWNER - 2026-10-11",
+  "overall_portfolio_acceptance": "separate, pending",
+  "weights_or_dataset_included": false,
+  "private_correspondence_included": false,
+  "source_licence_changed": false,
+  "strict_release_gate": "correctly rejected missing website_url",
+  "emails_sent": false
+}

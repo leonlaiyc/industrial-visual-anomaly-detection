@@ -73,7 +73,7 @@ pcb3_read:
   - "<strong>Disclosure:</strong> after PCB3 test scoring, one input check in the analysis program was repaired ({{ f.repair.fix_sha }}); no score, threshold or decision changed, and a separate verification script agrees on {{ f.repair.checks_ok }}/{{ f.repair.checks_total }} checks (repository: {{ f.repair.doc }})."
 
 pcb4_h: "Separate exploratory study: PCB4"
-pcb4: "YOLOv8s and YOLO11s were actually trained on a separate PCB4 dataset/protocol. With different supervision and annotation budgets, they achieved higher observed image-level recall in the tested supervised setting. Brightness-related acquisition confounding and weakness on unseen defect types limit interpretation; image-level recall does not establish correct localization. Full evidence: linked case study and technical package."
+pcb4: "YOLOv8s and YOLO11s were actually trained on a separate PCB4 dataset/protocol. With different supervision and annotation budgets, they achieved higher observed image-level recall in the tested supervised setting. Brightness-related acquisition confounding and weakness on unseen defect types limit interpretation; image-level recall does not establish correct localization. Findings in the case study; detailed records remain in the private development repository."
 
 next_h: "Entry checks for proposed shadow validation"
 next:
@@ -86,5 +86,5 @@ eng_h: "Engineering discipline — practices by status"
 eng_note: "Frozen thresholds, recorded scores, pre-registered changes and disclosed deviations support traceability. Team practices remain proposals; no human peer review, continuous integration or line operation. The website records each practice by status."
 roi_note: "“ROI” here means the image region of interest. Production deployment needs real operational constraints and representative factory data before technical acceptance criteria can be validated. No financial return on investment or labour saving is claimed."
 footer:
-  - "Data: VisA dataset, Zou et al., ECCV 2022, CC BY 4.0. PCB1–PCB4 are benchmark board types, not manufacturing sites. Not affiliated with or endorsed by the dataset authors or any company."
+  - "Data: <a href=\"https://github.com/amazon-science/spot-diff\">VisA dataset</a>, Zou et al., ECCV 2022, <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Figures resized, registered, cropped, with overlays. PCB1–PCB4 are benchmark board types, not manufacturing sites. Not affiliated with or endorsed by the dataset authors or any company."
   - "Built with AI-assisted development; project-owner technical review pending. Project owner: Yu-Chen (Leon) Lai."

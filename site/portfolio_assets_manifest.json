@@ -1,0 +1,36 @@
+{
+  "images": [
+    {
+      "file": "workflow_caught.jpg",
+      "sha256": "50de1604dbe702209ec40d7b041214de3d3c680d21c8cadc437cd5b20f87f596",
+      "source": "site/static/img/workflow_caught.jpg",
+      "source_sha256": "50de1604dbe702209ec40d7b041214de3d3c680d21c8cadc437cd5b20f87f596",
+      "transformation": "copied existing CNN heatmap and ROI visualization",
+      "attribution": "VisA, Amazon Science; Zou et al., ECCV 2022; CC BY 4.0"
+    },
+    {
+      "file": "workflow_false_alarm.jpg",
+      "sha256": "84920cc5879cadade26ef51daf4406b629fe67a6e505805679f04dd34990f3a1",
+      "source": "site/static/img/workflow_false_alarm.jpg",
+      "source_sha256": "84920cc5879cadade26ef51daf4406b629fe67a6e505805679f04dd34990f3a1",
+      "transformation": "copied existing CNN false-alarm visualization",
+      "attribution": "VisA, Amazon Science; Zou et al., ECCV 2022; CC BY 4.0"
+    },
+    {
+      "file": "pcb1_alignment.jpg",
+      "sha256": "bfcccb4e8d43641e141864d400073b7df48e1dda80f977874b78fd46540e0277",
+      "source": "reports/inspection/registered_crops.png",
+      "source_sha256": "f082c6a0c6daa1ddc872cd894e5ac94ff8fe3633bc975be05b8960768148ee4e",
+      "transformation": "JPEG compression of existing registration contact sheet; dimensions unchanged",
+      "attribution": "VisA, Amazon Science; Zou et al., ECCV 2022; CC BY 4.0"
+    },
+    {
+      "file": "pcb4_annotations.jpg",
+      "sha256": "249b8fba438bc7acf0ea4b130db767797ac2496e5d2877c1d1574623563c3eb1",
+      "source": "exploratory/yolo_pcb4/audit/fig_annotation_check.jpg",
+      "source_sha256": "249b8fba438bc7acf0ea4b130db767797ac2496e5d2877c1d1574623563c3eb1",
+      "transformation": "copied existing ground-truth annotation audit; not predictions",
+      "attribution": "VisA, Amazon Science; Zou et al., ECCV 2022; CC BY 4.0"
+    }
+  ]
+}

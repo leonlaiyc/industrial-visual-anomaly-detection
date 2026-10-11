@@ -1,22 +1,28 @@
-# Industrial Visual Anomaly Detection: PCB image review support
+# Exploring PCB Anomaly Detection with CNN and YOLO
 
-An independent proof of concept on public benchmark data. The prototype scores each printed-circuit-board
-(PCB) image, recommends **REVIEW / NO REVIEW** at a threshold fixed before testing, and draws a heat map of
-where the board looks abnormal. A person makes every disposition. The model is fitted on normal images only,
-deliberately: for this normal-only pipeline, VisA defect labels and masks are reserved for evaluation and
-illustration. The separate PCB4 supervised study uses defect annotations for YOLO training.
+A hands-on Computer Vision PoC by Yu-Chen (Leon) Lai. I wanted to understand visual anomaly detection by
+building a small experiment with the public VisA PCB dataset: prepare the data, inspect failure cases,
+try normal-only CNN modelling, improve and stress-test preprocessing, and train supervised YOLO models.
+The website is the concise showcase; this repository retains the technical source and evidence.
 
-**Bottom line.** On a board type held back for an independent test (VisA PCB2), the refined version (v2)
-cut false alarms on normal boards from 13% to 3% and kept defect recall at 80%. Recall did not improve and
-stays below the proposed 90% target, and false alarms rise sharply on darker images.
-Although v2 improved false-positive performance, it did not meet the proposed detection-sensitivity and robustness requirements. It is not ready for production-affecting deployment. The proposed next step is bounded, non-disruptive
-shadow-mode validation, subject to site requirements, authorization and appropriate entry checks;
-factory access has not been obtained.
+- **Round A / PCB1:** inspect orientation and registration, extract pretrained WideResNet-50-2 features,
+  fit per-position Gaussians and use Mahalanobis distances for anomaly scores and heatmaps.
+- **Round B / PCB2 and PCB3:** ROI scoring on PCB2 reduced test-normal false alarms from 13% to 3% while
+  recall stayed at 80%. A separate PCB3 illumination-correction experiment improved some conditions but
+  worsened false alarms under blur; the candidate was not adopted.
+- **Round C / PCB4:** convert defect masks to boxes and actually train YOLOv8s / YOLO11s using one generic
+  `defect` class. Observed recall was higher in this supervised setting, with brightness confounding,
+  unseen-defect generalization and localization limitations. This is exploratory, not a controlled claim
+  of architecture superiority. The PCB datasets and supervision regimes differ.
 
-Executive summary (English, one A4 page): [`reports/executive_summary_one_page.pdf`](reports/executive_summary_one_page.pdf).
-Extended brief with the PCB3 experiment table (English, two A4 pages):
-[`reports/executive_summary_extended.pdf`](reports/executive_summary_extended.pdf).
-Bilingual case-study website (English / 繁體中文): built from `site/` (see *Website and PDF* below).
+Project sheet (English, one self-contained A4 page): [executive-summary-one-page.pdf](reports/executive-summary-one-page.pdf).
+Bilingual project showcase (English / 繁體中文): built from `site/` (see *Website and PDF* below).
+Retired briefs are labelled historical evidence in `docs/history/`; they are not website downloads.
+
+AI-assisted development; public benchmark images only. No validation on real manufacturing-line images
+and **no production-readiness claim**. Source remains private and requires repository permission.
+D5 was accepted by the project owner on October 11, 2026; overall acceptance of the final outward-facing
+portfolio is separate. The original protocols, scores, thresholds, splits, repair and deviation records remain.
 
 ## Results
 
@@ -210,15 +216,18 @@ scoring: [`docs/handoff.md`](docs/handoff.md).
 ## Website and PDF
 
 ```bash
-python site/make_assets.py      # web images from recorded outputs (needs data + fitted PCB2 v2 / PCB3 models)
-python site/build.py            # -> site/dist/ (English at /, Traditional Chinese at /zh-tw/, two print pages)
+python site/build.py            # -> site/dist/ (English at /, Traditional Chinese at /zh-tw/)
 python -m http.server 8765 --directory site/dist
-python site/render.py pdf       # -> reports/executive_summary_one_page.pdf (default) and _extended.pdf (+ copies in site/dist/)
-python -m ivad check            # run after site/build.py: page counts, and every number in both PDFs traced to recorded outputs
+python site/render.py pdf       # -> reports/executive-summary-one-page.pdf (+ identical site/dist/ copy)
+python -m ivad check            # page size/count, recorded-score consistency and numeric provenance
 ```
 
 `site/facts.py` is the only source of numbers for both languages and the PDF; the build fails if a content
-file contains a literal number or the two languages define different keys.
+file contains a literal metric or the two languages define different keys. Existing genuine figures are
+reused; building this portfolio does not train or rescore models. Historical figure generation is separate.
+`main` contains sanitized source and technical evidence; `gh-pages` contains only built static files.
+`site/release_links.json` records actual deployed URLs only. An empty website URL means hosting is pending,
+and the PDF says so. Private source links are explicitly labelled as requiring permission.
 
 ## Limitations
 
@@ -338,4 +347,4 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
 
 D5 is **ACCEPTED BY PROJECT OWNER**, dated 2026-10-11 (Asia/Taipei), by Leon's explicit conversational confirmation. The non-score-affecting post-evaluation repair does not invalidate PCB3's primary evaluation; complete chronology and deviation disclosure remain in [the repair record](docs/pcb3_post_evaluation_repair.md). Overall project-owner review remains PENDING and external release is not authorized.
 
-Canonical website/source/evidence URLs are configured once in `site/release_links.json`. They are currently empty because public endpoints have not been authorized or verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md) and [licensing review](docs/licensing_review.md). Re-render both PDFs after changing URLs; local previews carry explicitly labelled local links. No model or experiment rerun is required.
+Canonical website/source/evidence URLs are configured once in `site/release_links.json`. They are currently empty because public endpoints have not been authorized or verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md), [licensing review](docs/licensing_review.md), and [canonical artifact reconciliation](docs/artifact_reconciliation.md). Recipient PDFs state that the website link is pending first deployment and contain no localhost links. Re-render both PDFs only after authorized URL changes, then verify and regenerate the release manifest. No model or experiment rerun is required.

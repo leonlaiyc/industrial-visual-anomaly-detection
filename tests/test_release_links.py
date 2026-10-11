@@ -44,3 +44,36 @@ def test_release_propagates_inaccessible_target(tmp_path, monkeypatch):
     p = settings(tmp_path, website_url="https://case.org/", technical_repository_url="https://github.com/owner/repo")
     with pytest.raises(OSError, match="404"):
         release_links.load(p, release=True)
+
+
+@pytest.mark.parametrize("filename,pages", [("executive-summary-one-page.pdf", 1)])
+def test_canonical_recipient_preview_has_pending_notice_and_only_public_uris(filename, pages):
+    import render
+    root = Path(__file__).resolve().parents[1]
+    render.verify_pdf(root / "reports" / filename, pages, release_links.load())
+
+
+@pytest.mark.parametrize("uri", ["http://127.0.0.1:8765/", "http://localhost/", "file:///private/preview.html", "https://192.168.1.1/"])
+def test_pdf_renderer_rejects_local_links_even_in_preview(tmp_path, monkeypatch, uri):
+    import render
+    import pypdf
+    class Annotation:
+        def get_object(self):
+            return {'/A': {'/URI': uri}}
+    class Page(dict):
+        mediabox = type('Box', (), {'width': 595, 'height': 842})()
+        def extract_text(self):
+            return 'Website not yet deployed.'
+    reader = type('Reader', (), {'pages': [Page({'/Annots': [Annotation()]})]})()
+    monkeypatch.setattr(pypdf, 'PdfReader', lambda path: reader)
+    with pytest.raises(ValueError, match='non-public URI'):
+        render.verify_pdf(tmp_path / 'preview.pdf', 1, {**release_links.load(), 'technical_repository_url': ''})
+
+
+def test_private_source_mode_never_claims_anonymous_access(tmp_path, monkeypatch):
+    checked = []
+    monkeypatch.setattr(release_links, 'check_access', lambda u: checked.append(u) or {'status': 200})
+    p = settings(tmp_path, website_url='https://case.org/', technical_repository_url='https://github.com/owner/repo', source_mode='private-repository')
+    c = release_links.load(p, release=True)
+    assert not c['preview'] and c['source_anonymous'] is False
+    assert checked == ['https://case.org/']
