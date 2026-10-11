@@ -41,7 +41,9 @@ def acceptance_status(m: dict, rb: dict | None, pr: str, acc: dict) -> dict[str,
         "fpr_above_ceiling": max(op["fpr"]["value"], hold) > ng["fpr_ceiling"],
     }
     if rb is not None:
-        pert = rb["perturbations"].values()
+        # P5 is defined over the original perturbations; conditions added later for a specific
+        # experiment carry `acceptance: false` in their spec and are reported, not scored.
+        pert = [v for v in rb["perturbations"].values() if v.get("spec", {}).get("acceptance", True)]
         drop = max(-v["paired"]["delta_recall"]["value"] for v in pert)
         rise = max(v["paired"]["delta_fpr"]["value"] for v in pert)
         st["robustness"] = drop <= p["robustness_recall_drop_max"] and rise <= p["robustness_fpr_rise_max"]

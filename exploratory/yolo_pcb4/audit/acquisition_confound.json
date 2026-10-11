@@ -1,0 +1,157 @@
+{
+ "note": "defect-blind global features; AUROC defect (n=100) vs TEST-N normal (n=255); 0.5 = no separation",
+ "features": {
+  "grey_mean": {
+   "auroc": 0.20823529411764705,
+   "separation_|auroc-0.5|": 0.2917647058823529,
+   "defect_median": 46.78785705566406,
+   "normal_median": 51.5008659362793
+  },
+  "grey_std": {
+   "auroc": 0.2352549019607843,
+   "separation_|auroc-0.5|": 0.2647450980392157,
+   "defect_median": 44.585960388183594,
+   "normal_median": 46.41658401489258
+  },
+  "board_area_frac": {
+   "auroc": 0.414078431372549,
+   "separation_|auroc-0.5|": 0.08592156862745098,
+   "defect_median": 0.2499572485143859,
+   "normal_median": 0.26023898080458296
+  },
+  "board_cx": {
+   "auroc": 0.3055686274509804,
+   "separation_|auroc-0.5|": 0.1944313725490196,
+   "defect_median": 0.5260125577332048,
+   "normal_median": 0.537467849857916
+  },
+  "board_cy": {
+   "auroc": 0.49658823529411766,
+   "separation_|auroc-0.5|": 0.0034117647058823364,
+   "defect_median": 0.46325120357295224,
+   "normal_median": 0.4640703594262633
+  },
+  "board_bbox_aspect": {
+   "auroc": 0.476,
+   "separation_|auroc-0.5|": 0.02400000000000002,
+   "defect_median": 1.344949004371054,
+   "normal_median": 1.3450704225352113
+  },
+  "board_axis_angle_deg": {
+   "auroc": 0.5245882352941177,
+   "separation_|auroc-0.5|": 0.02458823529411769,
+   "defect_median": 21.33002547888543,
+   "normal_median": 16.263771357166036
+  }
+ },
+ "max_separation": 0.2917647058823529,
+ "score_vs_grey_mean_spearman": {
+  "m": {
+   "test_n": 0.18538964798517835,
+   "defects": -0.06846684668466846
+  },
+  "m_reg": {
+   "test_n": 0.22856212366836495,
+   "defects": 0.06672667266726671
+  },
+  "yolov8s": {
+   "test_n_mean_of_folds": -0.6946742404027106,
+   "test_n_per_fold": [
+    -0.38902547930466863,
+    -0.6737595525818467,
+    -0.6286613850364619,
+    -0.6357913850358355,
+    -0.45565305880911344
+   ],
+   "defects_out_of_fold": -0.298013801380138
+  },
+  "yolo11s": {
+   "test_n_mean_of_folds": -0.7419996150179745,
+   "test_n_per_fold": [
+    -0.47946669160507854,
+    -0.598520252039251,
+    -0.6616880211329124,
+    -0.666546754281054,
+    -0.6968625213491524
+   ],
+   "defects_out_of_fold": -0.42537053705370537
+  }
+ },
+ "score_vs_grey_mean_note": "negative rho on TEST-N = darker normal images receive higher scores, i.e. the model responds to the acquisition cue where no defect exists",
+ "brightness_matched_fpr_sensitivity": {
+  "normals_per_bin": [
+   34,
+   34,
+   52,
+   64,
+   71
+  ],
+  "defects_per_bin": [
+   37,
+   37,
+   19,
+   7,
+   0
+  ],
+  "darkest_third_n": 85,
+  "methods": {
+   "m": {
+    "fpr_all": 0.043137254901960784,
+    "fpr_brightness_matched": 0.021471295248868778,
+    "fpr_darkest_third": 0.023529411764705882,
+    "matched_calibration": {
+     "threshold": 59.895573,
+     "recall": 0.63,
+     "fpr_brightness_matched": 0.04432975113122172,
+     "fpr_all": 0.058823529411764705
+    }
+   },
+   "m_reg": {
+    "fpr_all": 0.07450980392156863,
+    "fpr_brightness_matched": 0.059587104072398187,
+    "fpr_darkest_third": 0.058823529411764705,
+    "matched_calibration": {
+     "threshold": 60.355171,
+     "recall": 0.45,
+     "fpr_brightness_matched": 0.057399604072398185,
+     "fpr_all": 0.054901960784313725
+    }
+   },
+   "yolov8s": {
+    "fpr_all": 0.039999999999999994,
+    "fpr_brightness_matched": 0.08972030542986427,
+    "fpr_darkest_third": 0.09647058823529411,
+    "matched_calibration": {
+     "thresholds": [
+      0.166224,
+      0.147774,
+      0.119337,
+      0.171194,
+      0.035145
+     ],
+     "recall": 0.96,
+     "fpr_brightness_matched": 0.029974406108597286,
+     "fpr_all": 0.01411764705882353
+    }
+   },
+   "yolo11s": {
+    "fpr_all": 0.030588235294117645,
+    "fpr_brightness_matched": 0.06888928167420816,
+    "fpr_darkest_third": 0.0776470588235294,
+    "matched_calibration": {
+     "thresholds": [
+      0.180215,
+      0.267765,
+      0.260476,
+      0.150196,
+      0.223999
+     ],
+     "recall": 0.91,
+     "fpr_brightness_matched": 0.021487273755656112,
+     "fpr_all": 0.010196078431372551
+    }
+   }
+  },
+  "matched_calibration_rule": "CALIB normals weighted by the defect/normal grey-mean bin ratio; threshold = weighted 95th percentile; effective CALIB sample is small (brightest bin weight 0), so noisy"
+ }
+}

@@ -1,0 +1,97 @@
+{
+ "note": "Commit timestamps (committer date, +08:00) of the development repository. The commit hashes refer to the private development history; the public release is a sanitized export and does not contain these commits. `verification` distinguishes (A) programmatic verification, (B) AI-assisted technical review and (C) the human project-owner review; (A) and (B) are not human sign-offs, and no independent human third-party audit has occurred. `reviews` records review verdicts, which are not commits.",
+ "milestones": [
+  {
+   "key": "first_commit",
+   "commit": "1c5b1213dd8db260279e0c2e9dcec543339e9462",
+   "committed_at": "2026-10-09T00:03:55+08:00",
+   "subject": "Initial PoC: requirements baseline, data prep, frozen split, registration, Mahalanobis model, tests"
+  },
+  {
+   "key": "pcb1_eval",
+   "commit": "5a66747efde8d47c3a4edd5826da7c57c7344304",
+   "committed_at": "2026-10-09T00:21:57+08:00",
+   "subject": "Final evaluation, robustness, diagnostics, reports, PDF and docs (WIP)"
+  },
+  {
+   "key": "v2_prereg",
+   "commit": "ad8a386694108d7a15863ed125fec7111e5093b2",
+   "committed_at": "2026-10-09T11:06:27+08:00",
+   "subject": "Pre-register v2 hypothesis and PCB2 protocol (before any PCB2 data access)"
+  },
+  {
+   "key": "pcb2_freeze",
+   "commit": "862c28f4d2c6b56f4ff795a2b6f769c01d4dbe6c",
+   "committed_at": "2026-10-09T11:34:33+08:00",
+   "subject": "FREEZE PCB2 v1 and v2 before any test/holdout scoring"
+  },
+  {
+   "key": "pcb2_eval",
+   "commit": "2b775be42eae7fd0554ebeb3dcc5222644f72ca5",
+   "committed_at": "2026-10-09T11:37:22+08:00",
+   "subject": "PCB2 confirmatory evaluation (single run), v1 and v2 — raw outputs"
+  },
+  {
+   "key": "pcb3_prereg",
+   "commit": "d7f5e813619fa2da219398f60f4938c70b1d7e42",
+   "committed_at": "2026-10-09T14:01:57+08:00",
+   "subject": "Pre-register PCB3 illumination-correction experiment (before any PCB3 data access)"
+  },
+  {
+   "key": "pcb3_b2",
+   "commit": "d8b5f1e802672b58d4b250cf418cb4a9da3441f8",
+   "committed_at": "2026-10-09T16:56:24+08:00",
+   "subject": "PCB3 Addendum B2 (before calibration): chronology disclosure, FIT-only diagnostics, illum-compare validation"
+  },
+  {
+   "key": "pcb3_freeze",
+   "commit": "eb4e7a92c417e2c76750e8acb530e3bddbd04b2d",
+   "committed_at": "2026-10-09T16:58:10+08:00",
+   "subject": "FREEZE PCB3 baseline and candidate before any test/holdout scoring"
+  },
+  {
+   "key": "pcb3_eval",
+   "commit": "115c54be2e7422f4b1e5bba4ab9d12cb4a00b880",
+   "committed_at": "2026-10-09T17:11:40+08:00",
+   "subject": "PCB3 single planned evaluation (baseline, candidate) — raw outputs; paired analysis attempt 1 refused"
+  }
+ ],
+ "reviews": [
+  {
+   "key": "ai_cross_check",
+   "label": "AI-assisted technical cross-check and independent numerical recomputation",
+   "reviewer_type": "AI-assisted (not a human reviewer)",
+   "date": "2026-10-09",
+   "reviewed": "branch review/pcb3-final-20261009 at 3ea038ac9c138e1b0ae7c5b21bfa5b3ba5ef97e0",
+   "scope": "source code, raw PCB3 score files, threshold files, the analysis-repair diff, website content and visual-QA screenshots; PCB3 thresholds, confusion matrices, recall, FPR, holdout false alarms, AUROC, perturbation false alarms and the G1 difference-in-differences (with a separate paired bootstrap) recomputed from the raw CSV files",
+   "verdict": "AI-assisted cross-check passed, subject to delivery refinements; recomputed results agree with the project reports; post-evaluation repair 7dbd302 judged non-score-affecting, disclosure must remain. Not a human sign-off; project-owner acceptance pending; public release not authorized.",
+   "limitations": [
+    "Raw numerical metrics were recomputed from the recorded score files; the models were not re-run.",
+    "The AI-assisted review did not execute the complete local PyTorch test suite.",
+    "The original private development history could not be independently reproduced from the sanitized GitHub snapshot alone.",
+    "Some verification checks require the locally stored VisA dataset or the private development history.",
+    "Project-owner technical acceptance remains pending."
+   ]
+  },
+  {
+   "key": "ai_handoff_review",
+   "label": "AI-assisted review of the owner-handoff package",
+   "reviewer_type": "AI-assisted (not a human reviewer)",
+   "date_recorded": "2026-10-10",
+   "date_note": "date the review decision was recorded in this repository; the review's own completion time was not recorded",
+   "reviewed": "branch review/owner-handoff-20261009 at 17c690e55109a0eb6d5e5d97ef1cf30499a515ec",
+   "scope": "repository visibility, main unchanged, model scoring code and recorded PCB3 scores unchanged, executive PDF page counts, exclusion of audit material, nature of changes since the prior snapshot",
+   "verdict": "Passed with one mandatory correction: review-provenance wording that could imply an independent human engineering audit (corrected 2026-10-10, reporting text only). Project-owner acceptance pending; external publication not authorized."
+  }
+ ],
+ "verification": {
+  "A_programmatic": "`python -m ivad check` recomputes every PCB1/PCB2 metric from the per-image score files and traces every number in both executive PDFs to a recorded output; `python verification/recompute_pcb3.py` (imports no project code) recomputes every PCB3 number from the raw score files: 90/90 checks agree (reports/pcb3_verification/recompute.md).",
+  "B_ai_assisted_review": "Implementation and initial verification artifacts were produced by Claude Code (AI coding assistant). Additional AI-assisted reviews examined code and documentation, and one AI-assisted reviewer independently recomputed the principal PCB3 metrics and the paired robustness statistic from the raw score files on the private GitHub review branch (see `reviews`).",
+  "C_human_owner_review": {
+   "status": "pending",
+   "date": null,
+   "reviewer": "Yu-Chen (Leon) Lai (project owner)"
+  },
+  "independent_human_audit": "none has occurred"
+ }
+}

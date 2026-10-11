@@ -1,0 +1,65 @@
+{
+  "status": "PRE-PUBLICATION PACKAGE READY — OWNER ACCEPTANCE AND RELEASE AUTHORIZATION PENDING",
+  "D5": "ACCEPTED BY PROJECT OWNER, 2026-10-11 Asia/Taipei, explicit confirmation in this conversation",
+  "overall_owner_review": "PENDING",
+  "deployment_github_changes_email_delivery": "NOT AUTHORIZED",
+  "protected_files_unchanged": 2562,
+  "candidate_files": 321,
+  "candidate_changed_files": 28,
+  "pytest": {
+    "tests": 174,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "pcb3_checks": 90,
+  "pcb4_metric_checks": 50,
+  "pcb4_leakage_checks": 70,
+  "visual_pages_passed": 8,
+  "PDFs": [
+    {
+      "path": "reports/executive_summary_extended.pdf",
+      "pages": 2,
+      "A4": true,
+      "URI_annotations": [
+        "http://127.0.0.1:8765/"
+      ],
+      "preview_only": true
+    },
+    {
+      "path": "reports/executive_summary_one_page.pdf",
+      "pages": 1,
+      "A4": true,
+      "URI_annotations": [
+        "http://127.0.0.1:8765/"
+      ],
+      "preview_only": true
+    },
+    {
+      "path": "site/dist/executive-summary-extended.pdf",
+      "pages": 2,
+      "A4": true,
+      "URI_annotations": [
+        "http://127.0.0.1:8765/"
+      ],
+      "preview_only": true
+    },
+    {
+      "path": "site/dist/executive-summary-one-page.pdf",
+      "pages": 1,
+      "A4": true,
+      "URI_annotations": [
+        "http://127.0.0.1:8765/"
+      ],
+      "preview_only": true
+    }
+  ],
+  "images_decoded": 47,
+  "privacy_issues": [],
+  "public_URL_accessibility": "NOT RUN: no actual public endpoints configured; strict release build correctly fails missing URLs",
+  "GPU_training_or_rescoring": "NOT RUN; no score-affecting work authorized or needed",
+  "zip_sha256": "813866494ee85b5b750eb033d9faa73bbb0d8c121cdcdd0737de3938f72f017e",
+  "manifest_sha256": "8fb8d7044b9c13e11f81c753fda3403c637dd3f6c3e2b1d5f9551fb79fcac692",
+  "evidence_zip_sha256": "e2425d773e5b12925c0b9293348ee4438b0cf55c7055a90764e73cf392e230e3",
+  "evidence_manifest_sha256": "47c7a4a643c8847caf333489f7863c4413b0f51195680550f872f428d0b6eef3"
+}

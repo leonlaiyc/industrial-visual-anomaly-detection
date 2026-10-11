@@ -1,0 +1,59 @@
+diff --git a/src/ivad/illum.py b/src/ivad/illum.py
+index 70fb265..82d60b5 100644
+--- a/src/ivad/illum.py
++++ b/src/ivad/illum.py
+@@ -136,8 +136,9 @@ def defect_descriptors(cfg: dict[str, Any], images: list[str]) -> dict[str, np.n
+     area, contrast = [], []
+     for rel in images:
+         a = anno.get(rel)
+-        if a is None or a.get("label") != "anomaly" or not a.get("mask"):
+-            raise ValueError(f"invalid mask metadata for {rel}: no anomaly row with a mask path in {anno_path.name}")
++        # VisA image_anno.csv stores the defect TYPE in `label` (bent, melt, ...) and "normal" for good boards.
++        if a is None or a.get("label") in (None, "", "normal") or not a.get("mask"):
++            raise ValueError(f"invalid mask metadata for {rel}: no defect row with a mask path in {anno_path.name}")
+         if not (root / a["mask"]).is_file():
+             raise ValueError(f"invalid mask metadata for {rel}: mask file {a['mask']} not found")
+         mk = np.asarray(Image.open(root / a["mask"])) > 0
+diff --git a/tests/test_illum_e2e.py b/tests/test_illum_e2e.py
+index 06784be..f5c00d9 100644
+--- a/tests/test_illum_e2e.py
++++ b/tests/test_illum_e2e.py
+@@ -59,7 +59,8 @@ def _rows(root):
+     for i in range(N_TA):
+         rel, mrel = _anomaly(i, root)
+         rows.append({"image": rel, "official_split": "test", "label": "anomaly", "role": "test", "sha256": f"a{i}"})
+-        anno.append({"image": rel, "label": "anomaly", "mask": mrel})
++        # VisA image_anno.csv: `label` is the defect TYPE for anomalies, "normal" otherwise
++        anno.append({"image": rel, "label": ("bent", "melt", "scratch", "missing")[i % 4], "mask": mrel})
+     k = 0
+     for role, n, split in (("test", N_TN, "test"), ("fit", N_FIT, "train"), ("calib", N_CALIB, "train"),
+                            ("holdout", N_HOLD, "train")):
+@@ -380,7 +381,18 @@ def test_refuses_invalid_roi_metadata(world, damage):
+         illum.illum_compare(cb, cc)
+ 
+ 
+-@pytest.mark.parametrize("damage", ["empty_mask", "missing_mask_path", "missing_mask_file", "size_mismatch"])
++def test_real_visa_annotation_format():
++    """Regression: the real PCB3 image_anno.csv uses defect types as labels (attempt-1 refusal)."""
++    anno = REPO_ROOT / "data" / "visa" / "pcb3" / "image_anno.csv"
++    if not anno.exists():
++        pytest.skip("VisA PCB3 not extracted")
++    rows = list(csv.DictReader(open(anno, encoding="utf-8")))
++    an = [r for r in rows if "/Anomaly/" in r["image"]]
++    assert an and all(r["label"] not in ("", "normal", "anomaly") and r["mask"] for r in an)
++
++
++@pytest.mark.parametrize("damage", ["empty_mask", "missing_mask_path", "missing_mask_file", "size_mismatch",
++                                    "labelled_normal"])
+ def test_refuses_invalid_gt_mask_metadata(world, damage):
+     root, (cb, cc) = world
+     vis = root / "data" / "visa"
+@@ -394,6 +406,8 @@ def test_refuses_invalid_gt_mask_metadata(world, damage):
+         (vis / first).unlink()
+     elif damage == "size_mismatch":
+         Image.new("L", (32, 24), 255).save(vis / first)
++    elif damage == "labelled_normal":
++        _rewrite(anno, lambda r: [{**r[0], "label": "normal"}] + r[1:])
+     with pytest.raises(ValueError, match="invalid mask metadata"):
+         illum.illum_compare(cb, cc)
+ 

@@ -1,0 +1,78 @@
+{
+  "status": "Supplementary visualization produced after original evaluation",
+  "date": "2026-10-10",
+  "decision": "score > original frozen threshold",
+  "predicted_boxes": "not drawn; no saved normal-image box evidence",
+  "selection": "Two illustrative unique images per method, not a representative FPR sample",
+  "attribution": "VisA / Amazon Science / Zou et al., ECCV 2022 / CC BY 4.0; resized and captioned",
+  "figure": "fig_false_alarms_supplement.jpg",
+  "figure_sha256": "83dbea238d87e6f6dc4dbb5701bfe4bfde74ada1c5859d4fab7e67d39c26e275",
+  "examples": [
+    {
+      "model": "yolov8s",
+      "fold": 4,
+      "image": "pcb4/Data/Images/Normal/0934.JPG",
+      "score": 0.705141,
+      "threshold": 0.069471,
+      "score_csv": "exploratory/yolo_pcb4/results/scores_yolov8s_cv_fold4.csv",
+      "selection": "highest score",
+      "image_sha256": "b969238861ee408af6b84ceb959f6c0646ec3ac701ebe3a9865f960d1b231b41",
+      "mean_gray_0_255": 39.74
+    },
+    {
+      "model": "yolov8s",
+      "fold": 3,
+      "image": "pcb4/Data/Images/Normal/0531.JPG",
+      "score": 0.043213,
+      "threshold": 0.042852,
+      "score_csv": "exploratory/yolo_pcb4/results/scores_yolov8s_cv_fold3.csv",
+      "selection": "closest above threshold",
+      "image_sha256": "ae1aec238e961cd3f844d6a9639f3ed4eb95602f785a4c67df6eb6c57d72b769",
+      "mean_gray_0_255": 50.93
+    },
+    {
+      "model": "yolo11s",
+      "fold": 3,
+      "image": "pcb4/Data/Images/Normal/0990.JPG",
+      "score": 0.616593,
+      "threshold": 0.23089,
+      "score_csv": "exploratory/yolo_pcb4/results/scores_yolo11s_cv_fold3.csv",
+      "selection": "highest score",
+      "image_sha256": "6645d30d7063683f04832d512ee758589fc65becfc650cc24ebb8cc26cbf9695",
+      "mean_gray_0_255": 47.27
+    },
+    {
+      "model": "yolo11s",
+      "fold": 5,
+      "image": "pcb4/Data/Images/Normal/0878.JPG",
+      "score": 0.09997,
+      "threshold": 0.095528,
+      "score_csv": "exploratory/yolo_pcb4/results/scores_yolo11s_cv_fold5.csv",
+      "selection": "closest above threshold",
+      "image_sha256": "d8c536c0177127e229b260b722d605668543f0801cf049c41912b798ec7f2fc6",
+      "mean_gray_0_255": 41.2
+    },
+    {
+      "model": "m",
+      "fold": null,
+      "image": "pcb4/Data/Images/Normal/0304.JPG",
+      "score": 96.408722,
+      "threshold": 61.740299,
+      "score_csv": "exploratory/yolo_pcb4/results/scores_m.csv",
+      "selection": "highest score",
+      "image_sha256": "b2765a83f64292f18e5a54d8d31f93c4767d27807abe061e12f8340c17d524f7",
+      "mean_gray_0_255": 61.18
+    },
+    {
+      "model": "m",
+      "fold": null,
+      "image": "pcb4/Data/Images/Normal/0334.JPG",
+      "score": 62.425774,
+      "threshold": 61.740299,
+      "score_csv": "exploratory/yolo_pcb4/results/scores_m.csv",
+      "selection": "closest above threshold",
+      "image_sha256": "701f5da6838b081df7b5c833d59153858ee5d153467c2562f035a4cd99eb1f8f",
+      "mean_gray_0_255": 66.06
+    }
+  ]
+}

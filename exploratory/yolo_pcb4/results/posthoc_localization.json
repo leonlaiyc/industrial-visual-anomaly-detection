@@ -1,0 +1,102 @@
+{
+ "note": "post hoc; not a pre-registered endpoint",
+ "tolerance_px": 16,
+ "yolov8s": {
+  "n_flagged_defects": 98,
+  "top_box_on_defect": 92,
+  "any_flagging_box_on_defect": 94,
+  "off_defect": [
+   {
+    "image": "pcb4/Data/Images/Anomaly/099.JPG",
+    "fold": 1,
+    "top_conf": 0.6879169940948486,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": false
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/023.JPG",
+    "fold": 2,
+    "top_conf": 0.17532852292060852,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": false
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/010.JPG",
+    "fold": 2,
+    "top_conf": 0.7943322658538818,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": true
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/041.JPG",
+    "fold": 4,
+    "top_conf": 0.24725833535194397,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": false
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/076.JPG",
+    "fold": 4,
+    "top_conf": 0.39980706572532654,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": false
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/088.JPG",
+    "fold": 5,
+    "top_conf": 0.5669079422950745,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": true
+   }
+  ]
+ },
+ "yolo11s": {
+  "n_flagged_defects": 95,
+  "top_box_on_defect": 89,
+  "any_flagging_box_on_defect": 93,
+  "off_defect": [
+   {
+    "image": "pcb4/Data/Images/Anomaly/099.JPG",
+    "fold": 1,
+    "top_conf": 0.45444971323013306,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": false
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/067.JPG",
+    "fold": 2,
+    "top_conf": 0.5402591824531555,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": true
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/010.JPG",
+    "fold": 2,
+    "top_conf": 0.885253369808197,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": true
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/084.JPG",
+    "fold": 3,
+    "top_conf": 0.7096304893493652,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": true
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/076.JPG",
+    "fold": 4,
+    "top_conf": 0.06179656460881233,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": false
+   },
+   {
+    "image": "pcb4/Data/Images/Anomaly/038.JPG",
+    "fold": 5,
+    "top_conf": 0.4983535706996918,
+    "top_box_on_defect": false,
+    "any_flagging_box_on_defect": true
+   }
+  ]
+ }
+}

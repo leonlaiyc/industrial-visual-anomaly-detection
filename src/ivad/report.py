@@ -236,7 +236,7 @@ def peak_diagnostics(cfg, det, rep: Path, fz) -> dict[str, Any]:
         _, m, info = score_details(det, [root / r["image"]], keep_maps=True)
         m = decision_maps(det, m, info)
         view = det.pre.view(img)
-        fg = foreground_mask(view)  # 1/4 scale of the crop
+        fg = foreground_mask(view, **det.pre.mask_kw)  # 1/4 scale of the crop
         fg = np.asarray(Image.fromarray(fg.astype(np.uint8) * 255).resize(m[0].shape[::-1], Image.NEAREST)) > 0
         py, px = np.unravel_index(np.argmax(m[0]), m[0].shape)
         on_board += int(fg[py, px])
@@ -527,7 +527,7 @@ def roi_figure(cfg) -> dict[str, Any]:
     def one(r):
         view = det.pre.view(load_rgb(root / r["image"]))
         small = np.asarray(view.resize((w, h), Image.BILINEAR), np.float32)
-        return small, roi_mod.coverage(roi_mod.board_mask(view, det.pre.hw), roi)
+        return small, roi_mod.coverage(roi_mod.board_mask(view, det.pre.hw, det.pre.mask_kw), roi)
     res = list(pmap(cfg)(one, rows))
     cov = np.array([c for _, c in res])
     mean = sum(v for v, _ in res) / len(res)

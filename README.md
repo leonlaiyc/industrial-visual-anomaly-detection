@@ -2,14 +2,21 @@
 
 An independent proof of concept on public benchmark data. The prototype scores each printed-circuit-board
 (PCB) image, recommends **REVIEW / NO REVIEW** at a threshold fixed before testing, and draws a heat map of
-where the board looks abnormal. A person makes every disposition.
+where the board looks abnormal. A person makes every disposition. The model is fitted on normal images only,
+deliberately: for this normal-only pipeline, VisA defect labels and masks are reserved for evaluation and
+illustration. The separate PCB4 supervised study uses defect annotations for YOLO training.
 
 **Bottom line.** On a board type held back for an independent test (VisA PCB2), the refined version (v2)
 cut false alarms on normal boards from 13% to 3% and kept defect recall at 80%. Recall did not improve and
 stays below the proposed 90% target, and false alarms rise sharply on darker images.
-Although v2 improved false-positive performance, it did not meet the proposed detection-sensitivity and robustness requirements. It is therefore not recommended for a manufacturing pilot without further work.
+Although v2 improved false-positive performance, it did not meet the proposed detection-sensitivity and robustness requirements. It is not ready for production-affecting deployment. The proposed next step is bounded, non-disruptive
+shadow-mode validation, subject to site requirements, authorization and appropriate entry checks;
+factory access has not been obtained.
 
-One-page summary: [`reports/executive_summary.pdf`](reports/executive_summary.pdf).
+Executive summary (English, one A4 page): [`reports/executive_summary_one_page.pdf`](reports/executive_summary_one_page.pdf).
+Extended brief with the PCB3 experiment table (English, two A4 pages):
+[`reports/executive_summary_extended.pdf`](reports/executive_summary_extended.pdf).
+Bilingual case-study website (English / 繁體中文): built from `site/` (see *Website and PDF* below).
 
 ## Results
 
@@ -42,6 +49,63 @@ Paired PCB2 comparison (v2 − v1, same images, each at its own frozen threshold
 - **Robustness (PCB2, both variants):** a 10% darker, lower-contrast image raises false alarms on the 251
   normal images by more than 20 points at the frozen threshold.
 
+### Recall by board type — separate datasets, not a progression
+
+PCB1, PCB2 and PCB3 are different VisA board types. Each row was fitted, calibrated and evaluated on its own
+board type, so values in different board-type rows are **not** a matched comparison and do not show an
+improvement over time. Only rows on the same board type are paired comparisons (PCB2 v1 vs v2; PCB3
+baseline vs candidate).
+
+| Board type | Version / arm | Evidence | Recall, official test [95% CI] | FPR, official-test normals | FPR, holdout normals | AUROC |
+|---|---|---|---|---|---|---|
+| PCB1 | v1 (original) | development board type | 72% (72/100) [62%, 81%] | 7% (7/100) | 3.9% (6/154) | 0.938 |
+| PCB1 | v2, retrospective | post hoc, on the data that motivated v2 | 88% (88/100) [80%, 94%] | 6% (6/100) | 1.9% (3/154) | 0.974 |
+| PCB2 | v1 | confirmatory, held-back board type | 80% (80/100) [71%, 87%] | 13% (13/100) | 5.3% (8/151) | 0.927 |
+| PCB2 | v2 | confirmatory, held-back board type | 80% (80/100) [71%, 87%] | 3% (3/100) | 4.0% (6/151) | 0.979 |
+| PCB3 | v2 pipeline = baseline arm of the illumination experiment | confirmatory, new board type | 90% (90/100) [82%, 95%] | 3.0% (3/101) | 5.2% (8/155) | 0.982 |
+| PCB3 | v2 + illumination correction = candidate arm | confirmatory, new board type | 91% (91/100) [84%, 96%] | 3.0% (3/101) | 3.9% (6/155) | 0.983 |
+
+The PCB3 baseline is the unchanged v2 pipeline fitted to PCB3, not a new model version. Its 90/100 is a
+point estimate on 100 benchmark images and does not guarantee a 90% recall on a real line.
+
+### Follow-up: pre-registered lighting-correction experiment (PCB3)
+
+A third board type, never used before, tested one change: standardise each image's global brightness and
+contrast before registration. Protocol, addenda and freeze were committed before any PCB3 test image was
+scored; the evaluation ran once ([`docs/pcb3_illumination_results.md`](docs/pcb3_illumination_results.md)).
+
+Two decisions are kept separate:
+
+- **A. Pre-registered experimental outcome: "ROBUSTNESS IMPROVEMENT SUPPORTED", weakly informative.**
+  Under the same 10% darkening (G1) the corrected pipeline's false-alarm rise on 256 unseen normals was
+  −0.4 pts (9 → 8 false alarms) against +4.3 pts uncorrected (11 → 22); difference −4.7 pts, 95% CI −8.6 to
+  −0.8. The uncorrected rise was below the protocol's 5-pt informativeness line, so PCB3 barely reproduced
+  the PCB2 failure, and a global darkening is what a global correction undoes by construction. The finding
+  means only that the correction did what it was designed to do on this synthetic condition.
+- **B. Engineering adoption decision: DO NOT ADOPT the illumination candidate as the preferred pipeline.**
+  It improves global-brightness behaviour (brightening rise +15.2 → +2.7 pts) but raises false alarms under
+  a mild blur by **+14.5 pts** (9 → 46 of 256; uncorrected +0.4), which fails the original P5 robustness
+  criterion (≤ 10 pts). Non-uniform lighting was not improved. Clean results are unchanged (recall 90/100 vs
+  91/100, official-test FPR 3/101 for both, AUROC 0.982 vs 0.983).
+- **The baseline is not production-ready either.** It fails P5 under brightening (+15.2 pts), and neither
+  variant has real end-user validation, a factory pilot or a measured operational return. Against the
+  unchanged criteria both PCB3 variants are **INCONCLUSIVE**. The PCB2 result above is unchanged by this
+  experiment.
+- **Mechanism not separated:** FIT-only diagnostics show the correction also stabilises board registration
+  under darkening; the experiment cannot split registration from feature effects.
+
+**Post-evaluation analysis-code repair (disclosed).** After the PCB3 test scores had been generated and
+summary test metrics seen, the pre-registered paired-analysis command refused to run (twice, unchanged
+code) because an input check assumed VisA labels anomalies as `anomaly`; VisA stores the defect type. The
+check was corrected in `7dbd302` (one condition in `defect_descriptors`, which feeds only a descriptive
+subgroup table). No score, threshold, prediction, primary statistic or decision rule changed, nothing was
+re-scored, and an independent script that imports none of the project code reproduces every recorded
+PCB3 number from the raw score files (90/90 checks). Full record:
+[`docs/pcb3_post_evaluation_repair.md`](docs/pcb3_post_evaluation_repair.md); all post-test events:
+[`docs/illumination_experiment_deviations.md`](docs/illumination_experiment_deviations.md). An earlier,
+pre-test deviation (an addendum committed after fitting rather than before) is disclosed in protocol
+Addendum B2.
+
 ## Decision status
 
 Three different questions, answered separately:
@@ -50,7 +114,7 @@ Three different questions, answered separately:
 |---|---|
 | A. Pre-registered statistical test of v2 vs v1 (paired, PCB2) | Recall: **no meaningful effect demonstrated**. False-alarm non-inferiority holds. |
 | B. Prototype against the proposed acceptance criteria | Recall (≥ 90%) **not met**; lighting robustness **not met**; false alarms, AUROC and latency met. Rule-based verdict **INCONCLUSIVE**: no NO-GO rule fired, because recall sits exactly at the 80% floor. INCONCLUSIVE does not mean the criteria were met. |
-| C. Recommendation for manufacturing use | Not recommended for a manufacturing pilot without further work. |
+| C. Recommendation for manufacturing use | Not ready for production-affecting deployment; proposed shadow validation requires site authorization and entry checks. |
 
 The criteria and decision rules were fixed before testing and have not been changed after seeing results
 ([`docs/requirements.md`](docs/requirements.md)). They are a proposal that no manufacturing user has
@@ -64,7 +128,8 @@ confirmed.
 - **In scope:** image-level score and REVIEW flag, heat maps, empirical threshold calibration, statistics
   with confidence intervals, robustness checks, a reproducible command-line workflow, tests.
 - **Out of scope:** defect classification, pixel-accurate segmentation, automatic disposition, line or MES
-  integration, factory data, and any claim about yield, cost savings or ROI.
+  integration, factory data, and any claim about yield, cost savings or financial return on investment.
+  ("ROI" in the code means the image *region of interest*, never business return.)
 
 ## Architecture
 
@@ -105,8 +170,9 @@ was made from training images only, before any PCB2 model existed, and is disclo
   PCB2, `evaluate` refuses to run unless that state is committed.
 - **Statistics:** exact (Clopper–Pearson) intervals for recall and false-alarm rate; bootstrap for AUROC;
   paired exact McNemar tests and paired bootstrap for v1 vs v2.
-- **Consistency gates:** `ivad check` recomputes every metric from per-image scores and traces every number
-  in the executive PDF to a recorded output.
+- **Consistency gates:** `ivad check` recomputes every PCB1/PCB2 metric from per-image scores and traces every
+  number in the executive PDF to a recorded output; `python verification/recompute_pcb3.py` does the same
+  for PCB3 without importing the project code.
 
 Details: [`docs/evaluation_methodology.md`](docs/evaluation_methodology.md).
 
@@ -141,16 +207,72 @@ python -m ivad check
 re-run `calibrate` to reproduce results; it writes a new freeze. Full instructions, PCB1 and single-image
 scoring: [`docs/handoff.md`](docs/handoff.md).
 
+## Website and PDF
+
+```bash
+python site/make_assets.py      # web images from recorded outputs (needs data + fitted PCB2 v2 / PCB3 models)
+python site/build.py            # -> site/dist/ (English at /, Traditional Chinese at /zh-tw/, two print pages)
+python -m http.server 8765 --directory site/dist
+python site/render.py pdf       # -> reports/executive_summary_one_page.pdf (default) and _extended.pdf (+ copies in site/dist/)
+python -m ivad check            # run after site/build.py: page counts, and every number in both PDFs traced to recorded outputs
+```
+
+`site/facts.py` is the only source of numbers for both languages and the PDF; the build fails if a content
+file contains a literal number or the two languages define different keys.
+
 ## Limitations
 
-Two board types from one public benchmark, laboratory images, 100 defective images per board type (recall
+Three board types from one public benchmark, laboratory images, 100 defective images per board type (recall
 is uncertain by roughly ±8 points), synthetic perturbations, and a 50% defect rate that says nothing about
 a real line. Each new product, camera, background or lighting setup needs re-fitting, re-calibration and
 fresh validation.
 
+## Exploratory: YOLOv8s / YOLO11s on PCB4 (separate from the frozen results)
+
+To test the main alternative rather than describe it, off-the-shelf YOLOv8s and YOLO11s were trained on the
+fourth VisA board type (PCB4, never used before) under a protocol committed before the data was opened
+([`exploratory/yolo_pcb4/PROTOCOL.md`](exploratory/yolo_pcb4/PROTOCOL.md)): fixed default settings, five-fold
+cross-validation over the 100 defects (80 box-labelled defects per fold), the project's own threshold rule
+(P95 of 150 separate normals). Results ([`results.md`](exploratory/yolo_pcb4/results/results.md)), all
+descriptive:
+
+The detector has one class, `defect`: ground-truth segmentation components are converted to boxes. It outputs
+generic defect locations and confidence scores, not Missing/Extra/Scratch subtype predictions. Training needs
+representative box-labelled examples; expected defect variation, label availability and maintenance cost must
+be evaluated. There is no universal requirement for many examples of every subtype.
+
+- With labels for the same defect types, recall was 98% (YOLOv8s) and 95% (YOLO11s) against 60% for the
+  project's normal-only pipeline run on PCB4 without board-specific preprocessing, at similar overall
+  false-alarm rates (3.1–4.3% of test normals; the same 255 normals are scored by all five fold models).
+  This compares learning regimes with different label budgets, not architectures; YOLOv8s and YOLO11s
+  differed on only 5 of the 100 defects and cannot be ranked on this sample.
+- Post-hoc checks (added after the results were seen): the box that set the image score touched the
+  defect (mask grown by 16 px, no IoU requirement) in 92/98 (YOLOv8s) and 89/95 (YOLO11s) flagged images;
+  at IoU ≥ 0.5 with a ground-truth box, 79/98 and 74/95. Defect images are darker on average than normals,
+  and YOLO scores on defect-free images rise with darkness. At the original frozen thresholds, the observed
+  pooled FPRs were 4.0% and 3.1%. Post-hoc exploratory reweighting of normals to an artificial distribution
+  matching defect-image brightness estimated conditional FPRs of about 9.0% and 6.9% (normal-only 2.1%).
+  These estimates are not directly observed real manufacturing FPR. The previously recorded sensitivity
+  analysis with alternative brightness-matched thresholds retained 96% and 91% image-level recall; it neither
+  establishes the contribution of acquisition cues nor shows that brightness explains the entire recall
+  advantage. Image-level flagging recall is distinct from correct defect localization. See [`exploratory/yolo_pcb4/audit/`](exploratory/yolo_pcb4/audit/AUDIT.md).
+- On a defect type removed from training, YOLO11s fell to about the normal-only level (`missing`: 19/19 seen
+  vs 11/19 unseen; normal-only 10/19), on tiny samples; none of the 11 unseen-type flags had a box at
+  IoU ≥ 0.5 on the missing part.
+- Latency figures (YOLO 14–15 ms, normal-only 32 ms, with registration 135 ms) are per-pipeline
+  measurements at different input sizes and boundaries, not a speed ranking.
+- It changes no PCB1–PCB3 result, threshold or decision; PCB4 numbers are not comparable with them.
+  Deviations and the post-hoc check are logged in `exploratory/yolo_pcb4/results/deviations.md`.
+
+A [supplementary false-alarm contact sheet](exploratory/yolo_pcb4/audit/FALSE_ALARM_SUPPLEMENT.md), produced
+after the original evaluation, shows six verified TEST-N normal images at the original frozen thresholds.
+It uses saved scores only, draws no unsupported boxes and preserves the original missing-deliverable record.
+
 ## Next steps (not done)
 
-1. Lighting robustness: photometric normalisation or a brightness-range guard.
+1. Lighting robustness: a global photometric correction was tested on PCB3 (see above) and traded darkening
+   sensitivity for blur sensitivity; a per-image brightness/contrast **check** and controlled lighting are the
+   safer next candidates.
 2. Small-defect sensitivity: higher-resolution features or more training normals.
 3. Confirm targets, costs, prevalence and must-catch defect types with a real user.
 
@@ -161,19 +283,29 @@ Each needs a new freeze and an evaluation on data that did not motivate it.
 | Document | Content |
 |---|---|
 | [`docs/v2_decision_record.md`](docs/v2_decision_record.md) | why v2, how it was tested, what the results do and do not show |
+| [`docs/illumination_experiment_protocol.md`](docs/illumination_experiment_protocol.md) | PCB3 pre-registration, Addendum B1 (board-mask adaptation), Addendum B2 (chronology disclosure, FIT-only diagnostics) |
+| [`docs/pcb3_illumination_results.md`](docs/pcb3_illumination_results.md) | PCB3 results, the two decisions (rule outcome vs adoption), all conditions, interpretation |
+| [`docs/pcb3_post_evaluation_repair.md`](docs/pcb3_post_evaluation_repair.md) | incident record: analysis-code repair after PCB3 test scoring, chronology, patch, hashes |
+| [`docs/illumination_experiment_deviations.md`](docs/illumination_experiment_deviations.md) | every post-freeze event of the PCB3 experiment (the protocol itself is frozen) |
+| [`reports/pcb3_verification/recompute.md`](reports/pcb3_verification/recompute.md) | programmatic recomputation of every PCB3 number from the raw score files by a separate script |
 | [`docs/v2_experiment_protocol.md`](docs/v2_experiment_protocol.md) | pre-registered hypothesis, single change, PCB2 protocol, amendment A1 |
 | [`docs/requirements.md`](docs/requirements.md) | proposed requirements, acceptance criteria, go/no-go rules, open user questions |
 | [`docs/evaluation_methodology.md`](docs/evaluation_methodology.md) | splits, freeze, statistics |
 | [`docs/engineering_decisions.md`](docs/engineering_decisions.md) | design decisions, rejected alternatives, risks found and fixed |
 | [`docs/handoff.md`](docs/handoff.md) | setup, operation, failure modes, what a production version would need |
 | [`reports/pcb2_comparison/comparison.md`](reports/pcb2_comparison/comparison.md) | generated paired comparison |
+| [`reports/pcb3_illum_comparison/comparison.md`](reports/pcb3_illum_comparison/comparison.md) | generated PCB3 paired illumination analysis |
+| [`exploratory/yolo_pcb4/PROTOCOL.md`](exploratory/yolo_pcb4/PROTOCOL.md) | exploratory YOLOv8s/YOLO11s study on PCB4: protocol, split audit, scores, results, deviations |
 
 ## Development provenance
 
-This project was developed with AI coding assistance (Anthropic Claude Code), which wrote most of the
-implementation and documentation under the project owner's direction. Design decisions, evidence and the
-protocol history are documented in `docs/`. The project owner's technical review of the final deliverables
-is pending.
+This project was developed with AI coding assistance from Claude Code and Codex under the project
+owner's direction. Design decisions, evidence and the
+protocol history are documented in `docs/`. Verification is (A) programmatic — `ivad check` and
+`verification/recompute_pcb3.py` recompute the reported metrics from the recorded per-image scores — and
+(B) AI-assisted technical review; neither is a human sign-off, and no independent human audit has occurred
+(scope and limits: `reports/project_milestones.json`). (C) The project owner's (Yu-Chen (Leon) Lai)
+technical review of the final deliverables is pending.
 
 This repository starts from a curated snapshot. Commit identifiers cited in `docs/` refer to the original
 development history, which is kept separately because it also contains personal working notes. The
@@ -183,10 +315,14 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
 
 ## Data, weights and licensing
 
-- **Dataset:** VisA (Visual Anomaly), Amazon Science, `pcb1` and `pcb2` subsets, **CC BY 4.0**.
-  Zou et al., *SPot-the-Difference Self-Supervised Pre-training for Anomaly Detection and Segmentation*,
-  ECCV 2022, <https://github.com/amazon-science/spot-diff>. Images are not redistributed; figures in
-  `reports/` show downscaled, registered VisA images with overlays. See [`NOTICE.md`](NOTICE.md).
+- **Dataset:** VisA (Visual Anomaly), Amazon Science, `pcb1`, `pcb2` and `pcb3` subsets (`pcb4` only in the
+  exploratory study), **CC BY 4.0**
+  (<https://creativecommons.org/licenses/by/4.0/>). Zou et al., *SPot-the-Difference Self-Supervised
+  Pre-training for Anomaly Detection and Segmentation*, ECCV 2022, <https://github.com/amazon-science/spot-diff>.
+  The dataset itself is not redistributed (`ivad prepare` downloads it). The repository and website **do**
+  contain a small number of derivative images: figures in `reports/` and the website images in
+  `site/static/img/` show VisA images that were registered, cropped and resized, with heat-map, outline and
+  mask overlays added. See [`NOTICE.md`](NOTICE.md).
 - **Pretrained weights:** torchvision `Wide_ResNet50_2_Weights.IMAGENET1K_V1`, downloaded at run time,
   not redistributed. Trained on ImageNet, whose terms limit use to non-commercial research and education.
   Legal review is needed before any commercial use.
@@ -195,4 +331,11 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
 - **This project's source code:** no licence has been applied yet (all rights reserved). The proposed
   licence is MIT, covering this repository's own code and documentation only; it would not apply to the
   VisA data, the pretrained weights or third-party libraries, which keep their own terms.
-- No endorsement by the dataset authors or by any company is implied.
+- No endorsement by the dataset authors or by any company is implied. The CC BY 4.0 licence applies to the
+  VisA images and their derivatives only, not to this project's code.
+
+## Release preparation and navigation
+
+D5 is **ACCEPTED BY PROJECT OWNER**, dated 2026-10-11 (Asia/Taipei), by Leon's explicit conversational confirmation. The non-score-affecting post-evaluation repair does not invalidate PCB3's primary evaluation; complete chronology and deviation disclosure remain in [the repair record](docs/pcb3_post_evaluation_repair.md). Overall project-owner review remains PENDING and external release is not authorized.
+
+Canonical website/source/evidence URLs are configured once in `site/release_links.json`. They are currently empty because public endpoints have not been authorized or verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md) and [licensing review](docs/licensing_review.md). Re-render both PDFs after changing URLs; local previews carry explicitly labelled local links. No model or experiment rerun is required.

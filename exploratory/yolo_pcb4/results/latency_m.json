@@ -1,0 +1,9 @@
+{
+ "n_images": 50,
+ "median_ms": 31.637699999919278,
+ "p95_ms": 34.48160499929145,
+ "mean_ms": 31.57612600010907,
+ "device": "cuda:0",
+ "device_name": "NVIDIA GeForce RTX 4070 Ti",
+ "definition": "decode JPEG + register + crop + resize + normalise + CNN forward + Mahalanobis + map + max; batch 1; after warm-up"
+}

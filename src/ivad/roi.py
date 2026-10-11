@@ -49,9 +49,9 @@ def aggregation(cfg: dict[str, Any]) -> str:
     return agg
 
 
-def board_mask(view: Image.Image, size_hw: Sequence[int]) -> np.ndarray:
+def board_mask(view: Image.Image, size_hw: Sequence[int], mask_kw: dict[str, Any] | None = None) -> np.ndarray:
     """Board mask of a registered, cropped view, in the model frame (H, W) bool."""
-    m = foreground_mask(view)
+    m = foreground_mask(view, **(mask_kw or {}))
     h, w = int(size_hw[0]), int(size_hw[1])
     return np.asarray(Image.fromarray(m.astype(np.uint8) * 255).resize((w, h), Image.NEAREST)) > 0
 

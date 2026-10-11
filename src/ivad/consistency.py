@@ -8,10 +8,15 @@ C2  per run: freeze matches config/model/split and precedes evaluation; for runs
     repository's history (curated snapshot).
 C3  split manifests pass the leakage audit
 C4  paired comparison recomputed from the score CSVs; pairing checks all true
-C5  executive PDF: one page, every numeric token traces to a recorded output, headline numbers present
+C5  executive PDFs (A4, built from site/ since the PCB3 experiment): the one-page summary has exactly one
+    page and the extended brief two; in each, every numeric token traces to a recorded output and the
+    headline numbers are present
 C6  README results block equals the generated block
-C7  repository hygiene: no dataset, weights, large files or secret-like strings tracked
-C8  the pilot recommendation sentence is identical in the PDF, README, decision record and handoff
+C7  repository hygiene: no dataset, weights, large files or secret-like strings tracked (allowed images: the
+    website's resized, overlaid VisA derivatives under site/static/img/, and the exploratory study's named
+    illustrative figures in EXPLORATORY_FIGS, each < 500 kB and each listed in NOTICE.md)
+C8  current summaries distinguish production deployment from authorized shadow validation;
+    the frozen decision record and handoff retain their original recommendation
 """
 from __future__ import annotations
 
@@ -31,7 +36,13 @@ from .data import audit_split, expected_counts, read_split
 from .pipeline import check_freeze, freeze_path, read_scores
 
 # Literal numbers allowed in PDF prose that are not measurements (section numbers, board names).
-PDF_LITERALS = {"1", "2", "3", "4", "5", "6", "100", "200", "600", "150", "50", "10", "95"}
+PDF_LITERALS = {"1", "2", "3", "4", "5", "6", "7", "100", "200", "600", "150", "50", "10", "95",
+                "2022", "4.0"}  # dataset citation year and CC BY licence version
+# Website images derived from VisA (CC BY 4.0, resized + overlays): the only images allowed in git.
+SITE_IMG_DIR, SITE_IMG_MAX_BYTES = "site/static/img/", 500_000
+# Downscaled, overlaid PCB4 contact sheets of the exploratory study (VisA derivatives, CC BY 4.0, named in NOTICE.md).
+EXPLORATORY_FIGS = ("exploratory/yolo_pcb4/results/fig_failures.jpg", "exploratory/yolo_pcb4/audit/fig_annotation_check.jpg",
+                    "exploratory/yolo_pcb4/audit/fig_false_alarms_supplement.jpg")
 
 
 def _numbers(obj: Any) -> Iterable[float]:
@@ -52,7 +63,7 @@ def traceable_tokens(sources: list[Any]) -> set[str]:
     out: set[str] = set()
     for v in (x for s in sources for x in _numbers(s)):
         for w in (v, 100 * v, 1000 * v, v / 1000, abs(v), 100 * abs(v)):
-            for nd in (0, 1, 2, 3):
+            for nd in (0, 1, 2, 3, 4):
                 out.add(f"{w:.{nd}f}")
         if v == int(v):
             out.add(str(int(v)))
@@ -70,7 +81,7 @@ def _git(*args) -> subprocess.CompletedProcess:
 
 def run_checks() -> bool:
     from .compare import comparison_dir, mcnemar_exact
-    from .summary import (BASE, NEW, PDF_FIXED_LABELS, PDF_PATH, RECOMMENDATION, RUNS, README_END, README_START,
+    from .summary import (BASE, EXECUTIVE_PDFS, NEW, PDF_FIXED_LABELS, RECOMMENDATION, RUNS, README_END, README_START,
                           facts, readme_block)
 
     results: list[tuple[str, bool | None, str]] = []  # ok None = not verifiable here (reported as SKIP)
@@ -163,43 +174,65 @@ def run_checks() -> bool:
 
     # C5
     from pypdf import PdfReader
-    if PDF_PATH.exists():
-        reader = PdfReader(str(PDF_PATH))
+    srcs: list[Any] = [cmp_, yaml.safe_load((REPO_ROOT / "config" / "acceptance_criteria.yaml").read_text(encoding="utf-8"))]
+    for cfg in cfgs.values():
+        rep = resolve_path(cfg, "reports")
+        for fn in ("metrics.json", "frozen_operating_point.json", "robustness.json"):
+            if (rep / fn).exists():
+                srcs.append(json.loads((rep / fn).read_text(encoding="utf-8")))
+        srcs.append(cfg["robustness"])
+    # Since the PCB3 experiment the executive PDFs are printed from the website, whose numbers all come
+    # from site/facts.py -> site/data/facts.json (itself read only from recorded outputs).
+    for extra in ("reports/pcb3_illum_comparison/comparison.json", "reports/pcb3_baseline/robustness.json",
+                  "reports/pcb3_illum/robustness.json", "site/data/facts.json", "site/assets_manifest.json"):
+        if (REPO_ROOT / extra).exists():
+            srcs.append(json.loads((REPO_ROOT / extra).read_text(encoding="utf-8")))
+    allowed = traceable_tokens(srcs) | PDF_LITERALS | PDF_FIXED_LABELS
+    f = facts()
+    must = []
+    for n_ in (BASE, NEW):  # every executive PDF reports the confirmatory PCB2 comparison
+        r_ = f["runs"][n_]
+        must += [f"{r_['auroc']['value']:.3f}", f"{100 * r_['op']['recall']['value']:.0f}%",
+                 f"{100 * r_['op']['fpr']['value']:.0f}%", f"{r_['lat']['median_ms']:.0f}",
+                 f"{100 * r_['hold']['value']:.1f}%"]
+    pdf_texts: dict[str, str] = {}
+    for pdf_path, n_pages in EXECUTIVE_PDFS.items():
+        name = pdf_path.name
+        if not pdf_path.exists():
+            pdf_texts[name] = ""
+            record(f"C5 {name} exists", False, str(pdf_path))
+            continue
+        reader = PdfReader(str(pdf_path))
         text = "\n".join(p.extract_text() for p in reader.pages)
-        srcs: list[Any] = [cmp_, yaml.safe_load((REPO_ROOT / "config" / "acceptance_criteria.yaml").read_text(encoding="utf-8"))]
-        for cfg in cfgs.values():
-            rep = resolve_path(cfg, "reports")
-            for fn in ("metrics.json", "frozen_operating_point.json", "robustness.json"):
-                if (rep / fn).exists():
-                    srcs.append(json.loads((rep / fn).read_text(encoding="utf-8")))
-            srcs.append(cfg["robustness"])
-        allowed = traceable_tokens(srcs) | PDF_LITERALS | PDF_FIXED_LABELS
+        a4 = all(abs(float(p.mediabox.width) - 595) < 2 and abs(float(p.mediabox.height) - 842) < 2
+                 for p in reader.pages)
         untraced = sorted({t for t in pdf_tokens(text) if t not in allowed})
-        record("C5 executive summary is one page", len(reader.pages) == 1, f"{len(reader.pages)} page(s)")
-        record("C5 every number in the PDF traces to recorded outputs", not untraced, f"untraced: {untraced}")
-        f = facts()
-        must = []
-        for n_ in (BASE, NEW):  # the PDF reports the confirmatory PCB2 comparison
-            r_ = f["runs"][n_]
-            must += [f"{r_['auroc']['value']:.3f}", f"{100 * r_['op']['recall']['value']:.0f}%",
-                     f"{100 * r_['op']['fpr']['value']:.0f}%", f"{r_['lat']['median_ms']:.0f}",
-                     f"{100 * r_['hold']['value']:.1f}% ({'v1' if n_ == BASE else 'v2'})"]
-        flat = " ".join(text.split())
-        missing = [s for s in must if s not in flat]
-        record("C5 headline numbers present in the PDF", not missing, f"missing: {missing}")
-        pdf_text_flat = flat
-    else:
-        pdf_text_flat = ""
-        record("C5 executive summary exists", False, str(PDF_PATH))
+        record(f"C5 {name}: exactly {n_pages} A4 page(s)", len(reader.pages) == n_pages and a4,
+               f"{len(reader.pages)} page(s), A4={a4}")
+        record(f"C5 {name}: every number traces to recorded outputs", not untraced, f"untraced: {untraced}")
+        # PDF extraction may put a line-break space after a printed word hyphen.
+        flat = re.sub(r"(?<=\w)-\s+(?=\w)", "-", " ".join(text.split()))
+        missing = [s_ for s_ in must if s_ not in flat]
+        record(f"C5 {name}: headline numbers present", not missing, f"missing: {missing}")
+        pdf_texts[name] = flat
 
-    # C8 the go / no-go conclusion is stated identically everywhere it is summarised
-    holders = {"executive PDF": pdf_text_flat}
+    # C8 presentation wording can clarify deployment scope without rewriting frozen verdicts.
+    holders = dict(pdf_texts)
     for rel in ("README.md", "docs/v2_decision_record.md", "docs/handoff.md"):
         p_ = REPO_ROOT / rel
         holders[rel] = " ".join(p_.read_text(encoding="utf-8").split()) if p_.exists() else ""
-    lacking = [k for k, v in holders.items() if RECOMMENDATION not in v]
-    record("C8 pilot recommendation identical in PDF, README, decision record, handoff", not lacking,
-           f"missing in: {lacking}")
+    current = {name: holders[name] for name in (*pdf_texts, "README.md")}
+    required = ("Not ready for production-affecting deployment", "bounded, non-disruptive",
+                "shadow-mode validation", "authorization", "entry checks",
+                "Factory access has not been obtained")
+    lacking = {name: [phrase for phrase in required if phrase.lower() not in text.lower()]
+               for name, text in current.items()}
+    lacking = {name: phrases for name, phrases in lacking.items() if phrases}
+    frozen_lacking = [name for name in ("docs/v2_decision_record.md", "docs/handoff.md")
+                      if RECOMMENDATION not in holders[name]]
+    record("C8 deployment/shadow-validation scope clear; frozen recommendations retained",
+           not lacking and not frozen_lacking,
+           f"current missing: {lacking}; frozen missing: {frozen_lacking}")
 
     # C6
     readme = REPO_ROOT / "README.md"
@@ -213,8 +246,11 @@ def run_checks() -> bool:
     # C7
     try:
         tracked = _git("ls-files").stdout.split()
+        notice = (REPO_ROOT / "NOTICE.md").read_text(encoding="utf-8") if (REPO_ROOT / "NOTICE.md").exists() else ""
+        site_img = [t for t in tracked if t.startswith(SITE_IMG_DIR) or (t in EXPLORATORY_FIGS and t in notice)]
         bad_paths = [t for t in tracked if t.startswith(("data/", "artifacts/")) or
-                     t.lower().endswith((".pt", ".pth", ".jpg", ".tar", ".npz", ".npy", ".env"))]
+                     (t.lower().endswith((".pt", ".pth", ".jpg", ".tar", ".npz", ".npy", ".env")) and t not in site_img)]
+        bad_paths += [t for t in site_img if (REPO_ROOT / t).stat().st_size > SITE_IMG_MAX_BYTES]
         big = [t for t in tracked if (REPO_ROOT / t).exists() and (REPO_ROOT / t).stat().st_size > 5_000_000]
         secret_re = re.compile(r"(AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|ghp_[A-Za-z0-9]{36}|"
                                r"github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{32,}|xox[baprs]-[A-Za-z0-9-]{10,})")

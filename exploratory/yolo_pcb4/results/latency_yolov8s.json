@@ -1,0 +1,6 @@
+{
+ "n_images": 50,
+ "median_ms": 14.818999999988591,
+ "device_name": "NVIDIA GeForce RTX 4070 Ti",
+ "definition": "ultralytics predict from file path (decode + letterbox + forward + NMS), batch 1, imgsz 1024, after warm-up"
+}

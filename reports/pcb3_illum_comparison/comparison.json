@@ -1,0 +1,543 @@
+{
+  "evidence_status": "CONFIRMATORY: pre-registered (docs/illumination_experiment_protocol.md), single planned evaluation on PCB3, never used before",
+  "base_run": "PCB3 baseline (v2 pipeline)",
+  "cand_run": "PCB3 candidate (v2 + global luminance standardisation)",
+  "dataset": "pcb3",
+  "primary_threshold": {
+    "base": [
+      "P95",
+      46.59650421142578
+    ],
+    "cand": [
+      "P95",
+      47.71668243408203
+    ]
+  },
+  "git_head_at_evaluation": {
+    "base": "eb4e7a92c417e2c76750e8acb530e3bddbd04b2d",
+    "cand": "eb4e7a92c417e2c76750e8acb530e3bddbd04b2d"
+  },
+  "pairing_checks": {
+    "same_calib_images_and_labels": true,
+    "same_test_images_and_labels": true,
+    "same_holdout_images_and_labels": true,
+    "same_split_manifest": true,
+    "same_pretrained_weights": true,
+    "same_robustness_images": true,
+    "same_condition_definitions": true
+  },
+  "images": {
+    "test_anomalies": 100,
+    "test_normals": 101,
+    "holdout_normals": 155,
+    "pooled_normals_for_conditions": 256
+  },
+  "clean": {
+    "recall_test_anomalies": {
+      "base": 0.9,
+      "new": 0.91,
+      "delta": 0.01,
+      "ci_low": -0.02,
+      "ci_high": 0.04,
+      "n": 100,
+      "level": 0.95,
+      "ci_method": "paired percentile bootstrap over images, B=10000, seed=2026",
+      "flagged_by_new_only": 2,
+      "flagged_by_base_only": 1,
+      "n_discordant": 3,
+      "p_value": 1.0,
+      "test": "exact McNemar (two-sided binomial on discordant pairs)"
+    },
+    "fpr_test_normals": {
+      "base": 0.0297029702970297,
+      "new": 0.0297029702970297,
+      "delta": 0.0,
+      "ci_low": -0.0297029702970297,
+      "ci_high": 0.0297029702970297,
+      "n": 101,
+      "level": 0.95,
+      "ci_method": "paired percentile bootstrap over images, B=10000, seed=2026",
+      "flagged_by_new_only": 1,
+      "flagged_by_base_only": 1,
+      "n_discordant": 2,
+      "p_value": 1.0,
+      "test": "exact McNemar (two-sided binomial on discordant pairs)"
+    },
+    "fpr_holdout_normals": {
+      "base": 0.05161290322580645,
+      "new": 0.03870967741935484,
+      "delta": -0.012903225806451613,
+      "ci_low": -0.03225806451612903,
+      "ci_high": 0.0,
+      "n": 155,
+      "level": 0.95,
+      "ci_method": "paired percentile bootstrap over images, B=10000, seed=2026",
+      "flagged_by_new_only": 0,
+      "flagged_by_base_only": 2,
+      "n_discordant": 2,
+      "p_value": 0.5,
+      "test": "exact McNemar (two-sided binomial on discordant pairs)"
+    },
+    "auroc": {
+      "base": 0.9817821782178218,
+      "new": 0.9832673267326733,
+      "delta": 0.0014851485148514865,
+      "ci_low": -0.002871287128712874,
+      "ci_high": 0.0066336633663366396,
+      "level": 0.95,
+      "ci_method": "stratified paired percentile bootstrap, B=10000, seed=2026"
+    }
+  },
+  "conditions": {
+    "B1": {
+      "perturbation": "brighter_higher_contrast",
+      "spec": {
+        "name": "brighter_higher_contrast",
+        "kind": "photometric",
+        "brightness": 1.1,
+        "contrast": 1.1,
+        "protocol_id": "B1"
+      },
+      "fpr_normals": {
+        "delta_base": 0.15234375,
+        "delta_cand": 0.02734375,
+        "did": -0.125,
+        "ci_low": -0.17578125,
+        "ci_high": -0.07421875,
+        "n": 256,
+        "level": 0.95,
+        "rates": {
+          "base_clean": 0.04296875,
+          "base_pert": 0.1953125,
+          "cand_clean": 0.03515625,
+          "cand_pert": 0.0625
+        },
+        "ci_method": "paired percentile bootstrap over image identities, B=10000, seed=2026"
+      },
+      "recall_anomalies": {
+        "delta_base": 0.01,
+        "delta_cand": -0.01,
+        "did": -0.02,
+        "ci_low": -0.08,
+        "ci_high": 0.04,
+        "n": 100,
+        "level": 0.95,
+        "rates": {
+          "base_clean": 0.9,
+          "base_pert": 0.91,
+          "cand_clean": 0.91,
+          "cand_pert": 0.9
+        },
+        "ci_method": "paired percentile bootstrap over image identities, B=10000, seed=2026"
+      },
+      "perturbed_flags_cand_vs_base_normals": {
+        "flagged_by_new_only": 6,
+        "flagged_by_base_only": 40,
+        "n_discordant": 46,
+        "p_value": 3.1028037028590916e-07,
+        "test": "exact McNemar (two-sided binomial on discordant pairs)"
+      },
+      "perturbed_flags_cand_vs_base_anomalies": {
+        "flagged_by_new_only": 4,
+        "flagged_by_base_only": 5,
+        "n_discordant": 9,
+        "p_value": 1.0,
+        "test": "exact McNemar (two-sided binomial on discordant pairs)"
+      }
+    },
+    "G1": {
+      "perturbation": "darker_lower_contrast",
+      "spec": {
+        "name": "darker_lower_contrast",
+        "kind": "photometric",
+        "brightness": 0.9,
+        "contrast": 0.9,
+        "protocol_id": "G1"
+      },
+      "fpr_normals": {
+        "delta_base": 0.04296875,
+        "delta_cand": -0.00390625,
+        "did": -0.046875,
+        "ci_low": -0.0859375,
+        "ci_high": -0.0078125,
+        "n": 256,
+        "level": 0.95,
+        "rates": {
+          "base_clean": 0.04296875,
+          "base_pert": 0.0859375,
+          "cand_clean": 0.03515625,
+          "cand_pert": 0.03125
+        },
+        "ci_method": "paired percentile bootstrap over image identities, B=10000, seed=2026"
+      },
+      "recall_anomalies": {
+        "delta_base": 0.0,
+        "delta_cand": 0.0,
+        "did": 0.0,
+        "ci_low": -0.04,
+        "ci_high": 0.04,
+        "n": 100,
+        "level": 0.95,
+        "rates": {
+          "base_clean": 0.9,
+          "base_pert": 0.9,
+          "cand_clean": 0.91,
+          "cand_pert": 0.91
+        },
+        "ci_method": "paired percentile bootstrap over image identities, B=10000, seed=2026"
+      },
+      "perturbed_flags_cand_vs_base_normals": {
+        "flagged_by_new_only": 3,
+        "flagged_by_base_only": 17,
+        "n_discordant": 20,
+        "p_value": 0.0025768280029296875,
+        "test": "exact McNemar (two-sided binomial on discordant pairs)"
+      },
+      "perturbed_flags_cand_vs_base_anomalies": {
+        "flagged_by_new_only": 3,
+        "flagged_by_base_only": 2,
+        "n_discordant": 5,
+        "p_value": 1.0,
+        "test": "exact McNemar (two-sided binomial on discordant pairs)"
+      }
+    },
+    "N1": {
+      "perturbation": "illum_ramp_lr_1.0_0.8",
+      "spec": {
+        "name": "illum_ramp_lr_1.0_0.8",
+        "kind": "illum_ramp",
+        "gain_start": 1.0,
+        "gain_end": 0.8,
+        "protocol_id": "N1",
+        "acceptance": false
+      },
+      "fpr_normals": {
+        "delta_base": 0.01953125,
+        "delta_cand": 0.0234375,
+        "did": 0.00390625,
+        "ci_low": -0.02734375,
+        "ci_high": 0.0390625,
+        "n": 256,
+        "level": 0.95,
+        "rates": {
+          "base_clean": 0.04296875,
+          "base_pert": 0.0625,
+          "cand_clean": 0.03515625,
+          "cand_pert": 0.05859375
+        },
+        "ci_method": "paired percentile bootstrap over image identities, B=10000, seed=2026"
+      },
+      "recall_anomalies": {
+        "delta_base": 0.0,
+        "delta_cand": -0.03,
+        "did": -0.03,
+        "ci_low": -0.1,
+        "ci_high": 0.04,
+        "n": 100,
+        "level": 0.95,
+        "rates": {
+          "base_clean": 0.9,
+          "base_pert": 0.9,
+          "cand_clean": 0.91,
+          "cand_pert": 0.88
+        },
+        "ci_method": "paired percentile bootstrap over image identities, B=10000, seed=2026"
+      },
+      "perturbed_flags_cand_vs_base_normals": {
+        "flagged_by_new_only": 7,
+        "flagged_by_base_only": 8,
+        "n_discordant": 15,
+        "p_value": 1.0,
+        "test": "exact McNemar (two-sided binomial on discordant pairs)"
+      },
+      "perturbed_flags_cand_vs_base_anomalies": {
+        "flagged_by_new_only": 2,
+        "flagged_by_base_only": 4,
+        "n_discordant": 6,
+        "p_value": 0.6875,
+        "test": "exact McNemar (two-sided binomial on discordant pairs)"
+      }
+    }
+  },
+  "primary_endpoint": {
+    "condition": "G1",
+    "delta_base": 0.04296875,
+    "delta_cand": -0.00390625,
+    "did": -0.046875,
+    "ci_low": -0.0859375,
+    "ci_high": -0.0078125,
+    "n": 256,
+    "level": 0.95,
+    "rates": {
+      "base_clean": 0.04296875,
+      "base_pert": 0.0859375,
+      "cand_clean": 0.03515625,
+      "cand_pert": 0.03125
+    },
+    "ci_method": "paired percentile bootstrap over image identities, B=10000, seed=2026"
+  },
+  "decision": {
+    "outcome": "ROBUSTNESS IMPROVEMENT SUPPORTED",
+    "clean_recall_gate_pass": true,
+    "clean_fpr_gate_pass": {
+      "official_test": true,
+      "holdout": true
+    },
+    "primary_did_ci_excludes_zero": true,
+    "baseline_rise_weakly_informative": true,
+    "rule": "supported iff DiD 95% CI upper < 0 and both clean gates pass; unfavourable iff a clean gate fails or DiD 95% CI lower > 0; otherwise inconclusive. Clean recall gate fails iff \u0394recall < -0.05 or (\u0394recall < 0 and McNemar p < 0.05); clean FPR gate fails iff candidate FPR > baseline FPR + 0.05 on official-test or holdout normals."
+  },
+  "nonuniform_limitation": {
+    "cand_fpr_rise": 0.0234375,
+    "cand_recall_change": -0.03,
+    "limitation_exposed": false,
+    "rule": "exposed iff candidate N1 FPR rise > 0.1 or recall drop > 0.1 (original P5 limits)"
+  },
+  "subgroups": {
+    "size_clean": {
+      "small": {
+        "n": 34,
+        "value_range": [
+          0.000736235595390525,
+          0.0020193128467776355
+        ],
+        "detected_base": 26,
+        "detected_cand": 27,
+        "recall_base": 0.7647058823529411,
+        "recall_cand": 0.7941176470588235,
+        "cand_only": 1,
+        "base_only": 0
+      },
+      "medium": {
+        "n": 33,
+        "value_range": [
+          0.002055991250533504,
+          0.0031270006402048657
+        ],
+        "detected_base": 31,
+        "detected_cand": 31,
+        "recall_base": 0.9393939393939394,
+        "recall_cand": 0.9393939393939394,
+        "cand_only": 1,
+        "base_only": 1
+      },
+      "large": {
+        "n": 33,
+        "value_range": [
+          0.0031796841655996584,
+          0.03795281156636791
+        ],
+        "detected_base": 33,
+        "detected_cand": 33,
+        "recall_base": 1.0,
+        "recall_cand": 1.0,
+        "cand_only": 0,
+        "base_only": 0
+      }
+    },
+    "contrast_clean": {
+      "low": {
+        "n": 34,
+        "value_range": [
+          1.2181540455471236,
+          33.7024723274218
+        ],
+        "detected_base": 29,
+        "detected_cand": 28,
+        "recall_base": 0.8529411764705882,
+        "recall_cand": 0.8235294117647058,
+        "cand_only": 0,
+        "base_only": 1
+      },
+      "medium": {
+        "n": 33,
+        "value_range": [
+          34.817057228141636,
+          54.0072471159656
+        ],
+        "detected_base": 30,
+        "detected_cand": 31,
+        "recall_base": 0.9090909090909091,
+        "recall_cand": 0.9393939393939394,
+        "cand_only": 1,
+        "base_only": 0
+      },
+      "high": {
+        "n": 33,
+        "value_range": [
+          54.2273162495724,
+          121.43684622155521
+        ],
+        "detected_base": 31,
+        "detected_cand": 32,
+        "recall_base": 0.9393939393939394,
+        "recall_cand": 0.9696969696969697,
+        "cand_only": 1,
+        "base_only": 0
+      }
+    },
+    "size_G1": {
+      "small": {
+        "n": 34,
+        "value_range": [
+          0.000736235595390525,
+          0.0020193128467776355
+        ],
+        "detected_base": 25,
+        "detected_cand": 27,
+        "recall_base": 0.7352941176470589,
+        "recall_cand": 0.7941176470588235,
+        "cand_only": 3,
+        "base_only": 1
+      },
+      "medium": {
+        "n": 33,
+        "value_range": [
+          0.002055991250533504,
+          0.0031270006402048657
+        ],
+        "detected_base": 32,
+        "detected_cand": 31,
+        "recall_base": 0.9696969696969697,
+        "recall_cand": 0.9393939393939394,
+        "cand_only": 0,
+        "base_only": 1
+      },
+      "large": {
+        "n": 33,
+        "value_range": [
+          0.0031796841655996584,
+          0.03795281156636791
+        ],
+        "detected_base": 33,
+        "detected_cand": 33,
+        "recall_base": 1.0,
+        "recall_cand": 1.0,
+        "cand_only": 0,
+        "base_only": 0
+      }
+    },
+    "contrast_G1": {
+      "low": {
+        "n": 34,
+        "value_range": [
+          1.2181540455471236,
+          33.7024723274218
+        ],
+        "detected_base": 28,
+        "detected_cand": 28,
+        "recall_base": 0.8235294117647058,
+        "recall_cand": 0.8235294117647058,
+        "cand_only": 2,
+        "base_only": 2
+      },
+      "medium": {
+        "n": 33,
+        "value_range": [
+          34.817057228141636,
+          54.0072471159656
+        ],
+        "detected_base": 30,
+        "detected_cand": 31,
+        "recall_base": 0.9090909090909091,
+        "recall_cand": 0.9393939393939394,
+        "cand_only": 1,
+        "base_only": 0
+      },
+      "high": {
+        "n": 33,
+        "value_range": [
+          54.2273162495724,
+          121.43684622155521
+        ],
+        "detected_base": 32,
+        "detected_cand": 32,
+        "recall_base": 0.9696969696969697,
+        "recall_cand": 0.9696969696969697,
+        "cand_only": 0,
+        "base_only": 0
+      }
+    },
+    "note": "POST-FREEZE DESCRIPTION, pre-declared in protocol \u00a78 C: GT masks used for description only.",
+    "sensitivity_flag": {
+      "deficits": {
+        "small": -1,
+        "low_contrast": 1
+      },
+      "flagged": false,
+      "rule": "flag iff candidate detects >= 3 fewer anomalies than the baseline in the small or the low-contrast tercile"
+    }
+  },
+  "runtime": {
+    "latency_median_ms": {
+      "base": 187.0174000505358,
+      "cand": 292.08509996533394
+    },
+    "latency_p95_ms": {
+      "base": 269.3269000155851,
+      "cand": 827.339299954474
+    },
+    "correction_only_cpu": {
+      "ms_median": 71.2338499724865,
+      "ms_p95": 89.52006995677948,
+      "n_images": 50,
+      "definition": "luminance statistics + affine map + uint8 rounding on the native frame, CPU, single thread"
+    }
+  },
+  "acceptance": {
+    "base": {
+      "auroc": true,
+      "recall": true,
+      "fpr_test": true,
+      "fpr_holdout": true,
+      "latency": true,
+      "robustness": false,
+      "robustness_max_recall_drop": 0.02,
+      "robustness_max_fpr_rise": 0.15234375,
+      "no_go_triggers": [],
+      "verdict": "INCONCLUSIVE"
+    },
+    "cand": {
+      "auroc": true,
+      "recall": true,
+      "fpr_test": true,
+      "fpr_holdout": true,
+      "latency": true,
+      "robustness": false,
+      "robustness_max_recall_drop": 0.04,
+      "robustness_max_fpr_rise": 0.14453125,
+      "no_go_triggers": [],
+      "verdict": "INCONCLUSIVE"
+    }
+  },
+  "roi_fallback": {
+    "base": {
+      "test": {
+        "n": 201,
+        "n_fallback": 0,
+        "coverage_min": 0.9853948685734477,
+        "coverage_median": 1.0
+      },
+      "holdout": {
+        "n": 155,
+        "n_fallback": 0,
+        "coverage_min": 1.0,
+        "coverage_median": 1.0
+      }
+    },
+    "cand": {
+      "test": {
+        "n": 201,
+        "n_fallback": 0,
+        "coverage_min": 0.9851356409700742,
+        "coverage_median": 1.0
+      },
+      "holdout": {
+        "n": 155,
+        "n_fallback": 0,
+        "coverage_min": 1.0,
+        "coverage_median": 1.0
+      }
+    }
+  }
+}
