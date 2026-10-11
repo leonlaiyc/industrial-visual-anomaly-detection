@@ -1,0 +1,78 @@
+{
+  "status": "BUILT STATIC PORTFOLIO; deployment not yet verified",
+  "reviewed_source_baseline": "9f9a3a001933c09349a05792d57014b4d431041b",
+  "source_mode": "private-repository",
+  "website_url": "",
+  "files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "NOTICE.md",
+      "bytes": 3992,
+      "sha256": "1b7d66cfa819a28c0d8f7210135292a26f5ed3c0e886fd43d939013de069ed59"
+    },
+    {
+      "path": "assets/favicon.svg",
+      "bytes": 588,
+      "sha256": "1119a497aca7ea1ec96d2d3212b2e7a99db40ce3367d1870b17fb81a9db0fb5d"
+    },
+    {
+      "path": "assets/img/pcb1_alignment.jpg",
+      "bytes": 261069,
+      "sha256": "bfcccb4e8d43641e141864d400073b7df48e1dda80f977874b78fd46540e0277"
+    },
+    {
+      "path": "assets/img/pcb4_annotations.jpg",
+      "bytes": 266092,
+      "sha256": "249b8fba438bc7acf0ea4b130db767797ac2496e5d2877c1d1574623563c3eb1"
+    },
+    {
+      "path": "assets/img/workflow_caught.jpg",
+      "bytes": 127590,
+      "sha256": "50de1604dbe702209ec40d7b041214de3d3c680d21c8cadc437cd5b20f87f596"
+    },
+    {
+      "path": "assets/img/workflow_false_alarm.jpg",
+      "bytes": 125550,
+      "sha256": "84920cc5879cadade26ef51daf4406b629fe67a6e505805679f04dd34990f3a1"
+    },
+    {
+      "path": "assets/site.css",
+      "bytes": 10674,
+      "sha256": "4facae6a2bf3a6d3c120603762abb07b2cb1c98c237b9e972da5e5ca9d95c3be"
+    },
+    {
+      "path": "executive-summary-one-page.pdf",
+      "bytes": 733430,
+      "sha256": "77dc5398a376c635d1e354ad86d32ecd9edda8f838854c6091f843adc774d244"
+    },
+    {
+      "path": "index.html",
+      "bytes": 14222,
+      "sha256": "666ad6e9d6a806314a62e6a094bf855bdf951220993ea960b390803ba8c4f1c4"
+    },
+    {
+      "path": "print/one-page/index.html",
+      "bytes": 8341,
+      "sha256": "1c9c49827fd9a4a332175eb348bb3b8e1611648caf8944ca5985d3b76775bd5c"
+    },
+    {
+      "path": "release-link-status.json",
+      "bytes": 286,
+      "sha256": "de5a59882bfa9f910900589ed9907f50a01c3cb685e617a86cf0c29ffc3b6eeb"
+    },
+    {
+      "path": "robots.txt",
+      "bytes": 23,
+      "sha256": "16ceb5ee3e0dc13aa9adf31a3ebbe45a1d965b8c2b9f72eaf84e5911e140ed95"
+    },
+    {
+      "path": "zh-tw/index.html",
+      "bytes": 13871,
+      "sha256": "16bd79328a950a6ab5cf1b98dcb5ed90df647bf496c47edda24f2ef5ce4ae566"
+    }
+  ]
+}

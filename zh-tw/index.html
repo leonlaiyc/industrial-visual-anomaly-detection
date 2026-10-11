@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="以公開 VisA PCB 資料集實作電腦視覺 PoC：從僅用正常影像的 CNN 方法、ROI 與穩健性實驗，到監督式 YOLO 訓練及失敗分析。">
+<title>以 CNN 與 YOLO 探索 PCB 異常檢測 | Leon Lai</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳至主要內容</a>
+<header class="site-header">
+  <a class="brand" href="../index.html" aria-label="IVAD home"><span class="brand-mark" aria-hidden="true">I<span>V</span></span> IVAD <span class="brand-owner">/ Leon Lai</span></a>
+  <nav aria-label="主要導覽">
+    <a href="#explorations">三輪探索</a><a href="#findings">實驗發現</a><a href="#lessons">學到什麼</a><a href="#code">程式與證據</a>
+  </nav>
+  <div class="language-switch" role="group" aria-label="切換語言">
+<a href="../index.html" lang="en" hreflang="en">EN</a><a href="../zh-tw/index.html" lang="zh-Hant-TW" hreflang="zh-Hant-TW" aria-current="page">繁體中文</a>  </div>
+</header>
+<main id="main">
+  <section class="hero" id="summary" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow">IVAD / 專案筆記</p>
+      <h1 id="hero-title">以 CNN 與 YOLO 探索 PCB 異常檢測</h1>
+      <p class="subtitle">動手實作的電腦視覺 PoC</p>
+      <p class="hero-intro">為了理解視覺異常檢測如何運作，我從一個小型 PoC 開始動手實作。以公開 VisA PCB 資料集為起點，整理資料、探索僅用正常影像建模的 CNN 方法，測試 ROI 計分與穩健性，再訓練監督式 YOLO 模型。這裡整理我試過的方法、有效與無效的嘗試，以及從失敗案例學到的事。</p>
+      <p class="byline">Yu-Chen (Leon) Lai <span aria-hidden="true">/</span> Computer Vision</p>
+      <div class="actions"><a class="button primary" href="#explorations">看看三輪技術探索 <span aria-hidden="true">↓</span></a><a class="button secondary" href="../executive-summary-one-page.pdf">一頁專案分享檔 <span aria-hidden="true">↗</span></a></div>
+      <p class="download-note">英文 · A4 PDF</p>
+    </div>
+    <figure class="hero-figure">
+      <div class="figure-heading"><span class="signal" aria-hidden="true"></span>實驗中的真實影像<span class="figure-chip">CNN / PCB2</span></div>
+      <img src="../assets/img/workflow_caught.jpg" width="960" height="640" alt="PCB2 瑕疵影像，疊加既有 CNN 異常熱圖與電路板 ROI 虛線邊界">
+      <figcaption>PCB2 / 成功檢出的異常。正常影像建模流程產生的熱圖；虛線為計分區域。</figcaption>
+    </figure>
+  </section>
+  <section class="section explorations" id="explorations" aria-labelledby="explorations-title">
+    <div class="section-heading"><p class="eyebrow">三輪技術探索</p><h2 id="explorations-title">不同問題，試用不同方法。</h2><p>三輪探索串起同一段學習歷程。PCB1、PCB2、PCB3 與 PCB4 是不同電路板資料集，並非同一測試集，也不是共同重新訓練的一個模型。</p></div>
+    <div class="workflow-grid">
+      <article class="workflow round-a" aria-labelledby="round-a">
+        <div class="round-heading"><span class="round-letter">A</span><span class="dataset">PCB1</span></div>
+        <h3 id="round-a">CNN 基準方法</h3>
+        <p class="round-question">只學習正常外觀，能找出沒見過的瑕疵嗎？</p>
+        <p class="training-tag">僅以正常影像建模</p>
+        <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>資料檢視</span></li><li><span class="step-dot" aria-hidden="true"></span><span>方向校正與影像對位</span></li><li><span class="step-dot" aria-hidden="true"></span><span>預訓練 WideResNet-50-2 特徵</span></li><li><span class="step-dot" aria-hidden="true"></span><span>逐位置高斯模型 / 馬氏距離</span></li><li><span class="step-dot" aria-hidden="true"></span><span>影像異常分數與熱圖</span></li></ol>
+        <p class="challenge">方向、影像對位與背景干擾，是基準方法的主要挑戰。</p>
+        <p class="round-learning">先理解資料，再調整模型。</p>
+      </article>
+      <article class="workflow round-b" aria-labelledby="round-b">
+        <div class="round-heading"><span class="round-letter">B</span><span class="dataset">PCB2 / PCB3</span></div>
+        <h3 id="round-b">改善與壓力測試</h3>
+        <p class="round-question">前處理能降低干擾，同時避免引入新的失敗模式嗎？</p>
+        <p class="training-tag">PCB2 與 PCB3 分開實驗</p>
+        <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>CNN 基準方法</span></li><li><span class="step-dot" aria-hidden="true"></span><span>電路板 ROI 計分</span></li><li><span class="step-dot" aria-hidden="true"></span><span>門檻校準</span></li><li><span class="step-dot" aria-hidden="true"></span><span>受控光照修正實驗</span></li><li><span class="step-dot" aria-hidden="true"></span><span>穩健性評估與工程決策</span></li></ol>
+        <p class="challenge">PCB2 驗證 ROI 計分；PCB3 另行評估光照修正。</p>
+        <p class="round-learning">結果改善之後，還要承受壓力測試。</p>
+      </article>
+      <article class="workflow round-c" aria-labelledby="round-c">
+        <div class="round-heading"><span class="round-letter">C</span><span class="dataset">PCB4</span></div>
+        <h3 id="round-c">監督式 YOLO</h3>
+        <p class="round-question">有了瑕疵樣本與標註，影像檢測會有什麼不同？</p>
+        <p class="training-tag">使用瑕疵標註訓練</p>
+        <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>PCB4 瑕疵標註</span></li><li><span class="step-dot" aria-hidden="true"></span><span>遮罩轉換為邊界框</span></li><li><span class="step-dot" aria-hidden="true"></span><span>YOLOv8s / YOLO11s 訓練</span></li><li><span class="step-dot" aria-hidden="true"></span><span>校準與影像層級檢測</span></li><li><span class="step-dot" aria-hidden="true"></span><span>失敗案例與影像擷取混淆分析</span></li></ol>
+        <p class="challenge">確實完成模型訓練，使用單一 defect 類別；與正常影像建模的標註需求不同。</p>
+        <p class="round-learning">檢出分數需要情境，也需要定位檢查。</p>
+      </article>
+    </div>
+  </section>
+  <section class="section findings" id="findings" aria-labelledby="findings-title">
+    <div class="section-heading"><p class="eyebrow">實際發生了什麼</p><h2 id="findings-title">失敗案例，往往最有收穫。</h2><p>只選幾個來自凍結分數紀錄的代表性結果。每個發現都保留所屬資料集與評估條件。</p></div>
+    <div class="finding-grid">
+      <article class="finding round-a">
+        <div class="finding-heading"><span class="round-letter">A</span><h3>先建立正常外觀的模型</h3></div>
+        <figure><img src="../assets/img/pcb1_alignment.jpg" width="1760" height="506" alt="PCB1 正常影像在對位前，以及完成對位和裁切後的比較"><figcaption>PCB1 正常影像：上排為原始影像，下排為對位後裁切。</figcaption></figure>
+        <dl>
+          <dt>想釐清</dt><dd>不使用瑕疵訓練標籤，預訓練 CNN 特徵能辨識異常嗎？</dd>
+          <dt>嘗試方法</dt><dd>檢視與對位 PCB1 影像，再於特徵圖各位置建立高斯模型。</dd>
+          <dt>實際結果</dt><dd class="result">原始 PCB1 基準方法檢出 72/100 張瑕疵測試影像（瑕疵檢出率 72%）。熱圖與誤報案例呈現了對位與背景造成的影響。</dd>
+          <dt>我的收穫</dt><dd>最高異常分數可能來自背景，而不是瑕疵。要一起檢查影像與計分區域。</dd>
+        </dl>
+      </article>
+      <article class="finding round-b">
+        <div class="finding-heading"><span class="round-letter">B</span><h3>改善之後，繼續挑戰改善</h3></div>
+        <figure><img src="../assets/img/workflow_false_alarm.jpg" width="960" height="640" alt="PCB2 正常影像被 ROI 計分模型誤報，電路板邊緣附近出現異常熱點"><figcaption>PCB2 誤報案例：正常影像仍觸發 ROI 模型。</figcaption></figure>
+        <dl>
+          <dt>想釐清</dt><dd>只在電路板內計分，加上光照修正，能減少誤報嗎？</dd>
+          <dt>嘗試方法</dt><dd>在 PCB2 評估 ROI 計分；在 PCB3 另做受控光照修正實驗，搭配門檻校準與穩健性檢查。</dd>
+          <dt>實際結果</dt><dd class="result"><strong>PCB2：</strong>正常測試影像誤報率由 13% 降至 3%，瑕疵檢出率維持 80%。<strong>PCB3：</strong>修正在部分光照條件下有效，卻使模糊影像的誤報明顯增加，因此未採用候選方法。</dd>
+          <dt>我的收穫</dt><dd>先處理干擾來源，再找出代價。改善某個條件，並不代表整體更穩健。</dd>
+        </dl>
+      </article>
+      <article class="finding round-c">
+        <div class="finding-heading"><span class="round-letter">C</span><h3>理解監督資訊帶來什麼</h3></div>
+        <figure><img src="../assets/img/pcb4_annotations.jpg" width="1360" height="904" alt="PCB4 標註檢查：青色為瑕疵真值遮罩輪廓，紅色為遮罩轉換的訓練邊界框"><figcaption>PCB4 標註檢查：紅色為訓練框、青色為真值遮罩；這是標註，不是模型預測。</figcaption></figure>
+        <dl>
+          <dt>想釐清</dt><dd>使用已標註瑕疵，影像層級檢測會如何改變？</dd>
+          <dt>嘗試方法</dt><dd>將 PCB4 瑕疵遮罩轉成邊界框，訓練 YOLOv8s 與 YOLO11s；使用單一 <code>defect</code> 類別與保留瑕疵 fold 評估。</dd>
+          <dt>實際結果</dt><dd class="result">觀察到的影像層級瑕疵檢出率：YOLOv8s 98%、YOLO11s 95%。此監督式設定下檢出率較高，但也發現亮度混淆、對未見瑕疵類型的泛化較弱，以及定位限制。</dd>
+          <dt>我的收穫</dt><dd>判定影像有瑕疵，不代表框能精準定位瑕疵。這是探索性研究，不能據此斷言哪種架構較優。</dd>
+        </dl>
+      </article>
+    </div>
+    <p class="comparison-note">CNN 僅以正常影像建模，YOLO 則使用瑕疵標註。資料集、監督資訊與實驗流程不同，不能跨輪次做受控的模型排名。</p>
+    <details id="pcb3-repair" class="repair"><summary>實作問題與修復紀錄持續保留</summary><p>PCB3 評估後修復了一項分析程式輸入檢查（7dbd302）。凍結分數、門檻與決策皆未改變。專案負責人已於 2026-10-11 接受 D5；對外作品集的整體驗收是另一項決定。來源庫保留完整修復時間線、偏差紀錄與驗證證據。 紀錄：<code>docs/pcb3_post_evaluation_repair.md</code>、<code>docs/illumination_experiment_deviations.md</code>。</p></details>
+  </section>
+  <section class="section lessons" id="lessons" aria-labelledby="lessons-title">
+    <div class="section-heading"><p class="eyebrow">我學到什麼</p><h2 id="lessons-title">下次實作，我會記住這四件事。</h2></div>
+    <div class="lesson-grid"><article><span class="lesson-number" aria-hidden="true">01</span><h3>資料品質與前處理很重要。</h3><p>信任分數之前，先檢查方向、對位、電路板遮罩與影像條件。</p></article><article><span class="lesson-number" aria-hidden="true">02</span><h3>增加複雜度之前，先找根因。</h3><p>誤報影像幫助我辨識背景干擾，也促成 ROI 計分的嘗試。</p></article><article><span class="lesson-number" aria-hidden="true">03</span><h3>更好的指標，可能帶來意外代價。</h3><p>PCB3 光照修正改善部分條件，卻引入模糊影像的失敗模式。</p></article><article><span class="lesson-number" aria-hidden="true">04</span><h3>模型選擇取決於資料、標註與目標。</h3><p>正常影像建模與監督式檢測回答不同問題，也需要不同證據。</p></article></div>
+  </section>
+  <section class="section code-section" id="code" aria-labelledby="code-title">
+    <div><p class="eyebrow">探索程式與證據</p><h2 id="code-title">精簡的展示，背後有完整技術紀錄。</h2><p>來源庫保留真實程式、實驗流程、資料切分說明、分數紀錄、模型比較限制、稽核證據與 D5 時間線。</p><p class="source-status">來源庫目前為私人。瀏覽需具備儲存庫權限；一頁專案分享檔可獨立閱讀。</p></div>
+    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">GitHub 來源碼 · 需存取權限 <span aria-hidden="true">↗</span></a><a class="button secondary" href="../executive-summary-one-page.pdf">下載一頁專案分享檔 <span aria-hidden="true">↗</span></a></div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div><a class="footer-brand" href="../index.html">IVAD / Yu-Chen (Leon) Lai</a><p>使用公開 VisA 基準影像；尚未在真實製造產線影像上驗證，也不宣稱已具備正式上線條件。開發過程使用 AI 輔助。</p><p>影像：VisA、Amazon Science · Zou 等人，ECCV 2022 · CC BY 4.0。圖像經對位、裁切、縮放及疊圖處理；不代表原作者背書。</p></div>
+  <div class="footer-links"><a href="https://github.com/amazon-science/spot-diff">資料集與論文</a><a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><a href="../NOTICE.md">來源與授權聲明</a></div>
+</footer>
+</body>
+</html>
+

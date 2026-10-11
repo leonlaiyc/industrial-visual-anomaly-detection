@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A hands-on Computer Vision PoC on public VisA PCB images: normal-only CNN features, ROI and robustness experiments, supervised YOLO, and lessons from failure analysis.">
+<title>Exploring PCB Anomaly Detection with CNN and YOLO | Leon Lai</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="IVAD home"><span class="brand-mark" aria-hidden="true">I<span>V</span></span> IVAD <span class="brand-owner">/ Leon Lai</span></a>
+  <nav aria-label="Main navigation">
+    <a href="#explorations">Explorations</a><a href="#findings">Findings</a><a href="#lessons">Lessons</a><a href="#code">Code & evidence</a>
+  </nav>
+  <div class="language-switch" role="group" aria-label="Switch language">
+<a href="index.html" lang="en" hreflang="en" aria-current="page">EN</a><a href="zh-tw/index.html" lang="zh-Hant-TW" hreflang="zh-Hant-TW">繁體中文</a>  </div>
+</header>
+<main id="main">
+  <section class="hero" id="summary" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow">IVAD / PROJECT NOTES</p>
+      <h1 id="hero-title">Exploring PCB Anomaly Detection with CNN and YOLO</h1>
+      <p class="subtitle">A Hands-on Computer Vision PoC</p>
+      <p class="hero-intro">I wanted to understand how visual anomaly detection works by building a small, hands-on PoC. Using the public VisA PCB dataset, I prepared the data, explored normal-only CNN features, tested ROI scoring and robustness, and trained supervised YOLO models. This showcase brings together what I tried, what worked, what didn't, and what I learned.</p>
+      <p class="byline">Yu-Chen (Leon) Lai <span aria-hidden="true">/</span> Computer Vision</p>
+      <div class="actions"><a class="button primary" href="#explorations">Explore the three rounds <span aria-hidden="true">↓</span></a><a class="button secondary" href="executive-summary-one-page.pdf">One-page project sheet <span aria-hidden="true">↗</span></a></div>
+      <p class="download-note">English · A4 PDF</p>
+    </div>
+    <figure class="hero-figure">
+      <div class="figure-heading"><span class="signal" aria-hidden="true"></span>FROM THE EXPERIMENT<span class="figure-chip">CNN / PCB2</span></div>
+      <img src="assets/img/workflow_caught.jpg" width="960" height="640" alt="PCB2 defective board with a recorded CNN anomaly heatmap and board ROI outline">
+      <figcaption>PCB2 / A detected anomaly. Heatmap from the normal-only CNN pipeline; dashed outline marks the scoring region.</figcaption>
+    </figure>
+  </section>
+  <section class="section explorations" id="explorations" aria-labelledby="explorations-title">
+    <div class="section-heading"><p class="eyebrow">THREE TECHNICAL EXPLORATIONS</p><h2 id="explorations-title">Different questions. Different approaches.</h2><p>These rounds belong together as a learning journey. PCB1, PCB2, PCB3 and PCB4 are separate board datasets, not a shared test set or one jointly retrained model.</p></div>
+    <div class="workflow-grid">
+      <article class="workflow round-a" aria-labelledby="round-a">
+        <div class="round-heading"><span class="round-letter">A</span><span class="dataset">PCB1</span></div>
+        <h3 id="round-a">CNN Baseline</h3>
+        <p class="round-question">Can a model of normal appearance reveal an unfamiliar defect?</p>
+        <p class="training-tag">Normal images for fitting</p>
+        <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>Data inspection</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Orientation & image alignment</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Pretrained WideResNet-50-2 features</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Per-position Gaussian / Mahalanobis distance</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Image anomaly score & heatmap</span></li></ol>
+        <p class="challenge">Orientation, registration and background interference shaped the baseline.</p>
+        <p class="round-learning">Learn the data before changing the model.</p>
+      </article>
+      <article class="workflow round-b" aria-labelledby="round-b">
+        <div class="round-heading"><span class="round-letter">B</span><span class="dataset">PCB2 / PCB3</span></div>
+        <h3 id="round-b">Improve and Stress-Test</h3>
+        <p class="round-question">Can preprocessing reduce noise without creating a new failure mode?</p>
+        <p class="training-tag">Separate PCB2 & PCB3 experiments</p>
+        <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>CNN baseline</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Board ROI scoring</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Threshold calibration</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Controlled lighting correction experiment</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Robustness evaluation & engineering decision</span></li></ol>
+        <p class="challenge">PCB2 tested ROI scoring; PCB3 separately tested illumination correction.</p>
+        <p class="round-learning">A cleaner result needs a stress test.</p>
+      </article>
+      <article class="workflow round-c" aria-labelledby="round-c">
+        <div class="round-heading"><span class="round-letter">C</span><span class="dataset">PCB4</span></div>
+        <h3 id="round-c">Supervised YOLO</h3>
+        <p class="round-question">What changes when defect examples and annotations are available?</p>
+        <p class="training-tag">Defect annotations for training</p>
+        <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>PCB4 defect annotations</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Mask-to-bounding-box conversion</span></li><li><span class="step-dot" aria-hidden="true"></span><span>YOLOv8s / YOLO11s training</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Calibration & image-level detection</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Failure & acquisition-confound analysis</span></li></ol>
+        <p class="challenge">Actually trained with one generic defect class; labels differ from normal-only fitting.</p>
+        <p class="round-learning">Detection scores need context and localization checks.</p>
+      </article>
+    </div>
+  </section>
+  <section class="section findings" id="findings" aria-labelledby="findings-title">
+    <div class="section-heading"><p class="eyebrow">WHAT ACTUALLY HAPPENED</p><h2 id="findings-title">The useful part was in the failures.</h2><p>A few representative results from frozen score records. Each finding stays attached to its own dataset and evaluation setting.</p></div>
+    <div class="finding-grid">
+      <article class="finding round-a">
+        <div class="finding-heading"><span class="round-letter">A</span><h3>Model normal appearance first</h3></div>
+        <figure><img src="assets/img/pcb1_alignment.jpg" width="1760" height="506" alt="PCB1 normal examples before registration and after registration and cropping"><figcaption>PCB1 normal images: raw inputs above, aligned crops below.</figcaption></figure>
+        <dl>
+          <dt>Question</dt><dd>Could pretrained CNN features identify deviations without defect training labels?</dd>
+          <dt>Tried</dt><dd>Inspect and align PCB1 images, then fit a Gaussian at each feature-map position.</dd>
+          <dt>Observed</dt><dd class="result">The original PCB1 baseline detected 72/100 defective test images (72% recall). Heatmaps and false alarms exposed alignment and background sensitivity.</dd>
+          <dt>Learned</dt><dd>The highest anomaly score can come from the background rather than the defect. Inspect the image and the scoring region together.</dd>
+        </dl>
+      </article>
+      <article class="finding round-b">
+        <div class="finding-heading"><span class="round-letter">B</span><h3>Improve, then challenge the improvement</h3></div>
+        <figure><img src="assets/img/workflow_false_alarm.jpg" width="960" height="640" alt="A normal PCB2 image falsely flagged by the ROI-scoring model, with an anomaly highlight near the board edge"><figcaption>PCB2 false alarm: a normal image still triggered the ROI model.</figcaption></figure>
+        <dl>
+          <dt>Question</dt><dd>Would board-only scoring and lighting correction reduce false alarms?</dd>
+          <dt>Tried</dt><dd>Evaluate ROI scoring on PCB2; run a separate controlled correction experiment on PCB3, with calibrated thresholds and robustness checks.</dd>
+          <dt>Observed</dt><dd class="result"><strong>PCB2:</strong> test-normal false alarms fell from 13% to 3%; recall stayed at 80%. <strong>PCB3:</strong> correction helped some lighting conditions but worsened false alarms under blur. The candidate was not adopted.</dd>
+          <dt>Learned</dt><dd>Fix the source of interference, then look for trade-offs. Improving one condition does not establish robustness.</dd>
+        </dl>
+      </article>
+      <article class="finding round-c">
+        <div class="finding-heading"><span class="round-letter">C</span><h3>Learn what supervision buys</h3></div>
+        <figure><img src="assets/img/pcb4_annotations.jpg" width="1360" height="904" alt="PCB4 annotation audit showing mask outlines in cyan and mask-derived training bounding boxes in red"><figcaption>PCB4 label audit: red training boxes, cyan ground-truth masks. These are annotations, not model predictions.</figcaption></figure>
+        <dl>
+          <dt>Question</dt><dd>How would labelled defects change image-level detection?</dd>
+          <dt>Tried</dt><dd>Convert PCB4 masks to boxes and train YOLOv8s and YOLO11s, using one generic <code>defect</code> class and held-out defect folds.</dd>
+          <dt>Observed</dt><dd class="result">Observed image-level recall: YOLOv8s 98% and YOLO11s 95%. Recall was higher in this supervised setting, but brightness confounding, weaker generalization to unseen defect types, and localization limitations remained.</dd>
+          <dt>Learned</dt><dd>An image flagged as defective does not mean its box precisely locates the defect. This exploratory study does not establish architecture superiority.</dd>
+        </dl>
+      </article>
+    </div>
+    <p class="comparison-note">CNN fitting used normal images only. YOLO used defect annotations. Dataset, supervision and protocol differences prevent a controlled cross-round model ranking.</p>
+    <details id="pcb3-repair" class="repair"><summary>The implementation history stays visible</summary><p>After PCB3 evaluation, an analysis input check was repaired (7dbd302). No frozen score, threshold or decision changed. D5 was accepted by the project owner on 2026-10-11; overall acceptance of this outward-facing portfolio remains separate. The source retains the repair chronology, deviations and verification evidence. Records: <code>docs/pcb3_post_evaluation_repair.md</code> and <code>docs/illumination_experiment_deviations.md</code>.</p></details>
+  </section>
+  <section class="section lessons" id="lessons" aria-labelledby="lessons-title">
+    <div class="section-heading"><p class="eyebrow">WHAT I LEARNED</p><h2 id="lessons-title">Four lessons I would carry forward.</h2></div>
+    <div class="lesson-grid"><article><span class="lesson-number" aria-hidden="true">01</span><h3>Data quality and preprocessing matter.</h3><p>Check orientation, alignment, board masks and image conditions before trusting a score.</p></article><article><span class="lesson-number" aria-hidden="true">02</span><h3>Investigate the root cause before increasing complexity.</h3><p>False-alarm images helped identify background interference and motivated ROI scoring.</p></article><article><span class="lesson-number" aria-hidden="true">03</span><h3>Better metrics can introduce unexpected trade-offs.</h3><p>The PCB3 lighting correction helped some conditions and created a blur failure.</p></article><article><span class="lesson-number" aria-hidden="true">04</span><h3>Model choice depends on data, labels and objectives.</h3><p>Normal-only modelling and supervised detection answer different questions and require different evidence.</p></article></div>
+  </section>
+  <section class="section code-section" id="code" aria-labelledby="code-title">
+    <div><p class="eyebrow">EXPLORE THE CODE</p><h2 id="code-title">A concise showcase. A technical record behind it.</h2><p>The repository keeps the real source, experimental protocols, split descriptions, score records, model-comparison limitations, audit evidence and D5 chronology.</p><p class="source-status">The source repository is private. Viewing it requires repository permission; the project sheet is self-contained.</p></div>
+    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">GitHub source · access required <span aria-hidden="true">↗</span></a><a class="button secondary" href="executive-summary-one-page.pdf">Download the one-page project sheet <span aria-hidden="true">↗</span></a></div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div><a class="footer-brand" href="index.html">IVAD / Yu-Chen (Leon) Lai</a><p>Public VisA benchmark images; no validation on real manufacturing-line images and no production-readiness claim. Built with AI-assisted development.</p><p>Images: VisA, Amazon Science · Zou et al., ECCV 2022 · CC BY 4.0. Figures modified by registration, cropping, resizing and overlays. No endorsement implied.</p></div>
+  <div class="footer-links"><a href="https://github.com/amazon-science/spot-diff">Dataset & paper</a><a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><a href="NOTICE.md">Attribution & notices</a></div>
+</footer>
+</body>
+</html>
+
