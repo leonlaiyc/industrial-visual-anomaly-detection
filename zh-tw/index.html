@@ -29,8 +29,8 @@
       <p class="subtitle">動手實作的電腦視覺 PoC</p>
       <p class="hero-intro">我想搞懂工業視覺異常檢測怎麼運作，於是動手做了一個小 PoC。我使用公開的 VisA PCB 資料集，用 CNN 特徵建立正常影像模型，測試 ROI 計分與穩健性，再訓練監督式 YOLO。這裡記錄了我的嘗試、成敗與實際收穫。</p>
       <p class="byline">Yu-Chen (Leon) Lai <span aria-hidden="true">/</span> Computer Vision</p>
-      <div class="actions"><a class="button primary" href="#explorations">看看三輪技術探索 <span aria-hidden="true">↓</span></a><a class="button secondary" href="../executive-summary-one-page.pdf">一頁專案分享檔 <span aria-hidden="true">↗</span></a></div>
-      <p class="download-note">英文 · A4 PDF</p>
+<p class="print-only"><a href="https://leonlaiyc.github.io/industrial-visual-anomaly-detection/zh-tw/">https://leonlaiyc.github.io/industrial-visual-anomaly-detection/zh-tw/</a></p>      <div class="actions"><a class="button primary" href="#explorations">看看三輪技術探索 <span aria-hidden="true">↓</span></a><a class="button secondary" href="../project-notes.zh-TW.pdf">下載中文網頁 PDF <span aria-hidden="true">↗</span></a></div>
+      <p class="download-note">繁體中文 · A4 PDF · 完整網頁內容</p>
     </div>
     <figure class="hero-figure">
       <div class="figure-heading"><span class="signal" aria-hidden="true"></span>實驗中的真實影像<span class="figure-chip">CNN / PCB2</span></div>
@@ -84,12 +84,12 @@
         </dl>
       </article>
       <article class="finding round-b">
-        <div class="finding-heading"><span class="round-letter">B</span><h3>優化之後，再丟進壓力測試</h3></div>
+        <div class="finding-heading"><span class="round-letter">B</span><h3>優化之後，再進行亮度測試</h3></div>
         <figure><img src="../assets/img/workflow_false_alarm.jpg" width="960" height="640" alt="PCB2 正常影像被 ROI 計分模型誤報，電路板邊緣附近出現異常熱點"><figcaption>PCB2 誤報案例：正常影像仍觸發 ROI 模型。</figcaption></figure>
         <dl>
           <dt>想釐清</dt><dd>只在電路板內計分，加上光照修正，能減少誤報嗎？</dd>
           <dt>嘗試方法</dt><dd>在 PCB2 評估 ROI 計分；在 PCB3 另做受控光照修正實驗，搭配門檻校準與穩健性檢查。</dd>
-          <dt>實際結果</dt><dd class="result"><strong>PCB2：</strong>正常測試影像誤報率由 13% 降至 3%，瑕疵檢出率維持 80%。<strong>PCB3：</strong>修正在部分光照條件下有效，卻使模糊影像的誤報明顯增加，因此未採用候選方法。</dd>
+          <dt>實際結果</dt><dd class="result">PCB2：正常測試影像誤報率由 13% 降至 3%，瑕疵檢出率維持 80%。PCB3：修正在部分光照條件下有效，卻使模糊影像的誤報明顯增加，因此未採用候選方法。</dd>
           <dt>我的收穫</dt><dd>先解決干擾源，再看代價。優化單一條件，不代表整體變得更穩健。</dd>
         </dl>
       </article>
@@ -112,7 +112,7 @@
   </section>
   <section class="section code-section" id="code" aria-labelledby="code-title">
     <div><p class="eyebrow">探索程式與證據</p><h2 id="code-title">精簡的展示，背後有完整技術紀錄。</h2><p>來源庫保留真實程式、實驗流程、資料切分說明、分數紀錄、模型比較限制、稽核證據與 D5 時間線。</p></div>
-    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">前往技術來源庫 <span aria-hidden="true">↗</span></a><a class="button secondary" href="../executive-summary-one-page.pdf">下載一頁專案分享檔 <span aria-hidden="true">↗</span></a></div>
+    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">前往技術來源庫 <span aria-hidden="true">↗</span></a><a class="button secondary" href="../project-notes.zh-TW.pdf">下載中文網頁 PDF <span aria-hidden="true">↗</span></a></div>
   </section>
 </main>
 <footer class="site-footer">
