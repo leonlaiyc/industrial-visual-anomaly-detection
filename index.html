@@ -54,7 +54,7 @@
         <p class="training-tag">Separate PCB2 & PCB3 experiments</p>
         <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>CNN baseline</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Board ROI scoring</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Threshold calibration</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Controlled lighting correction experiment</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Robustness evaluation & engineering decision</span></li></ol>
         <p class="challenge">PCB2 tested ROI scoring; PCB3 separately tested illumination correction.</p>
-        <p class="round-learning">A cleaner result needs a stress test.</p>
+        <p class="round-learning">Test how brighter, darker, contrast-adjusted and blurred images affect detection.</p>
       </article>
       <article class="workflow round-c" aria-labelledby="round-c">
         <div class="round-heading"><span class="round-letter">C</span><span class="dataset">PCB4</span></div>
@@ -63,7 +63,7 @@
         <p class="training-tag">Defect annotations for training</p>
         <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>PCB4 defect annotations</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Mask-to-bounding-box conversion</span></li><li><span class="step-dot" aria-hidden="true"></span><span>YOLOv8s / YOLO11s training</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Calibration & image-level detection</span></li><li><span class="step-dot" aria-hidden="true"></span><span>Failure & acquisition-confound analysis</span></li></ol>
         <p class="challenge">Actually trained with one generic defect class; labels differ from normal-only fitting.</p>
-        <p class="round-learning">Detection scores need context and localization checks.</p>
+        <p class="round-learning">Check both the model score and whether the box locates the defect correctly.</p>
       </article>
     </div>
   </section>
@@ -102,15 +102,14 @@
       </article>
     </div>
     <p class="comparison-note">CNN fitting used normal images only. YOLO used defect annotations. Dataset, supervision and protocol differences prevent a controlled cross-round model ranking.</p>
-    <details id="pcb3-repair" class="repair"><summary>The implementation history stays visible</summary><p>After PCB3 evaluation, an analysis input check was repaired (7dbd302). No frozen score, threshold or decision changed. D5 was accepted by the project owner on 2026-10-11; overall acceptance of this outward-facing portfolio remains separate. The source retains the repair chronology, deviations and verification evidence. Records: <code>docs/pcb3_post_evaluation_repair.md</code> and <code>docs/illumination_experiment_deviations.md</code>.</p></details>
   </section>
   <section class="section lessons" id="lessons" aria-labelledby="lessons-title">
     <div class="section-heading"><p class="eyebrow">WHAT I LEARNED</p><h2 id="lessons-title">Four lessons I would carry forward.</h2></div>
     <div class="lesson-grid"><article><span class="lesson-number" aria-hidden="true">01</span><h3>Data quality and preprocessing matter.</h3><p>Check orientation, alignment, board masks and image conditions before trusting a score.</p></article><article><span class="lesson-number" aria-hidden="true">02</span><h3>Investigate the root cause before increasing complexity.</h3><p>False-alarm images helped identify background interference and motivated ROI scoring.</p></article><article><span class="lesson-number" aria-hidden="true">03</span><h3>Better metrics can introduce unexpected trade-offs.</h3><p>The PCB3 lighting correction helped some conditions and created a blur failure.</p></article><article><span class="lesson-number" aria-hidden="true">04</span><h3>Model choice depends on data, labels and objectives.</h3><p>Normal-only modelling and supervised detection answer different questions and require different evidence.</p></article></div>
   </section>
   <section class="section code-section" id="code" aria-labelledby="code-title">
-    <div><p class="eyebrow">EXPLORE THE CODE</p><h2 id="code-title">A concise showcase. A technical record behind it.</h2><p>The repository keeps the real source, experimental protocols, split descriptions, score records, model-comparison limitations, audit evidence and D5 chronology.</p><p class="source-status">The source repository is private. Viewing it requires repository permission; the project sheet is self-contained.</p></div>
-    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">GitHub source · access required <span aria-hidden="true">↗</span></a><a class="button secondary" href="executive-summary-one-page.pdf">Download the one-page project sheet <span aria-hidden="true">↗</span></a></div>
+    <div><p class="eyebrow">EXPLORE THE CODE</p><h2 id="code-title">A concise showcase. A technical record behind it.</h2><p>The repository keeps the real source, experimental protocols, split descriptions, score records, model-comparison limitations, audit evidence and D5 chronology.</p></div>
+    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">Open the technical repository <span aria-hidden="true">↗</span></a><a class="button secondary" href="executive-summary-one-page.pdf">Download the one-page project sheet <span aria-hidden="true">↗</span></a></div>
   </section>
 </main>
 <footer class="site-footer">

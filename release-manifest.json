@@ -1,22 +1,11 @@
 {
-  "status": "QA VERIFIED STATIC PORTFOLIO; LIVE HOSTING BLOCKED BY GITHUB ACCOUNT PLAN",
-  "source_commit": "3ae600ae66afaeebba7526ec1462af26ac17cef7",
-  "source_mode": "private-repository",
-  "website_url": "",
-  "pages_create_api_status": 422,
-  "assigned_pages_url": null,
-  "expected_url_not_deployed": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
-  "scope": "All static payload files except this manifest; no source implementation, raw data or model weights.",
+  "updated": "2026-10-12",
+  "source_license": "AGPL-3.0-only",
   "files": [
     {
       "path": ".nojekyll",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "NOTICE.md",
-      "bytes": 3992,
-      "sha256": "1b7d66cfa819a28c0d8f7210135292a26f5ed3c0e886fd43d939013de069ed59"
     },
     {
       "path": "assets/favicon.svg",
@@ -45,8 +34,8 @@
     },
     {
       "path": "assets/site.css",
-      "bytes": 10659,
-      "sha256": "0993cf102367065185aedab8a80bdd1bf00ff9852ff7d3010db5c1695f61265a"
+      "bytes": 10988,
+      "sha256": "2e72e204364be63fef0ff470cd0fd30c7cf8718c4a3a8dd5107c18eb77ed2417"
     },
     {
       "path": "executive-summary-one-page.pdf",
@@ -55,18 +44,28 @@
     },
     {
       "path": "index.html",
-      "bytes": 14221,
-      "sha256": "5606c268fecac6b517c8443ad7dd1fb1583e894b1d5df129e25275b91e2d1da4"
+      "bytes": 13581,
+      "sha256": "ca3d787f86430241694f6a198ef92cdd0c0356a7aa1f3d010bc1b2fca4c819e6"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "path": "NOTICE.md",
+      "bytes": 4653,
+      "sha256": "fe89620c34f7d847bc6864a1006ebf88f93e1171cb1ba8a84b5e656b664a9ab5"
     },
     {
       "path": "print/one-page/index.html",
-      "bytes": 8340,
-      "sha256": "2db419c5249086a933e4467604dfab56653cf74cb5baea2677a1bdae79ad205b"
+      "bytes": 8319,
+      "sha256": "e275c1038e312b1a42aed465cd3b9f445a4f99c056b79f1425e1d32fba1da6da"
     },
     {
       "path": "release-link-status.json",
-      "bytes": 286,
-      "sha256": "de5a59882bfa9f910900589ed9907f50a01c3cb685e617a86cf0c29ffc3b6eeb"
+      "bytes": 285,
+      "sha256": "3e4550b67867e24552bc470e8e21d9e27f9abbc4bf36148f77f4a421101c8c09"
     },
     {
       "path": "robots.txt",
@@ -75,8 +74,8 @@
     },
     {
       "path": "zh-tw/index.html",
-      "bytes": 13870,
-      "sha256": "80d2718cfb1b6fd50ed0cced55992cf7a577713aab6397e45bb63bb5520d070e"
+      "bytes": 13306,
+      "sha256": "d93f89f6a52f1d6139a5564928150aaca027134a4c5f9c5484da59c1721e05ee"
     }
   ]
 }

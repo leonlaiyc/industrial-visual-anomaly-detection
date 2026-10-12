@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="以公開 VisA PCB 資料集實作電腦視覺 PoC：從僅用正常影像的 CNN 方法、ROI 與穩健性實驗，到監督式 YOLO 訓練及失敗分析。">
+<meta name="description" content="使用公開的 VisA PCB 資料集做電腦視覺 PoC：試用只以正常影像建模的 CNN 方法、ROI 計分與壓力測試，再訓練監督式 YOLO，檢查失敗案例。">
 <title>以 CNN 與 YOLO 探索 PCB 異常檢測 | Leon Lai</title>
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/site.css">
@@ -24,7 +24,7 @@
       <p class="eyebrow">IVAD / 專案筆記</p>
       <h1 id="hero-title">以 CNN 與 YOLO 探索 PCB 異常檢測</h1>
       <p class="subtitle">動手實作的電腦視覺 PoC</p>
-      <p class="hero-intro">為了理解視覺異常檢測如何運作，我從一個小型 PoC 開始動手實作。以公開 VisA PCB 資料集為起點，整理資料、探索僅用正常影像建模的 CNN 方法，測試 ROI 計分與穩健性，再訓練監督式 YOLO 模型。這裡整理我試過的方法、有效與無效的嘗試，以及從失敗案例學到的事。</p>
+      <p class="hero-intro">我想搞懂工業視覺異常檢測怎麼運作，於是動手做了一個小 PoC。我使用公開的 VisA PCB 資料集，用 CNN 特徵建立正常影像模型，測試 ROI 計分與穩健性，再訓練監督式 YOLO。這裡記錄了我的嘗試、成敗與實際收穫。</p>
       <p class="byline">Yu-Chen (Leon) Lai <span aria-hidden="true">/</span> Computer Vision</p>
       <div class="actions"><a class="button primary" href="#explorations">看看三輪技術探索 <span aria-hidden="true">↓</span></a><a class="button secondary" href="../executive-summary-one-page.pdf">一頁專案分享檔 <span aria-hidden="true">↗</span></a></div>
       <p class="download-note">英文 · A4 PDF</p>
@@ -36,7 +36,7 @@
     </figure>
   </section>
   <section class="section explorations" id="explorations" aria-labelledby="explorations-title">
-    <div class="section-heading"><p class="eyebrow">三輪技術探索</p><h2 id="explorations-title">不同問題，試用不同方法。</h2><p>三輪探索串起同一段學習歷程。PCB1、PCB2、PCB3 與 PCB4 是不同電路板資料集，並非同一測試集，也不是共同重新訓練的一個模型。</p></div>
+    <div class="section-heading"><p class="eyebrow">三輪技術探索</p><h2 id="explorations-title">三個階段，不同的解法與考驗。</h2><p>三輪探索串起同一段學習歷程。PCB1、PCB2、PCB3 與 PCB4 是四種不同的電路板資料集。它們各自獨立，使用不同的測試集，並不是把全部資料混在一起訓練同一個模型。</p></div>
     <div class="workflow-grid">
       <article class="workflow round-a" aria-labelledby="round-a">
         <div class="round-heading"><span class="round-letter">A</span><span class="dataset">PCB1</span></div>
@@ -53,8 +53,8 @@
         <p class="round-question">前處理能降低干擾，同時避免引入新的失敗模式嗎？</p>
         <p class="training-tag">PCB2 與 PCB3 分開實驗</p>
         <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>CNN 基準方法</span></li><li><span class="step-dot" aria-hidden="true"></span><span>電路板 ROI 計分</span></li><li><span class="step-dot" aria-hidden="true"></span><span>門檻校準</span></li><li><span class="step-dot" aria-hidden="true"></span><span>受控光照修正實驗</span></li><li><span class="step-dot" aria-hidden="true"></span><span>穩健性評估與工程決策</span></li></ol>
-        <p class="challenge">PCB2 驗證 ROI 計分；PCB3 另行評估光照修正。</p>
-        <p class="round-learning">結果改善之後，還要承受壓力測試。</p>
+        <p class="challenge">PCB2 測試 ROI 範圍計分；PCB3 則獨立測試光照修正的效果。</p>
+        <p class="round-learning">把圖片調亮、調暗、改變對比或模糊，測試對檢測結果的影響。</p>
       </article>
       <article class="workflow round-c" aria-labelledby="round-c">
         <div class="round-heading"><span class="round-letter">C</span><span class="dataset">PCB4</span></div>
@@ -62,13 +62,13 @@
         <p class="round-question">有了瑕疵樣本與標註，影像檢測會有什麼不同？</p>
         <p class="training-tag">使用瑕疵標註訓練</p>
         <ol class="steps"><li><span class="step-dot" aria-hidden="true"></span><span>PCB4 瑕疵標註</span></li><li><span class="step-dot" aria-hidden="true"></span><span>遮罩轉換為邊界框</span></li><li><span class="step-dot" aria-hidden="true"></span><span>YOLOv8s / YOLO11s 訓練</span></li><li><span class="step-dot" aria-hidden="true"></span><span>校準與影像層級檢測</span></li><li><span class="step-dot" aria-hidden="true"></span><span>失敗案例與影像擷取混淆分析</span></li></ol>
-        <p class="challenge">確實完成模型訓練，使用單一 defect 類別；與正常影像建模的標註需求不同。</p>
-        <p class="round-learning">檢出分數需要情境，也需要定位檢查。</p>
+        <p class="challenge">YOLO 使用瑕疵標註訓練，採用單一 defect 類別；前面的 CNN 方法只用正常影像建模。</p>
+        <p class="round-learning">除了看模型得分，還要確認瑕疵位置有沒有框對。</p>
       </article>
     </div>
   </section>
   <section class="section findings" id="findings" aria-labelledby="findings-title">
-    <div class="section-heading"><p class="eyebrow">實際發生了什麼</p><h2 id="findings-title">失敗案例，往往最有收穫。</h2><p>只選幾個來自凍結分數紀錄的代表性結果。每個發現都保留所屬資料集與評估條件。</p></div>
+    <div class="section-heading"><p class="eyebrow">實際發生了什麼</p><h2 id="findings-title">從翻車的地方與壓力測試中學到的事。</h2><p>只選幾個來自凍結分數紀錄的代表性結果。每個發現都保留所屬資料集與評估條件。</p></div>
     <div class="finding-grid">
       <article class="finding round-a">
         <div class="finding-heading"><span class="round-letter">A</span><h3>先建立正常外觀的模型</h3></div>
@@ -81,13 +81,13 @@
         </dl>
       </article>
       <article class="finding round-b">
-        <div class="finding-heading"><span class="round-letter">B</span><h3>改善之後，繼續挑戰改善</h3></div>
+        <div class="finding-heading"><span class="round-letter">B</span><h3>優化之後，再丟進壓力測試</h3></div>
         <figure><img src="../assets/img/workflow_false_alarm.jpg" width="960" height="640" alt="PCB2 正常影像被 ROI 計分模型誤報，電路板邊緣附近出現異常熱點"><figcaption>PCB2 誤報案例：正常影像仍觸發 ROI 模型。</figcaption></figure>
         <dl>
           <dt>想釐清</dt><dd>只在電路板內計分，加上光照修正，能減少誤報嗎？</dd>
           <dt>嘗試方法</dt><dd>在 PCB2 評估 ROI 計分；在 PCB3 另做受控光照修正實驗，搭配門檻校準與穩健性檢查。</dd>
           <dt>實際結果</dt><dd class="result"><strong>PCB2：</strong>正常測試影像誤報率由 13% 降至 3%，瑕疵檢出率維持 80%。<strong>PCB3：</strong>修正在部分光照條件下有效，卻使模糊影像的誤報明顯增加，因此未採用候選方法。</dd>
-          <dt>我的收穫</dt><dd>先處理干擾來源，再找出代價。改善某個條件，並不代表整體更穩健。</dd>
+          <dt>我的收穫</dt><dd>先解決干擾源，再看代價。優化單一條件，不代表整體變得更穩健。</dd>
         </dl>
       </article>
       <article class="finding round-c">
@@ -101,16 +101,15 @@
         </dl>
       </article>
     </div>
-    <p class="comparison-note">CNN 僅以正常影像建模，YOLO 則使用瑕疵標註。資料集、監督資訊與實驗流程不同，不能跨輪次做受控的模型排名。</p>
-    <details id="pcb3-repair" class="repair"><summary>實作問題與修復紀錄持續保留</summary><p>PCB3 評估後修復了一項分析程式輸入檢查（7dbd302）。凍結分數、門檻與決策皆未改變。專案負責人已於 2026-10-11 接受 D5；對外作品集的整體驗收是另一項決定。來源庫保留完整修復時間線、偏差紀錄與驗證證據。 紀錄：<code>docs/pcb3_post_evaluation_repair.md</code>、<code>docs/illumination_experiment_deviations.md</code>。</p></details>
+    <p class="comparison-note">CNN 只用正常影像建模，YOLO 則使用瑕疵標註。兩者的資料集與實驗條件不同，無法直接拿來比較模型優劣。</p>
   </section>
   <section class="section lessons" id="lessons" aria-labelledby="lessons-title">
     <div class="section-heading"><p class="eyebrow">我學到什麼</p><h2 id="lessons-title">下次實作，我會記住這四件事。</h2></div>
-    <div class="lesson-grid"><article><span class="lesson-number" aria-hidden="true">01</span><h3>資料品質與前處理很重要。</h3><p>信任分數之前，先檢查方向、對位、電路板遮罩與影像條件。</p></article><article><span class="lesson-number" aria-hidden="true">02</span><h3>增加複雜度之前，先找根因。</h3><p>誤報影像幫助我辨識背景干擾，也促成 ROI 計分的嘗試。</p></article><article><span class="lesson-number" aria-hidden="true">03</span><h3>更好的指標，可能帶來意外代價。</h3><p>PCB3 光照修正改善部分條件，卻引入模糊影像的失敗模式。</p></article><article><span class="lesson-number" aria-hidden="true">04</span><h3>模型選擇取決於資料、標註與目標。</h3><p>正常影像建模與監督式檢測回答不同問題，也需要不同證據。</p></article></div>
+    <div class="lesson-grid"><article><span class="lesson-number" aria-hidden="true">01</span><h3>資料品質與前處理很重要。</h3><p>信任分數之前，先檢查方向、對位、電路板遮罩與影像條件。</p></article><article><span class="lesson-number" aria-hidden="true">02</span><h3>別急著把模型做複雜，先找出問題根源。</h3><p>誤報影像幫助我辨識背景干擾，也促成 ROI 計分的嘗試。</p></article><article><span class="lesson-number" aria-hidden="true">03</span><h3>更好的指標，可能帶來意外代價。</h3><p>PCB3 光照修正改善部分條件，卻引入模糊影像的失敗模式。</p></article><article><span class="lesson-number" aria-hidden="true">04</span><h3>模型選擇取決於資料、標註與目標。</h3><p>正常影像建模與監督式檢測回答不同問題，也需要不同證據。</p></article></div>
   </section>
   <section class="section code-section" id="code" aria-labelledby="code-title">
-    <div><p class="eyebrow">探索程式與證據</p><h2 id="code-title">精簡的展示，背後有完整技術紀錄。</h2><p>來源庫保留真實程式、實驗流程、資料切分說明、分數紀錄、模型比較限制、稽核證據與 D5 時間線。</p><p class="source-status">來源庫目前為私人。瀏覽需具備儲存庫權限；一頁專案分享檔可獨立閱讀。</p></div>
-    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">GitHub 來源碼 · 需存取權限 <span aria-hidden="true">↗</span></a><a class="button secondary" href="../executive-summary-one-page.pdf">下載一頁專案分享檔 <span aria-hidden="true">↗</span></a></div>
+    <div><p class="eyebrow">探索程式與證據</p><h2 id="code-title">精簡的展示，背後有完整技術紀錄。</h2><p>來源庫保留真實程式、實驗流程、資料切分說明、分數紀錄、模型比較限制、稽核證據與 D5 時間線。</p></div>
+    <div class="code-actions"><a class="button primary" href="https://github.com/leonlaiyc/industrial-visual-anomaly-detection">前往技術來源庫 <span aria-hidden="true">↗</span></a><a class="button secondary" href="../executive-summary-one-page.pdf">下載一頁專案分享檔 <span aria-hidden="true">↗</span></a></div>
   </section>
 </main>
 <footer class="site-footer">
