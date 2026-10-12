@@ -44,8 +44,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 14077,
-      "sha256": "684d51d7b9e1f82af0e497167bc54f71df72750b78e5b6575c410b23e3d0f9e4"
+      "bytes": 14344,
+      "sha256": "25a94ad8339e6c37bd0efca66fe11bebe0a7e84e9c47ee69b982685ae3d4bd09"
     },
     {
       "path": "LICENSE",
@@ -79,8 +79,8 @@
     },
     {
       "path": "zh-tw/index.html",
-      "bytes": 13796,
-      "sha256": "f695fb395b29f2859894a877cd156ab7b3eb8619c8d0de5439e98e841d5684cc"
+      "bytes": 14063,
+      "sha256": "78f2d54c5feca67a93b05aa306e785bd71f55266968f43972cf47f8ab9ed2ab5"
     }
   ]
 }
