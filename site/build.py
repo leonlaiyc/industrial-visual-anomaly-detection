@@ -199,6 +199,8 @@ def build(dist: Path = DIST, *, release: bool = False, links_path: Path = releas
     (dist / "release-link-status.json").write_text(json.dumps(links, indent=2) + "\n", encoding="utf-8")
     (dist / ".nojekyll").write_text("", encoding="utf-8")
     shutil.copyfile(HERE.parent / "NOTICE.md", dist / "NOTICE.md")
+    if (HERE.parent / "LICENSE").exists():
+        shutil.copyfile(HERE.parent / "LICENSE", dist / "LICENSE")
     # Rebuilding wipes dist/, so carry over the canonical sheet until re-rendered.
     for rep_name, dist_name in (("executive-summary-one-page.pdf", "executive-summary-one-page.pdf"),):
         pdf = HERE.parent / "reports" / rep_name

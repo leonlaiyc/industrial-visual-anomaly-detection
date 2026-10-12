@@ -20,7 +20,7 @@ Bilingual project showcase (English / 繁體中文): built from `site/` (see *We
 Retired briefs are labelled historical evidence in `docs/history/`; they are not website downloads.
 
 AI-assisted development; public benchmark images only. No validation on real manufacturing-line images
-and **no production-readiness claim**. Source remains private and requires repository permission.
+and **no production-readiness claim**. Source is publicly available under AGPL-3.0-only.
 D5 was accepted by the project owner on October 11, 2026; overall acceptance of the final outward-facing
 portfolio is separate. The original protocols, scores, thresholds, splits, repair and deviation records remain.
 
@@ -227,7 +227,7 @@ file contains a literal metric or the two languages define different keys. Exist
 reused; building this portfolio does not train or rescore models. Historical figure generation is separate.
 `main` contains sanitized source and technical evidence; `gh-pages` contains only built static files.
 `site/release_links.json` records actual deployed URLs only. An empty website URL means hosting is pending,
-and the PDF says so. Private source links are explicitly labelled as requiring permission.
+and the PDF says so. Public source links lead to the AGPL-licensed repository.
 
 ## Limitations
 
@@ -337,14 +337,14 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
   Legal review is needed before any commercial use.
 - **Libraries:** PyTorch, torchvision, NumPy, SciPy, Pillow, Matplotlib, ReportLab, pypdf, PyYAML;
   pytest and scikit-learn for tests.
-- **This project's source code:** no licence has been applied yet (all rights reserved). The proposed
-  licence is MIT, covering this repository's own code and documentation only; it would not apply to the
-  VisA data, the pretrained weights or third-party libraries, which keep their own terms.
+- **This project's source code:** GNU **AGPL-3.0-only**, including the CNN implementation and
+  YOLO exploratory scripts. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md). VisA images,
+  pretrained weights and third-party libraries retain their own terms; this is not an MIT-only project.
 - No endorsement by the dataset authors or by any company is implied. The CC BY 4.0 licence applies to the
   VisA images and their derivatives only, not to this project's code.
 
 ## Release preparation and navigation
 
-D5 is **ACCEPTED BY PROJECT OWNER**, dated 2026-10-11 (Asia/Taipei), by Leon's explicit conversational confirmation. The non-score-affecting post-evaluation repair does not invalidate PCB3's primary evaluation; complete chronology and deviation disclosure remain in [the repair record](docs/pcb3_post_evaluation_repair.md). Overall project-owner review remains PENDING and external release is not authorized.
+D5 is **ACCEPTED BY PROJECT OWNER**, dated 2026-10-11 (Asia/Taipei), by Leon's explicit conversational confirmation. The non-score-affecting post-evaluation repair does not invalidate PCB3's primary evaluation; complete chronology and deviation disclosure remain in [the repair record](docs/pcb3_post_evaluation_repair.md). The owner authorized public source release and GitHub Pages deployment on 2026-10-12. Overall portfolio acceptance remains separate.
 
-Canonical website/source/evidence URLs are configured once in `site/release_links.json`. They are currently empty because public endpoints have not been authorized or verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md), [licensing review](docs/licensing_review.md), and [canonical artifact reconciliation](docs/artifact_reconciliation.md). Recipient PDFs state that the website link is pending first deployment and contain no localhost links. Re-render both PDFs only after authorized URL changes, then verify and regenerate the release manifest. No model or experiment rerun is required.
+Canonical website/source/evidence URLs are configured once in `site/release_links.json`. The website URL is recorded after GitHub Pages assigns it and anonymous access is verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md), [licensing review](docs/licensing_review.md), and [canonical artifact reconciliation](docs/artifact_reconciliation.md). Recipient PDFs state that the website link is pending first deployment and contain no localhost links. Re-render the active one-page PDF after URL changes, then verify and regenerate the release manifest. No model or experiment rerun is required.

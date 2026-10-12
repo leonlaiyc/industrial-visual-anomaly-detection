@@ -1,5 +1,17 @@
 # Licensing and attribution review
 
+## Current public-release decision (2026-10-12)
+
+The owner explicitly authorized making the original repository public after addressing YOLO/AGPL.
+The complete IVAD-authored codebase, including CNN and YOLO exploratory implementation and static
+website source/build instructions, is now AGPL-3.0-only (LICENSE). This resolves the source-release
+choice through the AGPL open-source path rather than an MIT-only or proprietary distribution.
+Ultralytics remains an external AGPL dependency; no vendored implementation or model weights are added.
+VisA derivatives retain CC BY 4.0 and their notices. Commercial model deployment and any future
+distribution of weights are outside this static/source release and require their own review.
+Earlier pending/private-only statements below are historical snapshots, superseded for this release.
+
+
 Review date: 2026-10-11 (Asia/Taipei). Status: prepared for owner review; public publication NOT AUTHORIZED.
 This review records evidence and open questions; it does not apply a new source licence or authorize weights.
 

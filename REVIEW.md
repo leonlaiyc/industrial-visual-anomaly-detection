@@ -12,9 +12,9 @@ and [the release record](docs/portfolio_release.md) for executed QA, access limi
   and [false-alarm supplement](exploratory/yolo_pcb4/audit/FALSE_ALARM_SUPPLEMENT.md)
 - [Licensing scope](docs/licensing_review.md)
 
-Repository remains private. D5 ACCEPTED BY PROJECT OWNER on October 11, 2026; overall outward-facing
-portfolio acceptance is separate. Publication was authorized, but the Pages API rejected private-repository
-hosting under the current account plan (HTTP 422). Neither a deployed URL nor public source access is claimed.
+The owner authorized public source release under AGPL-3.0-only and GitHub Pages deployment on
+October 12, 2026. The earlier private-repository Pages blocker is historical. D5 acceptance and
+overall portfolio acceptance remain separate; source repair and deviation records are retained.
 
 The [former review entry](docs/history/review-candidate-20261011.md), `review/release_manifest.json`,
 `review/qa_summary.json` and the older reconciliation record are retained as dated historical evidence.

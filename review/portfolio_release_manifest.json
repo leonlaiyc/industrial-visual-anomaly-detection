@@ -1,8 +1,9 @@
 {
-  "status": "FINAL PRIVATE SOURCE; STATIC BRANCH PREPARED; LIVE PAGES BLOCKED BY ACCOUNT PLAN",
-  "baseline_review_commit": "9f9a3a001933c09349a05792d57014b4d431041b",
-  "scope": "Git index blob bytes for every current source payload except this manifest; excludes ignored generated output and caches.",
+  "status": "AGPL PUBLIC SOURCE AND STATIC WEBSITE PREPARED FOR PAGES",
+  "updated": "2026-10-12",
+  "source_license": "AGPL-3.0-only",
   "canonical_pdf": "reports/executive-summary-one-page.pdf",
+  "scope": "Working-tree bytes for the explicit public source payload; excludes this manifest and generated/ignored output.",
   "files": [
     {
       "path": ".gitattributes",
@@ -15,19 +16,24 @@
       "sha256": "1db593d80624172da563fd549b45329215aa2d3d395e18782cc6a9f960631556"
     },
     {
+      "path": "LICENSE",
+      "bytes": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
       "path": "NOTICE.md",
-      "bytes": 3992,
-      "sha256": "1b7d66cfa819a28c0d8f7210135292a26f5ed3c0e886fd43d939013de069ed59"
+      "bytes": 4653,
+      "sha256": "fe89620c34f7d847bc6864a1006ebf88f93e1171cb1ba8a84b5e656b664a9ab5"
     },
     {
       "path": "README.md",
-      "bytes": 26876,
-      "sha256": "525f0f03d3f8037a04784cb5b9672a08970c935b865ef29b49fa77efbca11b73"
+      "bytes": 26899,
+      "sha256": "dcbcb4ab733df873f3b607d973e1a80822e068c0c700ecc241925fd2526b5401"
     },
     {
       "path": "REVIEW.md",
-      "bytes": 1666,
-      "sha256": "916bd493d11ec16c02cf290de13ab4389075027543f9483d76ca5787c503bf2a"
+      "bytes": 1632,
+      "sha256": "be744370f816bcecaae960f430d81897fa9b49c277d2943d5e0ffc0305bb640e"
     },
     {
       "path": "config/acceptance_criteria.yaml",
@@ -116,8 +122,8 @@
     },
     {
       "path": "docs/licensing_review.md",
-      "bytes": 8609,
-      "sha256": "db5b6bedf30593949f067daa668181749f6f664f7c336513025d2916f1ee7c58"
+      "bytes": 9444,
+      "sha256": "6b8bb5b60e3035fc441b5c5085ab56bc9ae3f7bda862c868577aa32c3c6fc985"
     },
     {
       "path": "docs/pcb3_illumination_results.md",
@@ -131,8 +137,8 @@
     },
     {
       "path": "docs/portfolio_release.md",
-      "bytes": 5849,
-      "sha256": "98fb36ae72d59a1499837a6e387d875639e47dc25e11d4649718aa63d59ef5ee"
+      "bytes": 6931,
+      "sha256": "84230bdc33e637cef3f8e908a9d1aa86f9ecb62557b51c8ddbbd8589b8ec976d"
     },
     {
       "path": "docs/release_preparation.md",
@@ -681,8 +687,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 733,
-      "sha256": "aa5dbaeb4a86d8ade854ebad7b9a0b018d98a1f11ceccf294a54bd23bae180e2"
+      "bytes": 762,
+      "sha256": "0a690f731833978581387f9a163330fdde9c3fe4221db19fcea6c575ab59bf6d"
     },
     {
       "path": "reports/diagnostics.json",
@@ -1256,13 +1262,13 @@
     },
     {
       "path": "site/build.py",
-      "bytes": 10800,
-      "sha256": "3d7313fa16f9049177d67283ae58e96eb1ec93eac3840f0207b90638b098a347"
+      "bytes": 10910,
+      "sha256": "10747cb50370cea18c46d01c4de23b6faae0f94dedde402a703a4b298d2c952c"
     },
     {
       "path": "site/content/en.yaml",
-      "bytes": 9966,
-      "sha256": "002836ba17fc50af440ad42a8303e3e7d764acef9b4d95019668ec7020f3f419"
+      "bytes": 10032,
+      "sha256": "60becc44e5531a7baaa4cd05a0a8cccc310a1f47af87c5ae59923d1d2cdc9dcb"
     },
     {
       "path": "site/content/print.en.yaml",
@@ -1276,8 +1282,8 @@
     },
     {
       "path": "site/content/zh-TW.yaml",
-      "bytes": 9523,
-      "sha256": "d3717b6b7400faf397bf0170897b92aba97d41c7377c1fb21fc899ba5ef36a1d"
+      "bytes": 9622,
+      "sha256": "e5134971f8fa418ca6757fd9f61de66aa9c4a0cb03d6a6855e151edee16aba0b"
     },
     {
       "path": "site/facts.py",
@@ -1296,8 +1302,8 @@
     },
     {
       "path": "site/release_links.json",
-      "bytes": 193,
-      "sha256": "ccde4a901d7f7fd5c0ff47867e2be2d1616be44c20396a9878528126d8206c59"
+      "bytes": 197,
+      "sha256": "f75c2f8cde912b354fb42ec4386514cf173cc7b0c0cf0381031b85d6a31cf1ea"
     },
     {
       "path": "site/release_links.py",
@@ -1351,13 +1357,13 @@
     },
     {
       "path": "site/static/site.css",
-      "bytes": 10659,
-      "sha256": "0993cf102367065185aedab8a80bdd1bf00ff9852ff7d3010db5c1695f61265a"
+      "bytes": 10988,
+      "sha256": "2e72e204364be63fef0ff470cd0fd30c7cf8718c4a3a8dd5107c18eb77ed2417"
     },
     {
       "path": "site/templates/index.html.j2",
-      "bytes": 6915,
-      "sha256": "2a2c1031e753178daaff253dac2aa4b87a28ce1fc7f6510bea3ff3caed22886e"
+      "bytes": 6781,
+      "sha256": "7820f2dfab681493cb26643278dead95ad41284a715cddd5e271167fac56b832"
     },
     {
       "path": "site/templates/print.html.j2",
@@ -1566,8 +1572,8 @@
     },
     {
       "path": "tests/test_site.py",
-      "bytes": 6597,
-      "sha256": "1600367db6218efaa9d1c424d400c9876a96b843393d624861da14da0dcd9fd5"
+      "bytes": 6613,
+      "sha256": "994ccf0ccce563cb0666e6c2175f3a41cfeafa0ffd71bb3ed209db353fd98820"
     },
     {
       "path": "tests/test_split.py",

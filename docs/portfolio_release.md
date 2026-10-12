@@ -1,5 +1,20 @@
 # Portfolio implementation and release record
 
+## Public source and Pages update (2026-10-12)
+
+The owner authorized making the original repository public after addressing YOLO/AGPL.
+IVAD-authored code, including CNN/YOLO exploratory scripts and the website implementation,
+is AGPL-3.0-only; LICENSE and NOTICE.md retain the project/third-party boundaries.
+All fetched branch/tag histories (11 commits, 445 historical text objects) were checked for
+excluded data/weights/private-review paths and high-confidence credential patterns, with no hits.
+This is a targeted check, not a universal secret-detection guarantee; existing Actions run count was zero.
+The PCB3 repair disclosure was removed from the website at the owner's request; its source records remain.
+The Chinese learning notes now explain brightness/contrast/blur testing and bounding-box checks.
+Readable body typography and the recent Chinese copy revisions are included.
+The October 11 private-only restriction and account-plan blocker below are historical and superseded
+by the owner's October 12 instruction. Model training, scores and thresholds are unchanged.
+
+
 Release authorization: project owner approved source synchronization to main and GitHub Pages publication
 on October 11, 2026 (Asia/Taipei). Repository visibility must remain PRIVATE. No new source licence is applied.
 Overall acceptance of the outward-facing portfolio remains separate from D5, which was already accepted.

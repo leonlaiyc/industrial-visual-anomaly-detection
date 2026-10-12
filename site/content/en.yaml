@@ -63,7 +63,7 @@
         "Robustness evaluation & engineering decision"
       ],
       "challenge": "PCB2 tested ROI scoring; PCB3 separately tested illumination correction.",
-      "learning": "A cleaner result needs a stress test."
+      "learning": "Test how brighter, darker, contrast-adjusted and blurred images affect detection."
     },
     {
       "key": "c",
@@ -79,7 +79,7 @@
         "Failure & acquisition-confound analysis"
       ],
       "challenge": "Actually trained with one generic defect class; labels differ from normal-only fitting.",
-      "learning": "Detection scores need context and localization checks."
+      "learning": "Check both the model score and whether the box locates the defect correctly."
     }
   ],
   "findings": {

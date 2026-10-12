@@ -1,5 +1,16 @@
 # Third-party notices
 
+## Project source licence
+
+Copyright (C) 2026 Yu-Chen (Leon) Lai.
+IVAD-authored source code, including the CNN and YOLO exploratory scripts and website implementation,
+is licensed under GNU AGPL-3.0-only. See LICENSE. Complete corresponding project source and build
+instructions are available at https://github.com/leonlaiyc/industrial-visual-anomaly-detection.
+Third-party libraries and model weights retain their own licences. VisA images and derivative figures
+retain CC BY 4.0; the project source licence does not replace their attribution requirements.
+No pretrained or trained model weights, raw dataset or executable inference service are distributed.
+
+
 ## VisA dataset (CC BY 4.0)
 
 This project uses the **VisA (Visual Anomaly) dataset**, `pcb1`, `pcb2` and `pcb3` subsets (and `pcb4` for the

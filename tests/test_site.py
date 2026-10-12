@@ -61,14 +61,16 @@ def test_scientific_scope_and_repair_are_visible(built):
     en, zh = (_text(pages[k]) for k in ("en", "zh"))
     for phrase in ("separate board datasets", "not a shared test set", "normal images only", "actually trained",
                    "one generic", "defect", "brightness confounding", "unseen defect types", "localization",
-                   "does not establish architecture superiority", "candidate was not adopted", "analysis input check was repaired",
-                   "No frozen score, threshold or decision changed", "overall acceptance", "AI-assisted"):
+                   "does not establish architecture superiority", "candidate was not adopted", "AI-assisted"):
         assert phrase.lower() in en.lower(), phrase
     assert f["pcb3"]["result"]["outcome"] == "ROBUSTNESS IMPROVEMENT SUPPORTED"
     assert f["pcb3"]["detail"]["acceptance"]["base"]["verdict"] == "INCONCLUSIVE"
     assert f["pcb3"]["detail"]["acceptance"]["cand"]["verdict"] == "INCONCLUSIVE"
-    for phrase in ("影像對位", "瑕疵檢出率", "誤報率", "亮度混淆", "泛化", "定位限制", "AI 輔助", "未採用", "D5"):
+    for phrase in ("影像對位", "瑕疵檢出率", "誤報率", "亮度混淆", "泛化", "定位限制", "AI 輔助", "未採用"):
         assert phrase in zh, phrase
+    for html in pages.values():
+        assert 'id="pcb3-repair"' not in html
+    assert (ROOT / "docs" / "pcb3_post_evaluation_repair.md").is_file()
 
 def test_narrative_is_a_learning_poc(built):
     _, _, pages = built

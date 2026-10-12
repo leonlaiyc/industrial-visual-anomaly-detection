@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Hands-on PCB anomaly detection PoC: normal-only CNN, ROI and robustness experiments, supervised YOLO exploration"
 requires-python = ">=3.10"
 readme = "README.md"
+license = {file = "LICENSE"}
 dependencies = [
   "torch>=2.2",
   "torchvision>=0.17",
