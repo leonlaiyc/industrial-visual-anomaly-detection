@@ -2,6 +2,10 @@
 
 ## Public source and Pages update (2026-10-12)
 
+GitHub Pages is enabled on `gh-pages` at https://leonlaiyc.github.io/industrial-visual-anomaly-detection/ (HTTPS enforced).
+English/Chinese/PDF anonymous access and the strict release build passed.
+The active PDF now contains the website link and public source link.
+
 The owner authorized making the original repository public after addressing YOLO/AGPL.
 IVAD-authored code, including CNN/YOLO exploratory scripts and the website implementation,
 is AGPL-3.0-only; LICENSE and NOTICE.md retain the project/third-party boundaries.

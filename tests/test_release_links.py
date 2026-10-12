@@ -67,7 +67,8 @@ def test_pdf_renderer_rejects_local_links_even_in_preview(tmp_path, monkeypatch,
     reader = type('Reader', (), {'pages': [Page({'/Annots': [Annotation()]})]})()
     monkeypatch.setattr(pypdf, 'PdfReader', lambda path: reader)
     with pytest.raises(ValueError, match='non-public URI'):
-        render.verify_pdf(tmp_path / 'preview.pdf', 1, {**release_links.load(), 'technical_repository_url': ''})
+        render.verify_pdf(tmp_path / 'preview.pdf', 1, {**release_links.load(), 'website_url': '',
+                          'technical_repository_url': '', 'technical_evidence_url': ''})
 
 
 def test_private_source_mode_never_claims_anonymous_access(tmp_path, monkeypatch):

@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-12",
+  "status": "PUBLIC SOURCE; GITHUB PAGES ENABLED; FINAL PAYLOAD PREPARED",
+  "website_url": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
+  "source_license": "AGPL-3.0-only",
+  "source_suite": {
+    "exit_code": 0,
+    "skips": 7
+  },
+  "updated_website_and_release_checks": {
+    "passed": 23,
+    "exit_code": 0
+  },
+  "history_scan": {
+    "reachable_commits": 11,
+    "historical_text_objects_checked": 445,
+    "excluded_path_hits": [],
+    "credential_pattern_hits": [],
+    "scope": "All fetched branch/tag histories; high-confidence credential patterns, not a universal secret detector."
+  },
+  "browser_cases": [
+    {
+      "page": "en",
+      "viewport": "desktop",
+      "ok": true,
+      "overflowX": false,
+      "loaded_images": 4
+    },
+    {
+      "page": "en",
+      "viewport": "tablet",
+      "ok": true,
+      "overflowX": false,
+      "loaded_images": 4
+    },
+    {
+      "page": "en",
+      "viewport": "mobile",
+      "ok": true,
+      "overflowX": false,
+      "loaded_images": 4
+    },
+    {
+      "page": "zh",
+      "viewport": "desktop",
+      "ok": true,
+      "overflowX": false,
+      "loaded_images": 4
+    },
+    {
+      "page": "zh",
+      "viewport": "tablet",
+      "ok": true,
+      "overflowX": false,
+      "loaded_images": 4
+    },
+    {
+      "page": "zh",
+      "viewport": "mobile",
+      "ok": true,
+      "overflowX": false,
+      "loaded_images": 4
+    },
+    {
+      "page": "print1",
+      "viewport": "desktop",
+      "ok": true,
+      "overflowX": false,
+      "loaded_images": 3
+    }
+  ],
+  "pdf": {
+    "pages": 1,
+    "format": "A4",
+    "website_link": true,
+    "source_link": "public",
+    "sha256": "6910834f61d18571eb45d929210ffb5464bcd75fa6c8137f3c7d79e4c80e4dd1"
+  }
+}

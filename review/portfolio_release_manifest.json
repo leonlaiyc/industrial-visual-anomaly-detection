@@ -1,9 +1,10 @@
 {
-  "status": "AGPL PUBLIC SOURCE AND STATIC WEBSITE PREPARED FOR PAGES",
+  "status": "PUBLIC AGPL SOURCE AND VERIFIED GITHUB PAGES RELEASE",
   "updated": "2026-10-12",
+  "website_url": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
   "source_license": "AGPL-3.0-only",
   "canonical_pdf": "reports/executive-summary-one-page.pdf",
-  "scope": "Working-tree bytes for the explicit public source payload; excludes this manifest and generated/ignored output.",
+  "scope": "Exact staged Git blob bytes for every source file except this manifest; excludes ignored generated output.",
   "files": [
     {
       "path": ".gitattributes",
@@ -27,13 +28,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 26899,
-      "sha256": "dcbcb4ab733df873f3b607d973e1a80822e068c0c700ecc241925fd2526b5401"
+      "bytes": 27071,
+      "sha256": "b0943ef072f6083f79b27b1f1dd1918fff528401fd09dc6764edabbb9070a123"
     },
     {
       "path": "REVIEW.md",
-      "bytes": 1632,
-      "sha256": "be744370f816bcecaae960f430d81897fa9b49c277d2943d5e0ffc0305bb640e"
+      "bytes": 1718,
+      "sha256": "b9d737757da11940cab2331094e2bda7f1e2c709fcdec3ea64bdb59250c7af3f"
     },
     {
       "path": "config/acceptance_criteria.yaml",
@@ -137,8 +138,8 @@
     },
     {
       "path": "docs/portfolio_release.md",
-      "bytes": 6931,
-      "sha256": "84230bdc33e637cef3f8e908a9d1aa86f9ecb62557b51c8ddbbd8589b8ec976d"
+      "bytes": 7199,
+      "sha256": "0668b16f7d6fd8c6451188d13a29c9665945cfe3ee064d9679f921726b9c5cb2"
     },
     {
       "path": "docs/release_preparation.md",
@@ -697,8 +698,8 @@
     },
     {
       "path": "reports/executive-summary-one-page.pdf",
-      "bytes": 733430,
-      "sha256": "77dc5398a376c635d1e354ad86d32ecd9edda8f838854c6091f843adc774d244"
+      "bytes": 733722,
+      "sha256": "6910834f61d18571eb45d929210ffb5464bcd75fa6c8137f3c7d79e4c80e4dd1"
     },
     {
       "path": "reports/figures/fig_cost_sensitivity.png",
@@ -1246,6 +1247,11 @@
       "sha256": "537a176790683b32c42f7933aae0c392c9226cecbda00c47a84582cb98434889"
     },
     {
+      "path": "review/public_release_qa_20261012.json",
+      "bytes": 1780,
+      "sha256": "a2458426f563da94249c3055d645e0b33e7cdb8aedbbb28cddc63c6f7b26ef71"
+    },
+    {
       "path": "review/qa_summary.json",
       "bytes": 2056,
       "sha256": "7fd0bec07110f750acf3c9f98cff24fc372ac086b18ac0bf33b64e5470ddf0cd"
@@ -1302,8 +1308,8 @@
     },
     {
       "path": "site/release_links.json",
-      "bytes": 197,
-      "sha256": "f75c2f8cde912b354fb42ec4386514cf173cc7b0c0cf0381031b85d6a31cf1ea"
+      "bytes": 256,
+      "sha256": "4438ba872e9af0e3ae48852f0f9b65427f5276f1992f7927009ad6f0deec1679"
     },
     {
       "path": "site/release_links.py",
@@ -1357,8 +1363,8 @@
     },
     {
       "path": "site/static/site.css",
-      "bytes": 10988,
-      "sha256": "2e72e204364be63fef0ff470cd0fd30c7cf8718c4a3a8dd5107c18eb77ed2417"
+      "bytes": 10987,
+      "sha256": "3118f3effd31be6f17f263a4935c3e2040fd74cddb41d84fd55ac5c70e001872"
     },
     {
       "path": "site/templates/index.html.j2",
@@ -1562,8 +1568,8 @@
     },
     {
       "path": "tests/test_release_links.py",
-      "bytes": 3720,
-      "sha256": "0106313e269f929f4720c38ee8fee1e22beea8e05e6cc03dbaccb0a42bfb1906"
+      "bytes": 3795,
+      "sha256": "5945311d96f5d07f6c6f771ac9e4493503a7008212b2834c845cd0d4f686ccf3"
     },
     {
       "path": "tests/test_roi.py",

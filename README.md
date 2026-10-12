@@ -215,6 +215,8 @@ scoring: [`docs/handoff.md`](docs/handoff.md).
 
 ## Website and PDF
 
+[Live website](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/) · [繁體中文](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/zh-tw/)
+
 ```bash
 python site/build.py            # -> site/dist/ (English at /, Traditional Chinese at /zh-tw/)
 python -m http.server 8765 --directory site/dist
