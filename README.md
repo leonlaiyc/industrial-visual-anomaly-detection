@@ -10,14 +10,10 @@ The website is the concise showcase; this repository retains the technical sourc
 - **Round B / PCB2 and PCB3:** ROI scoring on PCB2 reduced test-normal false alarms from 13% to 3% while
   recall stayed at 80%. A separate PCB3 illumination-correction experiment improved some conditions but
   worsened false alarms under blur; the candidate was not adopted.
-- **Round C / PCB4:** convert defect masks to boxes and actually train YOLOv8s / YOLO11s using one generic
+- **Round C / PCB4:** convert defect masks to boxes and train YOLOv8s / YOLO11s using one generic
   `defect` class. Observed recall was higher in this supervised setting, with brightness confounding,
   unseen-defect generalization and localization limitations. This is exploratory, not a controlled claim
   of architecture superiority. The PCB datasets and supervision regimes differ.
-
-Project sheet (English, one self-contained A4 page): [executive-summary-one-page.pdf](reports/executive-summary-one-page.pdf).
-Bilingual project showcase (English / 繁體中文): built from `site/` (see *Website and PDF* below).
-Retired briefs are labelled historical evidence in `docs/history/`; they are not website downloads.
 
 AI-assisted development; public benchmark images only. No validation on real manufacturing-line images
 and **no production-readiness claim**. Source is publicly available under AGPL-3.0-only.
@@ -26,8 +22,10 @@ portfolio is separate. The original protocols, scores, thresholds, splits, repai
 
 ## Results
 
-Official VisA test split per board type (100 normal + 100 defective images). Each model is operated at a
-threshold frozen beforehand (P95 of 150 separate normal images). 95% confidence intervals are in brackets.
+The table below covers the CNN experiments on PCB1 and PCB2: each official VisA test split has 100 normal
+and 100 defective images. Thresholds were frozen beforehand using 150 separate normal calibration images
+(P95). PCB3 has 101 test normals and 100 defects; the separate PCB4 study is described below.
+95% confidence intervals are in brackets.
 
 <!-- RESULTS:START -->
 | Official VisA test split (100 normal + 100 defective) | Proposed target | PCB1 v1 (original) | PCB2 v1 | PCB2 v2 |
@@ -112,7 +110,7 @@ PCB3 number from the raw score files (90/90 checks). Full record:
 pre-test deviation (an addendum committed after fitting rather than before) is disclosed in protocol
 Addendum B2.
 
-## Decision status
+## Decision status — PCB2 v2
 
 Three different questions, answered separately:
 
@@ -126,18 +124,22 @@ The criteria and decision rules were fixed before testing and have not been chan
 ([`docs/requirements.md`](docs/requirements.md)). They are a proposal that no manufacturing user has
 confirmed.
 
-## Problem definition
+## CNN pipeline scope (PCB1–PCB3)
 
 - **Decision supported:** which board images need a manual review. One fixed overhead camera, one board per
   image.
-- **Learning:** from defect-free images only (one-class), because real defects are rare and varied.
+- **Learning:** fit the normal model from defect-free images; keep the pretrained CNN feature extractor
+  frozen. The separate PCB4 YOLO study uses defect boxes for supervised training.
 - **In scope:** image-level score and REVIEW flag, heat maps, empirical threshold calibration, statistics
   with confidence intervals, robustness checks, a reproducible command-line workflow, tests.
 - **Out of scope:** defect classification, pixel-accurate segmentation, automatic disposition, line or MES
   integration, factory data, and any claim about yield, cost savings or financial return on investment.
   ("ROI" in the code means the image *region of interest*, never business return.)
 
-## Architecture
+## CNN architecture (PCB1–PCB3)
+
+The baseline CNN pipeline is shown below. The PCB3 candidate added global brightness/contrast correction
+before registration; that candidate was evaluated but not adopted.
 
 ```text
 image -> registration -> crop 1152x768, resize 768x512 -> Wide-ResNet-50-2 layer2+3 features
@@ -170,8 +172,10 @@ was made from training images only, before any PCB2 model existed, and is disclo
 
 ## Evaluation methodology
 
-- **Data roles** per board type: 600 FIT (model), 150 CALIB (threshold), 151–154 HOLDOUT (extra false-alarm
-  check), official test 100 + 100. Deterministic, content-hashed and audited for leakage.
+- **CNN data roles** per board type: 600 FIT (model), 150 CALIB (threshold), then separate HOLDOUT and
+  official-test images. PCB1: 154 holdout normals, 100 test normals and 100 defects. PCB2: 151 holdout
+  normals, 100 test normals and 100 defects. PCB3: 155 holdout normals, 101 test normals and 100 defects.
+  Splits are deterministic, content-hashed and audited for leakage. PCB4 uses the separate protocol below.
 - **Freeze:** threshold, config, model and split hashes committed before any test image is scored; for
   PCB2, `evaluate` refuses to run unless that state is committed.
 - **Statistics:** exact (Clopper–Pearson) intervals for recall and false-alarm rate; bootstrap for AUROC;
@@ -182,7 +186,7 @@ was made from training images only, before any PCB2 model existed, and is disclo
 
 Details: [`docs/evaluation_methodology.md`](docs/evaluation_methodology.md).
 
-## Reproduce
+## Reproduce the CNN workflow
 
 Python 3.11, optional NVIDIA GPU (CUDA 12 wheels pinned), about 4 GB disk.
 
@@ -192,6 +196,11 @@ uv pip install --python .venv -r requirements.lock.txt --extra-index-url https:/
 uv pip install --python .venv -e . --no-deps
 .venv/Scripts/python -m pytest          # on Linux: .venv/bin/python
 ```
+
+Run the following commands with this environment's Python (activate `.venv`, or use the explicit path
+above). The main locked environment includes website dependencies; Ultralytics is installed separately
+for the PCB4 study, with its recorded versions in
+[`exploratory/yolo_pcb4/results/env.txt`](exploratory/yolo_pcb4/results/env.txt).
 
 The PCB2 study against the committed frozen thresholds (the first command downloads VisA, about 1.9 GB):
 
@@ -209,46 +218,65 @@ python -m ivad summary
 python -m ivad check
 ```
 
-`evaluate` refuses to run if the fitted model, config or split differs from the committed freeze. Do not
-re-run `calibrate` to reproduce results; it writes a new freeze. Full instructions, PCB1 and single-image
-scoring: [`docs/handoff.md`](docs/handoff.md).
+`evaluate` refuses to run if the fitted model, config or split differs from the committed freeze. A refit
+must reproduce its model hash; do not replace the recorded freeze to bypass a mismatch. Do not re-run
+`calibrate` to reproduce results; it writes a new freeze. Raw data and model weights are not committed.
+For verification without model inference, `python -m ivad check` checks the recorded outputs and reports
+unavailable model/history checks as skips; `python verification/recompute_pcb3.py --check` independently
+recomputes the recorded PCB3 metrics. These checks do not constitute a new model evaluation.
+Full CNN instructions and single-image scoring: [`docs/handoff.md`](docs/handoff.md).
 
 ## Website and PDF
 
-Chinese website export (four A4 pages): [project-notes.zh-TW.pdf](reports/project-notes.zh-TW.pdf).
-The Chinese website download links point to this full website export. To regenerate it, run
-`python site/render.py pdf-zh` while serving `site/dist` at the renderer's base URL.
-
 [Live website](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/) · [繁體中文](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/zh-tw/)
+
+The Chinese download is a four-page A4 export of the full Chinese website,
+[`project-notes.zh-TW.pdf`](reports/project-notes.zh-TW.pdf). The English download is the one-page A4
+summary, [`executive-summary-one-page.pdf`](reports/executive-summary-one-page.pdf).
+
+Build first, then start the local server:
 
 ```bash
 python site/build.py            # -> site/dist/ (English at /, Traditional Chinese at /zh-tw/)
 python -m http.server 8765 --directory site/dist
-python site/render.py pdf       # -> reports/executive-summary-one-page.pdf (+ identical site/dist/ copy)
-python -m ivad check            # page size/count, recorded-score consistency and numeric provenance
 ```
 
-`site/facts.py` is the only source of numbers for both languages and the PDF; the build fails if a content
+Keep that server running and use a second terminal with the same Python environment. PDF rendering
+requires Chrome or Edge; it uses a temporary browser profile.
+
+```bash
+python site/render.py pdf       # English one-page PDF, copied to reports/ and site/dist/
+python site/render.py pdf-zh    # Chinese full-website PDF, copied to reports/ and site/dist/
+python -m ivad check            # recorded-score consistency, English PDF and README results
+python -m pytest tests/test_site.py tests/test_release_links.py  # bilingual routes and both PDFs
+```
+
+`site/facts.py` supplies the reported metrics for both languages and PDFs; the build fails if a content
 file contains a literal metric or the two languages define different keys. Existing genuine figures are
 reused; building this portfolio does not train or rescore models. Historical figure generation is separate.
 `main` contains sanitized source and technical evidence; `gh-pages` contains only built static files.
-`site/release_links.json` records actual deployed URLs only. An empty website URL means hosting is pending,
-and the PDF says so. Public source links lead to the AGPL-licensed repository.
+The original repository is public under AGPL-3.0-only. GitHub Pages serves `gh-pages` at the live links
+above; `site/release_links.json` records these verified website and public-source URLs.
 
 ## Limitations
 
-Three board types from one public benchmark, laboratory images, 100 defective images per board type (recall
-is uncertain by roughly ±8 points), synthetic perturbations, and a 50% defect rate that says nothing about
-a real line. Each new product, camera, background or lighting setup needs re-fitting, re-calibration and
-fresh validation.
+Four board types from one public benchmark: CNN experiments on PCB1–PCB3 and a separate supervised study
+on PCB4. Each has 100 defective images; confidence intervals and evaluation conditions accompany the
+results. These are laboratory images and synthetic perturbations. The benchmark's defect prevalence
+does not represent a real line. Each new product, camera, background or lighting setup needs re-fitting,
+re-calibration and fresh validation.
 
-## Exploratory: YOLOv8s / YOLO11s on PCB4 (separate from the frozen results)
+## Exploratory: YOLOv8s / YOLO11s on PCB4 (separate from PCB1–PCB3)
 
 To test the main alternative rather than describe it, off-the-shelf YOLOv8s and YOLO11s were trained on the
-fourth VisA board type (PCB4, never used before) under a protocol committed before the data was opened
-([`exploratory/yolo_pcb4/PROTOCOL.md`](exploratory/yolo_pcb4/PROTOCOL.md)): fixed default settings, five-fold
-cross-validation over the 100 defects (80 box-labelled defects per fold), the project's own threshold rule
-(P95 of 150 separate normals). Results ([`results.md`](exploratory/yolo_pcb4/results/results.md)), all
+fourth VisA board type (PCB4, unused in the preceding CNN experiments) under a protocol committed before
+data access ([`exploratory/yolo_pcb4/PROTOCOL.md`](exploratory/yolo_pcb4/PROTOCOL.md)): fixed protocol settings, five-fold
+cross-validation over the 100 defects. Each fold's training pool contains 80 box-labelled defects and
+160 normal images; 20% of this pool is reserved for internal validation, leaving 64 defects and 128
+normals for fitting. Thresholds use P95 of 150 separate normals. The actual training records for
+`yolov8s.pt` and `yolo11s.pt` are in
+[`training_record.json`](exploratory/yolo_pcb4/audit/training_record.json).
+Results ([`results.md`](exploratory/yolo_pcb4/results/results.md)), all
 descriptive:
 
 The detector has one class, `defect`: ground-truth segmentation components are converted to boxes. It outputs
@@ -319,8 +347,11 @@ owner's direction. Design decisions, evidence and the
 protocol history are documented in `docs/`. Verification is (A) programmatic — `ivad check` and
 `verification/recompute_pcb3.py` recompute the reported metrics from the recorded per-image scores — and
 (B) AI-assisted technical review; neither is a human sign-off, and no independent human audit has occurred
-(scope and limits: `reports/project_milestones.json`). (C) The project owner's (Yu-Chen (Leon) Lai)
-technical review of the final deliverables is pending.
+(scope and limits: `reports/project_milestones.json`, which retains the earlier review status).
+The project owner accepted D5 on October 11, 2026 and authorized public source release and Pages
+deployment on October 12. Overall portfolio acceptance is a separate decision; these actions do not
+constitute an independent human audit. The current release record is
+[`docs/portfolio_release.md`](docs/portfolio_release.md#public-source-and-pages-update-2026-10-12).
 
 This repository starts from a curated snapshot. Commit identifiers cited in `docs/` refer to the original
 development history, which is kept separately because it also contains personal working notes. The
@@ -338,11 +369,13 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
   contain a small number of derivative images: figures in `reports/` and the website images in
   `site/static/img/` show VisA images that were registered, cropped and resized, with heat-map, outline and
   mask overlays added. See [`NOTICE.md`](NOTICE.md).
-- **Pretrained weights:** torchvision `Wide_ResNet50_2_Weights.IMAGENET1K_V1`, downloaded at run time,
-  not redistributed. Trained on ImageNet, whose terms limit use to non-commercial research and education.
-  Legal review is needed before any commercial use.
-- **Libraries:** PyTorch, torchvision, NumPy, SciPy, Pillow, Matplotlib, ReportLab, pypdf, PyYAML;
-  pytest and scikit-learn for tests.
+- **Pretrained weights:** torchvision `Wide_ResNet50_2_Weights.IMAGENET1K_V1` for the CNN features;
+  official COCO-pretrained `yolov8s.pt` and `yolo11s.pt` for the PCB4 detectors. Pretrained and fitted
+  weights are not redistributed. Weight provenance and third-party terms are recorded in
+  [NOTICE.md](NOTICE.md) and the [YOLO training record](exploratory/yolo_pcb4/audit/training_record.json).
+- **Libraries:** PyTorch, torchvision, NumPy, SciPy, Pillow, Matplotlib, ReportLab, pypdf and PyYAML;
+  Jinja2 for the website; pytest and scikit-learn for tests. Ultralytics is used in the separate YOLO
+  environment and is not included in the main dependency lock.
 - **This project's source code:** GNU **AGPL-3.0-only**, including the CNN implementation and
   YOLO exploratory scripts. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md). VisA images,
   pretrained weights and third-party libraries retain their own terms; this is not an MIT-only project.
@@ -351,6 +384,19 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
 
 ## Release preparation and navigation
 
-D5 is **ACCEPTED BY PROJECT OWNER**, dated 2026-10-11 (Asia/Taipei), by Leon's explicit conversational confirmation. The non-score-affecting post-evaluation repair does not invalidate PCB3's primary evaluation; complete chronology and deviation disclosure remain in [the repair record](docs/pcb3_post_evaluation_repair.md). The owner authorized public source release and GitHub Pages deployment on 2026-10-12. Overall portfolio acceptance remains separate.
+D5 is **ACCEPTED BY PROJECT OWNER**, dated 2026-10-11 (Asia/Taipei). Public source release and GitHub
+Pages deployment were authorized and completed on 2026-10-12. Overall portfolio acceptance remains
+separate. The full PCB3 repair chronology and deviations remain in
+[the repair record](docs/pcb3_post_evaluation_repair.md).
 
-Canonical website/source/evidence URLs are configured once in `site/release_links.json`. The website URL is recorded after GitHub Pages assigns it and anonymous access is verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md), [licensing review](docs/licensing_review.md), and [canonical artifact reconciliation](docs/artifact_reconciliation.md). Recipient PDFs contain the verified live website and public source links, with no localhost links. Re-render the active one-page PDF after URL changes, then verify and regenerate the release manifest. No model or experiment rerun is required.
+Current public status, licence scope and deployment verification are recorded in
+[portfolio_release.md](docs/portfolio_release.md#public-source-and-pages-update-2026-10-12).
+Earlier private-only or pending-release statements in the
+[licensing review](docs/licensing_review.md), [release preparation](docs/release_preparation.md),
+[artifact reconciliation](docs/artifact_reconciliation.md) and milestone records describe earlier
+snapshots; the October 12 public-release record supersedes their release status.
+
+Website and source URLs are configured in `site/release_links.json`. `python site/build.py --release`
+checks that the configured links are present and anonymously accessible. Both PDFs contain the verified
+website and public source links. After content or URL changes, rebuild and render both PDFs, verify the
+outputs and update the release manifests before publishing. No model or experiment rerun is required.
