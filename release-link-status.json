@@ -1,9 +1,23 @@
 {
-  "website_url": "",
+  "website_url": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
   "technical_repository_url": "https://github.com/leonlaiyc/industrial-visual-anomaly-detection",
   "technical_evidence_url": "",
   "source_mode": "public-repository",
-  "source_anonymous": false,
-  "preview": true,
+  "access_checks": [
+    {
+      "url": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
+      "status": 200,
+      "final_url": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
+      "anonymous": true
+    },
+    {
+      "url": "https://github.com/leonlaiyc/industrial-visual-anomaly-detection",
+      "status": 200,
+      "final_url": "https://github.com/leonlaiyc/industrial-visual-anomaly-detection",
+      "anonymous": true
+    }
+  ],
+  "source_anonymous": true,
+  "preview": false,
   "d5_decision_date": "2026-10-11"
 }

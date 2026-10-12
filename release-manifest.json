@@ -34,18 +34,18 @@
     },
     {
       "path": "assets/site.css",
-      "bytes": 10988,
-      "sha256": "2e72e204364be63fef0ff470cd0fd30c7cf8718c4a3a8dd5107c18eb77ed2417"
+      "bytes": 10987,
+      "sha256": "3118f3effd31be6f17f263a4935c3e2040fd74cddb41d84fd55ac5c70e001872"
     },
     {
       "path": "executive-summary-one-page.pdf",
-      "bytes": 733430,
-      "sha256": "77dc5398a376c635d1e354ad86d32ecd9edda8f838854c6091f843adc774d244"
+      "bytes": 733722,
+      "sha256": "6910834f61d18571eb45d929210ffb5464bcd75fa6c8137f3c7d79e4c80e4dd1"
     },
     {
       "path": "index.html",
-      "bytes": 13581,
-      "sha256": "ca3d787f86430241694f6a198ef92cdd0c0356a7aa1f3d010bc1b2fca4c819e6"
+      "bytes": 13908,
+      "sha256": "519c48f54d8ca8ca55d53ec2262700d3d5f6a42f15513d6979ebe6e576d096db"
     },
     {
       "path": "LICENSE",
@@ -59,13 +59,13 @@
     },
     {
       "path": "print/one-page/index.html",
-      "bytes": 8319,
-      "sha256": "e275c1038e312b1a42aed465cd3b9f445a4f99c056b79f1425e1d32fba1da6da"
+      "bytes": 8387,
+      "sha256": "1c6a65c8a7de7f6945db8beb3e42049cd9aa8af9b6e945b13995c9438129a8c8"
     },
     {
       "path": "release-link-status.json",
-      "bytes": 285,
-      "sha256": "3e4550b67867e24552bc470e8e21d9e27f9abbc4bf36148f77f4a421101c8c09"
+      "bytes": 817,
+      "sha256": "bf36803148e25d883b585e9e9e62027641df7fa565210c23e50ee0b0645e4643"
     },
     {
       "path": "robots.txt",
@@ -74,8 +74,8 @@
     },
     {
       "path": "zh-tw/index.html",
-      "bytes": 13306,
-      "sha256": "d93f89f6a52f1d6139a5564928150aaca027134a4c5f9c5484da59c1721e05ee"
+      "bytes": 13639,
+      "sha256": "4e303962cfe38493766d75386831947c6a2f6570a6af2f9e1fb411f1950120cf"
     }
   ]
 }
