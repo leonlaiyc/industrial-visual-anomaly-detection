@@ -184,7 +184,7 @@ def build(dist: Path = DIST, *, release: bool = False, links_path: Path = releas
             out = dist / meta["dir"] / out_name
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(html, encoding="utf-8", newline="\n")
-    # One recipient-facing A4 project sheet. The historical extended brief is source evidence only.
+    # English one-page sheet; Chinese downloads print the actual Chinese website.
     t_en = render_content(content["en"], env, {"f": f, "links": links})
     for tpl, src, out_dir in (("print_one_page.html.j2", "print_one_page.en.yaml", dist / "print" / "one-page"),):
         p = yaml.safe_load((HERE / "content" / src).read_text(encoding="utf-8"))
@@ -202,12 +202,14 @@ def build(dist: Path = DIST, *, release: bool = False, links_path: Path = releas
     if (HERE.parent / "LICENSE").exists():
         shutil.copyfile(HERE.parent / "LICENSE", dist / "LICENSE")
     # Rebuilding wipes dist/, so carry over the canonical sheet until re-rendered.
-    for rep_name, dist_name in (("executive-summary-one-page.pdf", "executive-summary-one-page.pdf"),):
+    for rep_name, dist_name in (("executive-summary-one-page.pdf", "executive-summary-one-page.pdf"),
+                               ("project-notes.zh-TW.pdf", "project-notes.zh-TW.pdf")):
         pdf = HERE.parent / "reports" / rep_name
         if pdf.exists():
             shutil.copyfile(pdf, dist / dist_name)
         else:
-            print(f"warning: reports/{rep_name} missing; run `python site/render.py pdf`")
+            command = "pdf-zh" if rep_name == "project-notes.zh-TW.pdf" else "pdf"
+            print(f"warning: reports/{rep_name} missing; run `python site/render.py {command}`")
     print(f"site built -> {dist}")
     return f
 

@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-12",
+  "website_url": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
+  "checks_passed": 24,
+  "browser_cases": [
+    {
+      "page": "en",
+      "viewport": "desktop",
+      "ok": true,
+      "overflowX": false,
+      "loaded": 4
+    },
+    {
+      "page": "en",
+      "viewport": "tablet",
+      "ok": true,
+      "overflowX": false,
+      "loaded": 4
+    },
+    {
+      "page": "en",
+      "viewport": "mobile",
+      "ok": true,
+      "overflowX": false,
+      "loaded": 4
+    },
+    {
+      "page": "zh",
+      "viewport": "desktop",
+      "ok": true,
+      "overflowX": false,
+      "loaded": 4
+    },
+    {
+      "page": "zh",
+      "viewport": "tablet",
+      "ok": true,
+      "overflowX": false,
+      "loaded": 4
+    },
+    {
+      "page": "zh",
+      "viewport": "mobile",
+      "ok": true,
+      "overflowX": false,
+      "loaded": 4
+    },
+    {
+      "page": "print1",
+      "viewport": "desktop",
+      "ok": true,
+      "overflowX": false,
+      "loaded": 3
+    }
+  ],
+  "chinese_pdf": {
+    "path": "reports/project-notes.zh-TW.pdf",
+    "pages": 4,
+    "format": "A4",
+    "all_pages_visually_inspected": true,
+    "sha256": "45ca28c0249cb228df179354d5f9b9a85955d9018b1781df667e898088777d5a"
+  },
+  "finding_subheading_px": 19,
+  "finding_body_px": 17,
+  "pcb2_pcb3_result_bold": false
+}

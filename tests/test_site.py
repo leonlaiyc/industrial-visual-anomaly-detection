@@ -38,7 +38,7 @@ def test_bilingual_numbers_and_three_equal_workflows(built):
     assert counts[0] == counts[1]
     assert counts[0]["13%"] == counts[0]["3%"] == counts[0]["80%"] == 1
 
-def test_routes_assets_and_only_one_recipient_pdf(built):
+def test_routes_assets_and_language_specific_pdfs(built):
     dist, _, pages = built
     for lang, html in pages.items():
         base = dist if lang == "en" else dist / "zh-tw"
@@ -53,7 +53,9 @@ def test_routes_assets_and_only_one_recipient_pdf(built):
                 assert (base / href).resolve().is_file(), href
         assert "executive-summary-extended" not in html
         assert "localhost" not in html and "{{" not in html
-    assert [p.name for p in dist.glob("*.pdf")] == ["executive-summary-one-page.pdf"]
+    assert sorted(p.name for p in dist.glob("*.pdf")) == ["executive-summary-one-page.pdf", "project-notes.zh-TW.pdf"]
+    assert 'href="../project-notes.zh-TW.pdf"' in pages['zh']
+    assert 'href="executive-summary-one-page.pdf"' in pages['en']
     assert not (dist / "print" / "index.html").exists()
 
 def test_scientific_scope_and_repair_are_visible(built):
@@ -121,6 +123,22 @@ def test_visual_qa_evidence_when_available():
         assert p["ok"] and not p["overflowX"] and p["loaded"] == p["visible"] == p["expected"]
         for png in [p["firstScreen"], *p["fullPageSegments"]]:
             assert ImageStat.Stat(Image.open(ROOT/png).convert("L")).stddev[0] > 1
+
+
+def test_chinese_pdf_is_full_website_with_readable_a4_pages():
+    import unicodedata
+    from pypdf import PdfReader
+    r = PdfReader(ROOT / 'reports' / 'project-notes.zh-TW.pdf')
+    assert len(r.pages) == 4
+    assert all(abs(float(p.mediabox.width)-595)<2 and abs(float(p.mediabox.height)-842)<2 for p in r.pages)
+    text = re.sub(r'\s+', '', unicodedata.normalize('NFKC', ''.join(p.extract_text() for p in r.pages)))
+    for phrase in ('以CNN與YOLO探索PCB異常檢測', '三個階段', '優化之後，再進行亮度測試',
+                   '除了看模型得分，還要確認瑕疵位置有沒有框對', '下次實作', '72/100', '13%', '3%', '80%', '98%', '95%', 'CCBY4.0'):
+        assert unicodedata.normalize('NFKC', phrase) in text, phrase
+    assert '實作問題與修復紀錄持續保留' not in text
+    uris = [str(a.get_object().get('/A', {}).get('/URI', '')) for p in r.pages for a in p.get('/Annots', [])]
+    assert any(u.endswith('/zh-tw/') for u in uris)
+    assert not any(u.startswith(('http:', 'file:')) for u in uris)
 
 _PRIVATE = ["Jes"+"sie", "Mic"+"ron", "Ed"+"die", "Che"+"ryl"]
 def test_no_private_material_in_public_showcase(built):

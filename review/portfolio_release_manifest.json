@@ -4,7 +4,8 @@
   "website_url": "https://leonlaiyc.github.io/industrial-visual-anomaly-detection/",
   "source_license": "AGPL-3.0-only",
   "canonical_pdf": "reports/executive-summary-one-page.pdf",
-  "scope": "Exact staged Git blob bytes for every source file except this manifest; excludes ignored generated output.",
+  "chinese_pdf": "reports/project-notes.zh-TW.pdf",
+  "scope": "Exact staged Git blob bytes except this manifest; excludes ignored generated output.",
   "files": [
     {
       "path": ".gitattributes",
@@ -28,8 +29,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 27071,
-      "sha256": "b0943ef072f6083f79b27b1f1dd1918fff528401fd09dc6764edabbb9070a123"
+      "bytes": 27345,
+      "sha256": "57ab7e4fb96af113b55cce0b6944b1bbdc86e5f0c5bbf5d779ef152d5f9c6824"
     },
     {
       "path": "REVIEW.md",
@@ -138,8 +139,8 @@
     },
     {
       "path": "docs/portfolio_release.md",
-      "bytes": 7199,
-      "sha256": "0668b16f7d6fd8c6451188d13a29c9665945cfe3ee064d9679f921726b9c5cb2"
+      "bytes": 7790,
+      "sha256": "d7476bc3da1f73628427fa16b7fe597dffb8c752d55d43d1975122415b4aaf26"
     },
     {
       "path": "docs/release_preparation.md",
@@ -1197,6 +1198,11 @@
       "sha256": "c62c149d2c7d6bb75562fafe6787f3ac17f454368f57e48bb5277c82d3b8e63f"
     },
     {
+      "path": "reports/project-notes.zh-TW.pdf",
+      "bytes": 1258387,
+      "sha256": "45ca28c0249cb228df179354d5f9b9a85955d9018b1781df667e898088777d5a"
+    },
+    {
       "path": "reports/project_milestones.json",
       "bytes": 5958,
       "sha256": "6424c9a15530006637eee2bebaa895e3752ac75b3047f6f86af9c4daf3de43b7"
@@ -1242,6 +1248,11 @@
       "sha256": "6eb4a6b44fc427c4a7958379eaff609ef9c9b21beff0dfd317380834be2d617a"
     },
     {
+      "path": "review/chinese_website_qa_20261012.json",
+      "bytes": 1348,
+      "sha256": "80d1ae5c9138d46e5317efa31eb6a3588365df4b330a6561a054e8d557a7befa"
+    },
+    {
       "path": "review/portfolio_qa_summary.json",
       "bytes": 1449,
       "sha256": "537a176790683b32c42f7933aae0c392c9226cecbda00c47a84582cb98434889"
@@ -1268,8 +1279,8 @@
     },
     {
       "path": "site/build.py",
-      "bytes": 10910,
-      "sha256": "10747cb50370cea18c46d01c4de23b6faae0f94dedde402a703a4b298d2c952c"
+      "bytes": 11067,
+      "sha256": "fcbf8f6f74acee6aafe83f130121233dea4052cb1d4676915befd4c869308a55"
     },
     {
       "path": "site/content/en.yaml",
@@ -1288,8 +1299,8 @@
     },
     {
       "path": "site/content/zh-TW.yaml",
-      "bytes": 9622,
-      "sha256": "e5134971f8fa418ca6757fd9f61de66aa9c4a0cb03d6a6855e151edee16aba0b"
+      "bytes": 9612,
+      "sha256": "5a90a61d1bbab6c35a9987da5de518daa25194efe6afc129ae70d0773837ae43"
     },
     {
       "path": "site/facts.py",
@@ -1318,8 +1329,8 @@
     },
     {
       "path": "site/render.py",
-      "bytes": 5103,
-      "sha256": "0a5b8bfd66176dc3b11947cf0fc74446273425370af382e2ef57ed3410738c13"
+      "bytes": 6617,
+      "sha256": "5c7007d7bf35f7630771c23f466aa2046c7b5c881ae7c88549514b853fca53de"
     },
     {
       "path": "site/static/favicon.svg",
@@ -1363,13 +1374,13 @@
     },
     {
       "path": "site/static/site.css",
-      "bytes": 10987,
-      "sha256": "3118f3effd31be6f17f263a4935c3e2040fd74cddb41d84fd55ac5c70e001872"
+      "bytes": 14366,
+      "sha256": "06f7896e85e436e3e61d271db90894fb97adce95d37e04c345492573049e86ad"
     },
     {
       "path": "site/templates/index.html.j2",
-      "bytes": 6781,
-      "sha256": "7820f2dfab681493cb26643278dead95ad41284a715cddd5e271167fac56b832"
+      "bytes": 7056,
+      "sha256": "043cc62c10f804c2eedbbc99a6c464c8e1f051cb209a4a8f8b0a81c043798fe2"
     },
     {
       "path": "site/templates/print.html.j2",
@@ -1578,8 +1589,8 @@
     },
     {
       "path": "tests/test_site.py",
-      "bytes": 6613,
-      "sha256": "994ccf0ccce563cb0666e6c2175f3a41cfeafa0ffd71bb3ed209db353fd98820"
+      "bytes": 7834,
+      "sha256": "52858da14181aa3bcd133cd2eae9c7d179788c6fdcc03e5c63b8f2180fe3e0d3"
     },
     {
       "path": "tests/test_split.py",

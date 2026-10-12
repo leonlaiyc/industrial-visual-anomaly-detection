@@ -30,7 +30,8 @@
       <p class="subtitle">{{ t.hero.subtitle }}</p>
       <p class="hero-intro">{{ t.hero.intro }}</p>
       <p class="byline">{{ t.hero.owner }} <span aria-hidden="true">/</span> Computer Vision</p>
-      <div class="actions"><a class="button primary" href="#explorations">{{ t.hero.primary }} <span aria-hidden="true">↓</span></a><a class="button secondary" href="{{ root }}executive-summary-one-page.pdf">{{ t.hero.pdf }} <span aria-hidden="true">↗</span></a></div>
+      {% if links.website_url %}<p class="print-only"><a href="{{ links.website_url }}{{ meta.dir }}">{{ links.website_url }}{{ meta.dir }}</a></p>{% endif %}
+      <div class="actions"><a class="button primary" href="#explorations">{{ t.hero.primary }} <span aria-hidden="true">↓</span></a><a class="button secondary" href="{{ root }}{{ 'project-notes.zh-TW.pdf' if lang == 'zh-TW' else 'executive-summary-one-page.pdf' }}">{{ t.hero.pdf }} <span aria-hidden="true">↗</span></a></div>
       <p class="download-note">{{ t.hero.pdf_note }}</p>
     </div>
     <figure class="hero-figure">
@@ -79,7 +80,7 @@
   </section>
   <section class="section code-section" id="code" aria-labelledby="code-title">
     <div><p class="eyebrow">{{ t.code.eyebrow }}</p><h2 id="code-title">{{ t.code.title }}</h2><p>{{ t.code.text }}</p>{% if links.source_mode == 'private-repository' %}<p class="source-status">{{ t.code.private_note }}</p>{% endif %}</div>
-    <div class="code-actions">{% if links.technical_repository_url %}<a class="button primary" href="{{ links.technical_repository_url }}">{{ t.code.private_label if links.source_mode == 'private-repository' else t.code.public_label }} <span aria-hidden="true">↗</span></a>{% endif %}{% if links.technical_evidence_url %}<a class="button secondary" href="{{ links.technical_evidence_url }}">{{ t.code.evidence_label }} <span aria-hidden="true">↗</span></a>{% endif %}<a class="button secondary" href="{{ root }}executive-summary-one-page.pdf">{{ t.code.pdf_label }} <span aria-hidden="true">↗</span></a></div>
+    <div class="code-actions">{% if links.technical_repository_url %}<a class="button primary" href="{{ links.technical_repository_url }}">{{ t.code.private_label if links.source_mode == 'private-repository' else t.code.public_label }} <span aria-hidden="true">↗</span></a>{% endif %}{% if links.technical_evidence_url %}<a class="button secondary" href="{{ links.technical_evidence_url }}">{{ t.code.evidence_label }} <span aria-hidden="true">↗</span></a>{% endif %}<a class="button secondary" href="{{ root }}{{ 'project-notes.zh-TW.pdf' if lang == 'zh-TW' else 'executive-summary-one-page.pdf' }}">{{ t.code.pdf_label }} <span aria-hidden="true">↗</span></a></div>
   </section>
 </main>
 <footer class="site-footer">

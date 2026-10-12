@@ -18,8 +18,8 @@
     "intro": "我想搞懂工業視覺異常檢測怎麼運作，於是動手做了一個小 PoC。我使用公開的 VisA PCB 資料集，用 CNN 特徵建立正常影像模型，測試 ROI 計分與穩健性，再訓練監督式 YOLO。這裡記錄了我的嘗試、成敗與實際收穫。",
     "owner": "Yu-Chen (Leon) Lai",
     "primary": "看看三輪技術探索",
-    "pdf": "一頁專案分享檔",
-    "pdf_note": "英文 · A4 PDF",
+    "pdf": "下載中文網頁 PDF",
+    "pdf_note": "繁體中文 · A4 PDF · 完整網頁內容",
     "image_alt": "PCB2 瑕疵影像，疊加既有 CNN 異常熱圖與電路板 ROI 虛線邊界",
     "image_caption": "PCB2 / 成功檢出的異常。正常影像建模流程產生的熱圖；虛線為計分區域。",
     "image_label": "實驗中的真實影像"
@@ -106,10 +106,10 @@
       },
       {
         "letter": "B",
-        "title": "優化之後，再丟進壓力測試",
+        "title": "優化之後，再進行亮度測試",
         "question": "只在電路板內計分，加上光照修正，能減少誤報嗎？",
         "technique": "在 PCB2 評估 ROI 計分；在 PCB3 另做受控光照修正實驗，搭配門檻校準與穩健性檢查。",
-        "result": "<strong>PCB2：</strong>正常測試影像誤報率由 {{ f.pcb2.v1.fpr.pct }} 降至 {{ f.pcb2.v2.fpr.pct }}，瑕疵檢出率維持 {{ f.pcb2.v2.recall.pct }}。<strong>PCB3：</strong>修正在部分光照條件下有效，卻使模糊影像的誤報明顯增加，因此未採用候選方法。",
+        "result": "PCB2：正常測試影像誤報率由 {{ f.pcb2.v1.fpr.pct }} 降至 {{ f.pcb2.v2.fpr.pct }}，瑕疵檢出率維持 {{ f.pcb2.v2.recall.pct }}。PCB3：修正在部分光照條件下有效，卻使模糊影像的誤報明顯增加，因此未採用候選方法。",
         "lesson": "先解決干擾源，再看代價。優化單一條件，不代表整體變得更穩健。",
         "image": "workflow_false_alarm.jpg",
         "w": 960,
@@ -164,7 +164,7 @@
     "public_label": "前往技術來源庫",
     "private_label": "GitHub 來源碼 · 需存取權限",
     "private_note": "來源庫目前為私人。瀏覽需具備儲存庫權限；一頁專案分享檔可獨立閱讀。",
-    "pdf_label": "下載一頁專案分享檔",
+    "pdf_label": "下載中文網頁 PDF",
     "evidence_label": "技術證據"
   },
   "footer": {

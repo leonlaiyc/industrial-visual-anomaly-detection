@@ -99,3 +99,12 @@ history import is performed. Earlier review/reconciliation manifests and QA are 
 the current manifest is `review/portfolio_release_manifest.json`.
 
 The privately retained workflow package outside this repository is untouched and excluded from release.
+
+## Chinese website PDF and typography update (2026-10-12)
+
+Finding B now reads 「優化之後，再進行亮度測試」. The Chinese PCB2/PCB3 result labels
+use regular weight. The four finding subheadings are 19px, above the 17px body text.
+Chinese downloads now serve a four-page A4 export of the full Chinese website, including
+figures and live source links. Its print subheadings are 12pt above 10.5pt body text.
+All four PDF pages were rendered and visually inspected; 24 website/release checks and
+seven browser cases passed, including both languages on desktop, tablet and mobile.

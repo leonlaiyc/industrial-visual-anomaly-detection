@@ -2,6 +2,7 @@
 
     python site/render.py shots  [--base http://127.0.0.1:8765] [--out site/qa]
     python site/render.py pdf    [--base http://127.0.0.1:8765]   # one A4 sheet, also copied to reports/
+    python site/render.py pdf-zh [--base http://127.0.0.1:8765]   # actual Chinese website, paginated A4
 
 Serve site/dist first (e.g. `python -m http.server 8765 --directory site/dist`).
 Uses a throwaway browser profile, never the user's own.
@@ -72,6 +73,30 @@ def verify_pdf(path: Path, n_pages: int, links: dict) -> None:
     print(path.name, 'verified A4 pages:', n_pages, 'clickable URIs:', sorted(uris))
 
 
+def chinese_pdf(base: str) -> Path:
+    """Print the actual Chinese website; content and figures have one HTML source."""
+    from pypdf import PdfReader
+    import re
+    import unicodedata
+    out = HERE / 'dist' / 'project-notes.zh-TW.pdf'
+    pdf(base.rstrip('/') + '/zh-tw/', out)
+    reader = PdfReader(out)
+    if not reader.pages or any(abs(float(p.mediabox.width)-595)>2 or abs(float(p.mediabox.height)-842)>2 for p in reader.pages):
+        raise ValueError('Chinese website PDF must contain A4 pages')
+    text = re.sub(r'\s+', '', unicodedata.normalize('NFKC', ''.join(p.extract_text() for p in reader.pages)))
+    for phrase in ('以 CNN 與 YOLO', '優化之後，再進行亮度測試', '除了看模型得分', 'CC BY 4.0'):
+        if re.sub(r'\s+', '', unicodedata.normalize('NFKC', phrase)) not in text:
+            raise ValueError('Chinese PDF missing website content: ' + phrase)
+    import release_links
+    uris = {str(a.get_object().get('/A', {}).get('/URI', '')) for p in reader.pages for a in p.get('/Annots', [])}
+    if any(u and not release_links.public_url(u) for u in uris):
+        raise ValueError('Chinese PDF contains a local or non-public URI')
+    target = HERE.parent / 'reports' / out.name
+    shutil.copyfile(out, target)
+    print(target, 'verified A4 pages:', len(reader.pages))
+    return target
+
+
 def shots(base: str, out_dir: Path, full_height: int = 0) -> list[Path]:
     made = []
     for lang, path in (("en", ""), ("zh", "zh-tw/")):
@@ -84,7 +109,7 @@ def shots(base: str, out_dir: Path, full_height: int = 0) -> list[Path]:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("what", choices=["shots", "pdf"])
+    ap.add_argument("what", choices=["shots", "pdf", "pdf-zh"])
     ap.add_argument("--base", default="http://127.0.0.1:8765")
     ap.add_argument("--out", default=str(HERE / "qa"))
     ap.add_argument("--full", type=int, default=0, help="also capture a tall window of this height")
@@ -93,6 +118,8 @@ if __name__ == "__main__":
     if a.what == "shots":
         for p in shots(a.base.rstrip("/"), Path(a.out), a.full):
             print(p)
+    elif a.what == 'pdf-zh':
+        chinese_pdf(a.base)
     else:
         links = json.loads((HERE / 'dist' / 'release-link-status.json').read_text(encoding='utf-8'))
         if not links['preview']:

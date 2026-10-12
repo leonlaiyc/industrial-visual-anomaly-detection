@@ -215,6 +215,10 @@ scoring: [`docs/handoff.md`](docs/handoff.md).
 
 ## Website and PDF
 
+Chinese website export (four A4 pages): [project-notes.zh-TW.pdf](reports/project-notes.zh-TW.pdf).
+The Chinese website download links point to this full website export. To regenerate it, run
+`python site/render.py pdf-zh` while serving `site/dist` at the renderer's base URL.
+
 [Live website](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/) · [繁體中文](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/zh-tw/)
 
 ```bash
@@ -349,4 +353,4 @@ recorded in the timestamps and hashes inside `reports/*/frozen_operating_point.j
 
 D5 is **ACCEPTED BY PROJECT OWNER**, dated 2026-10-11 (Asia/Taipei), by Leon's explicit conversational confirmation. The non-score-affecting post-evaluation repair does not invalidate PCB3's primary evaluation; complete chronology and deviation disclosure remain in [the repair record](docs/pcb3_post_evaluation_repair.md). The owner authorized public source release and GitHub Pages deployment on 2026-10-12. Overall portfolio acceptance remains separate.
 
-Canonical website/source/evidence URLs are configured once in `site/release_links.json`. The website URL is recorded after GitHub Pages assigns it and anonymous access is verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md), [licensing review](docs/licensing_review.md), and [canonical artifact reconciliation](docs/artifact_reconciliation.md). Recipient PDFs state that the website link is pending first deployment and contain no localhost links. Re-render the active one-page PDF after URL changes, then verify and regenerate the release manifest. No model or experiment rerun is required.
+Canonical website/source/evidence URLs are configured once in `site/release_links.json`. The website URL is recorded after GitHub Pages assigns it and anonymous access is verified. `python site/build.py` builds a local preview; `python site/build.py --release` rejects missing or anonymously inaccessible URLs. See [release and hosting steps](docs/release_preparation.md), [licensing review](docs/licensing_review.md), and [canonical artifact reconciliation](docs/artifact_reconciliation.md). Recipient PDFs contain the verified live website and public source links, with no localhost links. Re-render the active one-page PDF after URL changes, then verify and regenerate the release manifest. No model or experiment rerun is required.
