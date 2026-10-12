@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="{{ t.meta.description }}">
 <title>{{ t.meta.title }}</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7T6Q37M71H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  gtag("js", new Date());
+  gtag("config", "G-7T6Q37M71H");
+</script>
 <link rel="icon" href="{{ root }}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{{ root }}assets/site.css">
 {% if links.website_url %}<link rel="canonical" href="{{ links.website_url }}{{ meta.dir }}">

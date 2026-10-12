@@ -5,6 +5,9 @@ building a small experiment with the public VisA PCB dataset: prepare the data, 
 try normal-only CNN modelling, improve and stress-test preprocessing, and train supervised YOLO models.
 The website is the concise showcase; this repository retains the technical source and evidence.
 
+**[View the one-page case study →](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/?utm_source=github&utm_medium=referral&utm_campaign=portfolio)**
+· [繁體中文](https://leonlaiyc.github.io/industrial-visual-anomaly-detection/zh-tw/?utm_source=github&utm_medium=referral&utm_campaign=portfolio)
+
 - **Round A / PCB1:** inspect orientation and registration, extract pretrained WideResNet-50-2 features,
   fit per-position Gaussians and use Mahalanobis distances for anomaly scores and heatmaps.
 - **Round B / PCB2 and PCB3:** ROI scoring on PCB2 reduced test-normal false alarms from 13% to 3% while
